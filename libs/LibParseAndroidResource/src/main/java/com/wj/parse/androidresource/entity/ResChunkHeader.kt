@@ -1,6 +1,8 @@
 package com.wj.parse.androidresource.entity
 
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
+import com.wj.parse.androidresource.interfaces.ChunkProperty
+import com.wj.parse.androidresource.interfaces.ChunkType
 import com.wj.parse.androidresource.utils.Utils
 
 
@@ -31,15 +33,9 @@ import com.wj.parse.androidresource.utils.Utils
  */
 class ResChunkHeader(
     /**
-     * The [resourceByteArray] should be associated with [startOffset].
-     * <h> Precondition </h>
-     *  The [startOffset] of [ResourceTableHeaderFirstChunk] is 0, the [startOffset] of [ResStringPoolHeaderSecondChunk] is [ResourceTableHeaderFirstChunk.chunkEndOffset].
-     * <h> Solution </h>
-     *  The [resourceByteArray] start from [ResourceTableHeaderFirstChunk.chunkEndOffset] if you don't set [startOffset],
-     *  of course, you can set [startOffset] to [ResourceTableHeaderFirstChunk.chunkEndOffset] if you set [resourceByteArray] to the whole ByteArray
+     * The [resArrayStartZeroOffset] has been changed in every chunk and been started from the first byte.
      */
-    private val resourceByteArray: ByteArray,
-    private val startOffset: Int = 0
+    override val resArrayStartZeroOffset: ByteArray
 ) : ChunkParseOperator {
 
     /**
@@ -60,6 +56,7 @@ class ResChunkHeader(
     /**
      * first 2 Byte is type, the next 2 Byte is header size and the next 4 Byte is size
      *  ｜ 2 Byte is type ｜2 Byte is header size｜ 4 Byte is size｜ = 8 Byte
+     * This is a child of chunk, so this size should return the size of this child
      */
     override val chunkEndOffset: Int
         get() = TYPE_BYTE + HEADER_SIZE_BYTE + SIZE_BYTE
@@ -68,23 +65,29 @@ class ResChunkHeader(
         chunkParseOperator()
     }
 
+    /**
+     * read from the first byte
+     */
+    override val startOffset: Int
+        get() = 0
+
     override fun chunkParseOperator(): ResChunkHeader = run {
         // read type
         var chunkStartOffset = startOffset
         val typeByteArray =
-            Utils.copyByte(resourceByteArray, chunkStartOffset, TYPE_BYTE)
+            Utils.copyByte(resArrayStartZeroOffset, chunkStartOffset, TYPE_BYTE)
         type = Utils.byte2Short(typeByteArray)
 
         // read header size
         chunkStartOffset += TYPE_BYTE
         val headerSizeByteArray =
-            Utils.copyByte(resourceByteArray, chunkStartOffset, HEADER_SIZE_BYTE)
+            Utils.copyByte(resArrayStartZeroOffset, chunkStartOffset, HEADER_SIZE_BYTE)
         headerSize = Utils.byte2Short(headerSizeByteArray)
 
         // read size
         chunkStartOffset += HEADER_SIZE_BYTE
         val sizeByteArray =
-            Utils.copyByte(resourceByteArray, chunkStartOffset, SIZE_BYTE)
+            Utils.copyByte(resArrayStartZeroOffset, chunkStartOffset, SIZE_BYTE)
         size = Utils.byte2Int(sizeByteArray)
         this
     }
@@ -95,7 +98,10 @@ class ResChunkHeader(
      * 1MB = 1024KB
      */
     override fun toString(): String =
-        "Chunk header is { type is $type, header size is $headerSize, size is ${size}bit (about ${(size / 1024.0)}B) }"
+        "Chunk header is { type is ${ChunkType.valueOf(type.toInt())}, header size is $headerSize, size is ${size}bit (about ${(size / 1024.0)}B) }"
+
+    override fun chunkProperty(): ChunkProperty =
+        ChunkProperty.CHUNK_CHILD
 
     companion object {
         const val TYPE_BYTE = 2

@@ -1,10 +1,13 @@
-package com.wj.parse.androidresource.entity
+package com.wj.parse.androidresource.entity.table1
 
+import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
+import com.wj.parse.androidresource.interfaces.ChunkProperty
+import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 /**
- * the first part of resource.arsc file.
+ * the first chunk of resource.arsc file.
  * This part describes the size and package number of this file.
  *
  *  https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#885
@@ -18,9 +21,9 @@ import com.wj.parse.androidresource.utils.Utils
  */
 class ResourceTableHeaderFirstChunk(
     /**
-     *  The startOffset of [ResourceTableHeaderFirstChunk] is 0, so the [resourceByteArray] should be the whole byte array
+     * the whole byte array
      */
-    private val resourceByteArray: ByteArray
+    private val wholeResource: ByteArray
 ) : ChunkParseOperator {
 
     /**
@@ -33,17 +36,38 @@ class ResourceTableHeaderFirstChunk(
      */
     var packageCount: Int = 0
 
+    /**
+     * The startOffset of this chunk is 0, so the resource byte array is the whole array.
+     */
+    override val resArrayStartZeroOffset: ByteArray
+        get() = wholeResource
+
+    override fun chunkProperty(): ChunkProperty =
+        ChunkProperty.CHUNK
+
     override val chunkEndOffset: Int
-        get() = header.chunkEndOffset + TABLE_HEADER_BYTE
+        get() = if (::header.isInitialized) {
+            header.chunkEndOffset + TABLE_HEADER_BYTE
+        } else {
+            Logger.error("The header hasn't been initialized, please check.")
+            throw IllegalCallerException("The header hasn't been initialized, please check.")
+        }
+
+    /**
+     * The startOffset of this chunk is 0
+     */
+    override val startOffset: Int
+        get() = 0
 
     init {
         chunkParseOperator()
+        checkChunkAttributes()
     }
 
     override fun chunkParseOperator(): ResourceTableHeaderFirstChunk = run {
-        header = ResChunkHeader(resourceByteArray, START_OFFSET)
+        header = ResChunkHeader(resArrayStartZeroOffset)
         val packageCountByteArray = Utils.copyByte(
-            resourceByteArray,
+            resArrayStartZeroOffset,
             header.chunkEndOffset,
             TABLE_HEADER_BYTE
         )
@@ -57,6 +81,5 @@ class ResourceTableHeaderFirstChunk(
 
     companion object {
         const val TABLE_HEADER_BYTE = 4
-        const val START_OFFSET = 0
     }
 }

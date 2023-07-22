@@ -1,10 +1,14 @@
-package com.wj.parse.androidresource.entity
+package com.wj.parse.androidresource.entity.stringpool2
 
+import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
+import com.wj.parse.androidresource.interfaces.ChunkProperty
+import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 
 /**
+ * This is first child of [ResStringPoolSecondChunk]
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#456
  *
  *  struct ResStringPool_header
@@ -31,17 +35,11 @@ import com.wj.parse.androidresource.utils.Utils
  *      uint32_t stylesStart;
  *  };
  */
-class ResStringPoolHeaderSecondChunk(
+class ResStringPoolHeaderSecondChunkChild(
     /**
-     * The [resourceByteArray] should be associated with [startOffset].
-     * <h> Precondition </h>
-     *   The [startOffset] of [ResStringPoolHeaderSecondChunk] is [ResourceTableHeaderFirstChunk.chunkEndOffset].
-     * <h> Solution </h>
-     *  If the [resourceByteArray] starts from [ResourceTableHeaderFirstChunk.chunkEndOffset] you don't require to set [startOffset];
-     *  Of course, if you can set [ResourceTableHeaderFirstChunk.chunkEndOffset] to [startOffset] that you require to set [resourceByteArray] to the whole byte array.
+     * the whole byte array.
      */
-    private val resourceByteArray: ByteArray,
-    private val startOffset: Int = 0
+    private val wholeResource: ByteArray
 ) : ChunkParseOperator {
     lateinit var header: ResChunkHeader
     var stringCount: Int = 0
@@ -50,20 +48,39 @@ class ResStringPoolHeaderSecondChunk(
     var stringStart: Int = 0
     var stylesStart: Int = 0
 
+    /**
+     * this is child of [ResStringPoolSecondChunk], so it returns the size of this child chunk
+     */
     override val chunkEndOffset: Int
-        get() = STRING_COUNT_BYTE + STYLE_COUNT_BYTE + FLAGS_BYTE + STRING_START_BYTE + STYLE_START_BYTE
+        get() = header.chunkEndOffset + STRING_COUNT_BYTE + STYLE_COUNT_BYTE + FLAGS_BYTE + STRING_START_BYTE + STYLE_START_BYTE
+
+    override val resArrayStartZeroOffset: ByteArray
+        get() = Utils.copyByte(wholeResource, startOffset) ?: run {
+            Logger.error("The header hasn't been initialized, please check.")
+            throw IllegalCallerException("The header hasn't been initialized, please check.")
+        }
+
+    /**
+     * this is part of [ResStringPoolSecondChunk], so it returns 0
+     */
+    override val startOffset: Int
+        get() = 0
+
+    override fun chunkProperty(): ChunkProperty =
+        ChunkProperty.CHUNK_CHILD
 
     init {
         chunkParseOperator()
+        checkChunkAttributes()
     }
 
-    override fun chunkParseOperator(): ResStringPoolHeaderSecondChunk = run{
+    override fun chunkParseOperator(): ResStringPoolHeaderSecondChunkChild = run {
         var poolStartOffset = startOffset
-        header = ResChunkHeader(resourceByteArray, poolStartOffset)
+        header = ResChunkHeader(resArrayStartZeroOffset)
         // string count
         poolStartOffset += header.chunkEndOffset
         val stringByteArray = Utils.copyByte(
-            resourceByteArray,
+            resArrayStartZeroOffset,
             poolStartOffset,
             STRING_COUNT_BYTE
         )
@@ -71,7 +88,7 @@ class ResStringPoolHeaderSecondChunk(
         // style count
         poolStartOffset += STYLE_COUNT_BYTE
         val styleCountByteArray = Utils.copyByte(
-            resourceByteArray,
+            resArrayStartZeroOffset,
             poolStartOffset,
             STYLE_COUNT_BYTE
         )
@@ -79,7 +96,7 @@ class ResStringPoolHeaderSecondChunk(
         // flags count
         poolStartOffset += FLAGS_BYTE
         val flagByteArray = Utils.copyByte(
-            resourceByteArray,
+            resArrayStartZeroOffset,
             poolStartOffset,
             FLAGS_BYTE
         )
@@ -87,7 +104,7 @@ class ResStringPoolHeaderSecondChunk(
         // string start
         poolStartOffset += STRING_START_BYTE
         val stringStartByteArray = Utils.copyByte(
-            resourceByteArray,
+            resArrayStartZeroOffset,
             poolStartOffset,
             STRING_START_BYTE
         )
@@ -95,7 +112,7 @@ class ResStringPoolHeaderSecondChunk(
         // style start
         poolStartOffset += STYLE_START_BYTE
         val styleStartByteArray = Utils.copyByte(
-            resourceByteArray,
+            resArrayStartZeroOffset,
             poolStartOffset,
             STYLE_START_BYTE
         )
@@ -104,7 +121,7 @@ class ResStringPoolHeaderSecondChunk(
     }
 
     override fun toString(): String =
-        "Part2: -> Resource String Pool header: $header,\n" +
+        "Resource String Pool header: $header,\n" +
                 "          stringCount is $stringCount, styleCount is $styleCount, flags is ${
                     when (flags) {
                         Flags.UTF8_FLAG.value -> "UTF-8"
