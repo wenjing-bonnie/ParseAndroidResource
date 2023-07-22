@@ -18,11 +18,11 @@ import com.wj.parse.androidresource.interfaces.ChunkProperty
  *  };
  *
  */
-class ResStringPoolRefOffsetSecondChunkChild(
+class ResStringPoolRefOffsetChunkChild(
     /**
      * The [resArrayStartZeroOffset] should be associated with [startOffset].
      * <h> Precondition </h>
-     *   The [startOffset] of [ResStringPoolHeaderSecondChunkChild] is [ResourceTableHeaderFirstChunk.chunkEndOffset].
+     *   The [startOffset] of [ResStringPoolHeaderChunkChild] is [ResourceTableHeaderFirstChunk.chunkEndOffset].
      * <h> Solution </h>
      *  If the [resArrayStartZeroOffset] starts from [ResourceTableHeaderFirstChunk.chunkEndOffset] you don't require to set [startOffset];
      *  Of course, if you can set [ResourceTableHeaderFirstChunk.chunkEndOffset] to [startOffset] that you require to set [resArrayStartZeroOffset] to the whole byte array.

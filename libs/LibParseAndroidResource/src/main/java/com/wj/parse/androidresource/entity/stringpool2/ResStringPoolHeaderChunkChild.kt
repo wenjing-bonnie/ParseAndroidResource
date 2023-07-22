@@ -35,7 +35,7 @@ import com.wj.parse.androidresource.utils.Utils
  *      uint32_t stylesStart;
  *  };
  */
-class ResStringPoolHeaderSecondChunkChild(
+class ResStringPoolHeaderChunkChild(
     /**
      * the whole byte array.
      */
@@ -74,7 +74,7 @@ class ResStringPoolHeaderSecondChunkChild(
         checkChunkAttributes()
     }
 
-    override fun chunkParseOperator(): ResStringPoolHeaderSecondChunkChild = run {
+    override fun chunkParseOperator(): ResStringPoolHeaderChunkChild = run {
         var poolStartOffset = startOffset
         header = ResChunkHeader(resArrayStartZeroOffset)
         // string count

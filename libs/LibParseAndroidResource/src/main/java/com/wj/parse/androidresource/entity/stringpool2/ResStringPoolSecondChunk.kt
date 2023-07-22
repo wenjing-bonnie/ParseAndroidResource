@@ -20,8 +20,8 @@ class ResStringPoolSecondChunk(
     override val startOffset: Int
 ) : ChunkParseOperator {
 
-    lateinit var resStringPoolHeaderSecondChunkChild: ResStringPoolHeaderSecondChunkChild
-    lateinit var resStringPoolRefOffsetSecondChunkChild: ResStringPoolRefOffsetSecondChunkChild
+    lateinit var resStringPoolHeader: ResStringPoolHeaderChunkChild
+    lateinit var resStringPoolRefOffset: ResStringPoolRefOffsetChunkChild
 
     override val resArrayStartZeroOffset: ByteArray
         get() = Utils.copyByte(wholeResource, startOffset) ?: kotlin.run {
@@ -33,7 +33,7 @@ class ResStringPoolSecondChunk(
      * TODO need all childs of this chunk
      */
     override val chunkEndOffset: Int
-        get() = startOffset + resStringPoolHeaderSecondChunkChild.chunkEndOffset + resStringPoolRefOffsetSecondChunkChild.chunkEndOffset
+        get() = startOffset + resStringPoolHeader.chunkEndOffset + resStringPoolRefOffset.chunkEndOffset
 
     override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK
 
@@ -43,9 +43,9 @@ class ResStringPoolSecondChunk(
     }
 
     override fun chunkParseOperator(): ChunkParseOperator = run {
-        resStringPoolHeaderSecondChunkChild =
-            ResStringPoolHeaderSecondChunkChild(resArrayStartZeroOffset)
-        val startOffset = startOffset + resStringPoolHeaderSecondChunkChild.chunkEndOffset
+        resStringPoolHeader =
+            ResStringPoolHeaderChunkChild(resArrayStartZeroOffset)
+        val startOffset = startOffset + resStringPoolHeader.chunkEndOffset
         // resStringPoolRefOffsetSecondChunk =
         this
     }
@@ -54,6 +54,6 @@ class ResStringPoolSecondChunk(
      * TODO need all childs of this chunk
      */
     override fun toString(): String =
-        "Part2: -> Resource String Pool Header : ${resStringPoolHeaderSecondChunkChild},\n"
+        "Part2: -> Resource String Pool Header : ${resStringPoolHeader},\n"
 
 }
