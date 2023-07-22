@@ -101,7 +101,7 @@ class ResChunkHeader(
         "Chunk header is { type is ${ChunkType.valueOf(type.toInt())}, header size is $headerSize, size is ${size}bit (about ${(size / 1024.0)}B) }"
 
     override fun chunkProperty(): ChunkProperty =
-        ChunkProperty.CHUNK_CHILD
+        ChunkProperty.CHUNK_FIRST_CHILD
 
     companion object {
         const val TYPE_BYTE = 2

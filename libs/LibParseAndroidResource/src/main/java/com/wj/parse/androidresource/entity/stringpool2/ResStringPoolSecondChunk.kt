@@ -43,10 +43,18 @@ class ResStringPoolSecondChunk(
     }
 
     override fun chunkParseOperator(): ChunkParseOperator = run {
+        // header
         resStringPoolHeader =
             ResStringPoolHeaderChunkChild(resArrayStartZeroOffset)
-        val startOffset = startOffset + resStringPoolHeader.chunkEndOffset
-        // resStringPoolRefOffsetSecondChunk =
+        var childStartOffsetInParent = resStringPoolHeader.chunkEndOffset
+        // string offset and style offset
+        resStringPoolRefOffset = ResStringPoolRefOffsetChunkChild(
+            resArrayStartZeroOffset,
+            startOffset = childStartOffsetInParent,
+            stringCount = resStringPoolHeader.stringCount,
+            styleCount = resStringPoolHeader.styleCount
+        )
+        childStartOffsetInParent
         this
     }
 
@@ -54,6 +62,7 @@ class ResStringPoolSecondChunk(
      * TODO need all childs of this chunk
      */
     override fun toString(): String =
-        "Part2: -> Resource String Pool Header : ${resStringPoolHeader},\n"
+        "Part2: -> First child =>=> ${resStringPoolHeader}\n" +
+                "          Second child =>=> $resStringPoolRefOffset"
 
 }

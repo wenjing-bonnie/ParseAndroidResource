@@ -13,7 +13,7 @@ interface ChunkParseOperator {
      */
     /**
      *  If this chunk is a whole chunk, [startOffset] should return the start offset behind last chunk
-     *  if this chunk is a child chunk, [startOffset] should return 0, because the [resArrayStartZeroOffset] of child chunk has been changed to first byte array
+     *  if this chunk is a child chunk, [startOffset] should return 0, because the [resArrayStartZeroOffset] of child chunk has been changed index to first byte array
      */
     val startOffset: Int
 
@@ -28,6 +28,7 @@ interface ChunkParseOperator {
      */
     val resArrayStartZeroOffset: ByteArray
 
+
     /**
      * parse chunk resource data
      */
@@ -40,15 +41,16 @@ interface ChunkParseOperator {
      */
     fun checkChunkAttributes() =
         when (chunkProperty()) {
-            ChunkProperty.CHUNK_CHILD -> {
+            ChunkProperty.CHUNK_FIRST_CHILD -> {
                 if (startOffset != 0) {
-                    throw IllegalArgumentException("${this.javaClass.simpleName} is a child of chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed to start from 0")
+                    throw IllegalArgumentException("${this.javaClass.simpleName} is a child of chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed index to start from 0")
                 }
-                Logger.debug("${this.javaClass.simpleName} has set the collect values")
+                Logger.debug("** Great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow .... ")
                 true
             }
 
-            ChunkProperty.CHUNK -> {
+            ChunkProperty.CHUNK,
+            ChunkProperty.CHUNK_OTHER_CHILD -> {
 
                 if (this is ResourceTableHeaderFirstChunk && startOffset != 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
@@ -56,7 +58,7 @@ interface ChunkParseOperator {
                 if (this !is ResourceTableHeaderFirstChunk && startOffset == 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName}  is a chunk, the startOffset should be not 0")
                 }
-                Logger.debug("${this.javaClass.simpleName} has set the collect values")
+                Logger.debug("** Great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")
                 true
             }
         }

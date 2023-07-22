@@ -1,7 +1,11 @@
 package com.wj.parse.androidresource.entity.stringpool2
 
+import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunkChild.Companion.OFFSET_BYTE
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
+import com.wj.parse.androidresource.utils.Logger
+import com.wj.parse.androidresource.utils.Utils
+import java.lang.IllegalStateException
 
 /**
  * This is second child of [ResStringPoolSecondChunk]
@@ -20,42 +24,84 @@ import com.wj.parse.androidresource.interfaces.ChunkProperty
  */
 class ResStringPoolRefOffsetChunkChild(
     /**
-     * The [resArrayStartZeroOffset] should be associated with [startOffset].
-     * <h> Precondition </h>
-     *   The [startOffset] of [ResStringPoolHeaderChunkChild] is [ResourceTableHeaderFirstChunk.chunkEndOffset].
-     * <h> Solution </h>
-     *  If the [resArrayStartZeroOffset] starts from [ResourceTableHeaderFirstChunk.chunkEndOffset] you don't require to set [startOffset];
-     *  Of course, if you can set [ResourceTableHeaderFirstChunk.chunkEndOffset] to [startOffset] that you require to set [resArrayStartZeroOffset] to the whole byte array.
+     * the string pool chunk byte array which index has started from 0
      */
-    private val wholeResource: ByteArray
+    private val stringPoolStartZeroOffset: ByteArray,
+    /**
+     * the child offset in the parent byte array
+     */
+    override val startOffset: Int,
+    private val stringCount: Int,
+    private val styleCount: Int
 ) : ChunkParseOperator {
 
-    var stringIndexes = mutableListOf<Int>()
-    var styleIndexes = mutableListOf<Int>()
+    var stringOffsetList = mutableListOf<Int>()
+    var styleOffsetList = mutableListOf<Int>()
 
     override val chunkEndOffset: Int
-        get() = TODO("Not yet implemented")
-
-    override val startOffset: Int
-        get() = 0
+        get() = stringCount * OFFSET_BYTE + styleCount * OFFSET_BYTE
 
     override val resArrayStartZeroOffset: ByteArray
-        get() = TODO("Not yet implemented")
+        get() = Utils.copyByte(stringPoolStartZeroOffset, startOffset) ?: run {
+            Logger.error("Res string pool ref offset has a bad state, the array is null")
+            throw IllegalCallerException("Res string pool ref offset has a bad state, the array is null")
+        }
 
     override fun chunkProperty(): ChunkProperty =
-        ChunkProperty.CHUNK_CHILD
-
-    override fun chunkParseOperator(): ChunkParseOperator = run {
-
-        this
-    }
+        ChunkProperty.CHUNK_OTHER_CHILD
 
     init {
         chunkParseOperator()
         checkChunkAttributes()
     }
 
-    override fun toString(): String {
-        return super.toString()
+    override fun chunkParseOperator(): ChunkParseOperator = run {
+        // read string offset
+        var childOffset = 0
+        for (index in 0 until stringCount) {
+            val sourceBytes: ByteArray? =
+                Utils.copyByte(
+                    resArrayStartZeroOffset,
+                    childOffset + index * OFFSET_BYTE,
+                    OFFSET_BYTE
+                )
+            sourceBytes?.let {
+                stringOffsetList.add(Utils.byte2Int(it))
+//                Logger.debug("The $index byte array is ${byteOffset(it)},  string offset is ${stringOffsetList[index]} ")
+            } ?: run {
+                Logger.error("Read string offset is null")
+                throw IllegalStateException("Read string offset is null")
+            }
+        }
+        // read style offset
+        //  TODO need to test it
+        childOffset = stringCount * OFFSET_BYTE
+        for (index in 0 until styleCount) {
+            val sourceBytes: ByteArray? =
+                Utils.copyByte(
+                    resArrayStartZeroOffset,
+                    childOffset + index * OFFSET_BYTE,
+                    OFFSET_BYTE
+                )
+            sourceBytes?.let {
+                styleOffsetList.add(Utils.byte2Int(it))
+                Logger.debug("The $index byte array is ${byteOffset(it)},  style offset is ${styleOffsetList[index]} ")
+            } ?: run {
+                Logger.error("Read style offset is null")
+                throw IllegalStateException("Read style offset is null")
+            }
+        }
+        this
+    }
+
+    override fun toString(): String = "Resource Pool Ref offset: string offset is $stringOffsetList, \n          style offset is $styleOffsetList"
+
+    private fun byteOffset(sourceBytes: ByteArray?) = run {
+        val buffer = StringBuffer()
+        sourceBytes?.forEach {
+            buffer.append(it)
+            buffer.append(" , ")
+        }
+        buffer.toString()
     }
 }

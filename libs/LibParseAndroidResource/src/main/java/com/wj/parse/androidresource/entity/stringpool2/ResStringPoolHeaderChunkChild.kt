@@ -37,9 +37,9 @@ import com.wj.parse.androidresource.utils.Utils
  */
 class ResStringPoolHeaderChunkChild(
     /**
-     * the whole byte array.
+     * the string pool chunk byte array which index has started from 0
      */
-    private val wholeResource: ByteArray
+    private val stringPoolStartZeroOffset: ByteArray
 ) : ChunkParseOperator {
     lateinit var header: ResChunkHeader
     var stringCount: Int = 0
@@ -55,9 +55,9 @@ class ResStringPoolHeaderChunkChild(
         get() = header.chunkEndOffset + STRING_COUNT_BYTE + STYLE_COUNT_BYTE + FLAGS_BYTE + STRING_START_BYTE + STYLE_START_BYTE
 
     override val resArrayStartZeroOffset: ByteArray
-        get() = Utils.copyByte(wholeResource, startOffset) ?: run {
-            Logger.error("The header hasn't been initialized, please check.")
-            throw IllegalCallerException("The header hasn't been initialized, please check.")
+        get() = Utils.copyByte(stringPoolStartZeroOffset, startOffset) ?: run {
+            Logger.error("Res string pool header has a bad state, the array is null")
+            throw IllegalCallerException("Res string pool header has a bad state, the array is null")
         }
 
     /**
@@ -67,7 +67,7 @@ class ResStringPoolHeaderChunkChild(
         get() = 0
 
     override fun chunkProperty(): ChunkProperty =
-        ChunkProperty.CHUNK_CHILD
+        ChunkProperty.CHUNK_FIRST_CHILD
 
     init {
         chunkParseOperator()
@@ -143,5 +143,6 @@ class ResStringPoolHeaderChunkChild(
         const val FLAGS_BYTE = 4
         const val STRING_START_BYTE = 4
         const val STYLE_START_BYTE = 4
+        const val OFFSET_BYTE = 4
     }
 }
