@@ -1,5 +1,6 @@
 package com.wj.parse.androidresource.parse
 
+import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.utils.Logger
@@ -21,15 +22,23 @@ class ParseResourceChain() {
 
             /** read [ResourceTableHeaderFirstChunk]*/
             Logger.debug("\n ...... begin to read first chunk: Table Header ......")
+            var parentOffset = 0
             val tableHeaderChunk = ResourceTableHeaderFirstChunk(resourceByteArray).apply {
                 Logger.debug(toString())
             }
             /** read [ResStringPoolSecondChunk] */
             Logger.debug("\n ...... begin to read second chunk: String Pool ......")
-            val stringPoolHeader =
-                ResStringPoolSecondChunk(resourceByteArray, tableHeaderChunk.chunkEndOffset).apply {
+            parentOffset += tableHeaderChunk.chunkEndOffset
+            val stringPoolChunk =
+                ResStringPoolSecondChunk(resourceByteArray, parentOffset).apply {
                     Logger.debug(toString())
                 }
+            /** read [ResTablePackageThirdChunk] */
+            Logger.debug("\n ...... begin to read third chunk: table package ......")
+            parentOffset += stringPoolChunk.chunkEndOffset
+            val tablePackageChunk = ResTablePackageThirdChunk(resourceByteArray,parentOffset,)
+
+
         } ?: run {
             Logger.error("The resource data is null, there is something wrong.")
         }

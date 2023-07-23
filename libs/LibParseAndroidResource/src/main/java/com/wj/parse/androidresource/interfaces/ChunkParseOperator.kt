@@ -2,7 +2,9 @@ package com.wj.parse.androidresource.interfaces
 
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.utils.Logger
+import com.wj.parse.androidresource.utils.Utils
 import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
 
 /**
  * Parse every chunk
@@ -24,9 +26,18 @@ interface ChunkParseOperator {
     val chunkEndOffset: Int
 
     /**
-     * [resArrayStartZeroOffset] should start from end of previous chunk
+     * the whole resource byte array of this resource.arsc file
+     */
+    val inputResourceByteArray: ByteArray
+
+    /**
+     * [resArrayStartZeroOffset] should be the byte array which index start from 0
      */
     val resArrayStartZeroOffset: ByteArray
+        get() = Utils.copyByte(inputResourceByteArray, startOffset) ?: kotlin.run {
+            Logger.error("${this.javaClass.simpleName}has a bad state, the array is null")
+            throw IllegalStateException("${this.javaClass.simpleName} has a bad state, the array is null")
+        }
 
 
     /**
@@ -49,18 +60,16 @@ interface ChunkParseOperator {
                 true
             }
 
-            ChunkProperty.CHUNK,
-            ChunkProperty.CHUNK_OTHER_CHILD -> {
+            else -> {
 
                 if (this is ResourceTableHeaderFirstChunk && startOffset != 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
                 }
                 if (this !is ResourceTableHeaderFirstChunk && startOffset == 0) {
-                    throw IllegalArgumentException("${this.javaClass.simpleName}  is a chunk, the startOffset should be not 0")
+                    throw IllegalArgumentException("${this.javaClass.simpleName} is a chunk, the startOffset should be not 0")
                 }
                 Logger.debug("** Great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")
                 true
             }
         }
-
 }

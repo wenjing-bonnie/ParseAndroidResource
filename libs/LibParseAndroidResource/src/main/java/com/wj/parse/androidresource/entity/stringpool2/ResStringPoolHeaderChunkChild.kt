@@ -3,7 +3,6 @@ package com.wj.parse.androidresource.entity.stringpool2
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
-import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 
@@ -39,7 +38,7 @@ class ResStringPoolHeaderChunkChild(
     /**
      * the string pool chunk byte array which index has started from 0
      */
-    private val stringPoolStartZeroOffset: ByteArray
+    override val inputResourceByteArray: ByteArray
 ) : ChunkParseOperator {
     lateinit var header: ResChunkHeader
     var stringCount: Int = 0
@@ -53,12 +52,6 @@ class ResStringPoolHeaderChunkChild(
      */
     override val chunkEndOffset: Int
         get() = header.chunkEndOffset + STRING_COUNT_BYTE + STYLE_COUNT_BYTE + FLAGS_BYTE + STRING_START_BYTE + STYLE_START_BYTE
-
-    override val resArrayStartZeroOffset: ByteArray
-        get() = Utils.copyByte(stringPoolStartZeroOffset, startOffset) ?: run {
-            Logger.error("Res string pool header has a bad state, the array is null")
-            throw IllegalCallerException("Res string pool header has a bad state, the array is null")
-        }
 
     /**
      * this is part of [ResStringPoolSecondChunk], so it returns 0
@@ -75,45 +68,45 @@ class ResStringPoolHeaderChunkChild(
     }
 
     override fun chunkParseOperator(): ResStringPoolHeaderChunkChild = run {
-        var poolStartOffset = startOffset
+        var attributeStartOffset = startOffset
         header = ResChunkHeader(resArrayStartZeroOffset)
         // string count
-        poolStartOffset += header.chunkEndOffset
+        attributeStartOffset += header.chunkEndOffset
         val stringByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
-            poolStartOffset,
+            attributeStartOffset,
             STRING_COUNT_BYTE
         )
         stringCount = Utils.byte2Int(stringByteArray)
         // style count
-        poolStartOffset += STYLE_COUNT_BYTE
+        attributeStartOffset += STYLE_COUNT_BYTE
         val styleCountByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
-            poolStartOffset,
+            attributeStartOffset,
             STYLE_COUNT_BYTE
         )
         styleCount = Utils.byte2Int(styleCountByteArray)
         // flags count
-        poolStartOffset += FLAGS_BYTE
+        attributeStartOffset += FLAGS_BYTE
         val flagByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
-            poolStartOffset,
+            attributeStartOffset,
             FLAGS_BYTE
         )
         flags = Utils.byte2Int(flagByteArray)
         // string start
-        poolStartOffset += STRING_START_BYTE
+        attributeStartOffset += STRING_START_BYTE
         val stringStartByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
-            poolStartOffset,
+            attributeStartOffset,
             STRING_START_BYTE
         )
         stringStart = Utils.byte2Int(stringStartByteArray)
         // style start
-        poolStartOffset += STYLE_START_BYTE
+        attributeStartOffset += STYLE_START_BYTE
         val styleStartByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
-            poolStartOffset,
+            attributeStartOffset,
             STYLE_START_BYTE
         )
         stylesStart = Utils.byte2Int(styleStartByteArray)

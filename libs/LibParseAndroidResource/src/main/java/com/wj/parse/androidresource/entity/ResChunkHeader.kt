@@ -71,23 +71,29 @@ class ResChunkHeader(
     override val startOffset: Int
         get() = 0
 
+    /**
+     * will not be used. The [resArrayStartZeroOffset] has been changed in every chunk and been started from the first byte.
+     */
+    override val inputResourceByteArray: ByteArray
+        get() = resArrayStartZeroOffset
+
     override fun chunkParseOperator(): ResChunkHeader = run {
         // read type
-        var chunkStartOffset = startOffset
+        var attributeStartOffset = startOffset
         val typeByteArray =
-            Utils.copyByte(resArrayStartZeroOffset, chunkStartOffset, TYPE_BYTE)
+            Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, TYPE_BYTE)
         type = Utils.byte2Short(typeByteArray)
 
         // read header size
-        chunkStartOffset += TYPE_BYTE
+        attributeStartOffset += TYPE_BYTE
         val headerSizeByteArray =
-            Utils.copyByte(resArrayStartZeroOffset, chunkStartOffset, HEADER_SIZE_BYTE)
+            Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, HEADER_SIZE_BYTE)
         headerSize = Utils.byte2Short(headerSizeByteArray)
 
         // read size
-        chunkStartOffset += HEADER_SIZE_BYTE
+        attributeStartOffset += HEADER_SIZE_BYTE
         val sizeByteArray =
-            Utils.copyByte(resArrayStartZeroOffset, chunkStartOffset, SIZE_BYTE)
+            Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, SIZE_BYTE)
         size = Utils.byte2Int(sizeByteArray)
         this
     }
@@ -101,7 +107,7 @@ class ResChunkHeader(
         "Chunk header is { type is ${ChunkType.valueOf(type.toInt())}, header size is $headerSize, size is ${size}bit (about ${(size / 1024.0)}B) }"
 
     override fun chunkProperty(): ChunkProperty =
-        ChunkProperty.CHUNK_FIRST_CHILD
+        ChunkProperty.CHUNK_COMMON_HEADER
 
     companion object {
         const val TYPE_BYTE = 2

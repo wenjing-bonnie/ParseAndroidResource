@@ -21,9 +21,10 @@ import com.wj.parse.androidresource.utils.Utils
  */
 class ResourceTableHeaderFirstChunk(
     /**
-     * the whole byte array
+     * The whole byte array.
+     * The [startOffset] of this chunk is 0 and [resArrayStartZeroOffset] is the whole array.
      */
-    private val wholeResource: ByteArray
+    override val inputResourceByteArray: ByteArray
 ) : ChunkParseOperator {
 
     /**
@@ -35,12 +36,6 @@ class ResourceTableHeaderFirstChunk(
      * the next 4 Byte is package count
      */
     var packageCount: Int = 0
-
-    /**
-     * The startOffset of this chunk is 0, so the resource byte array is the whole array.
-     */
-    override val resArrayStartZeroOffset: ByteArray
-        get() = wholeResource
 
     override fun chunkProperty(): ChunkProperty =
         ChunkProperty.CHUNK
@@ -77,7 +72,8 @@ class ResourceTableHeaderFirstChunk(
 
     override fun toString(): String =
         "Part1: -> Resource Table header: $header,\n" +
-                "         packageCount is $packageCount."
+                "         packageCount is $packageCount." +
+                "\nPart1: -> End..."
 
     companion object {
         const val TABLE_HEADER_BYTE = 4

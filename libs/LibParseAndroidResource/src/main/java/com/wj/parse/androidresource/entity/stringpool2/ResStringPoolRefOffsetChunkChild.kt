@@ -26,7 +26,7 @@ class ResStringPoolRefOffsetChunkChild(
     /**
      * the string pool chunk byte array which index has started from 0
      */
-    private val stringPoolStartZeroOffset: ByteArray,
+    override val inputResourceByteArray: ByteArray,
     /**
      * the child offset in the parent byte array
      */
@@ -40,12 +40,6 @@ class ResStringPoolRefOffsetChunkChild(
 
     override val chunkEndOffset: Int
         get() = stringCount * OFFSET_BYTE + styleCount * OFFSET_BYTE
-
-    override val resArrayStartZeroOffset: ByteArray
-        get() = Utils.copyByte(stringPoolStartZeroOffset, startOffset) ?: run {
-            Logger.error("Res string pool ref offset has a bad state, the array is null")
-            throw IllegalCallerException("Res string pool ref offset has a bad state, the array is null")
-        }
 
     override fun chunkProperty(): ChunkProperty =
         ChunkProperty.CHUNK_OTHER_CHILD
@@ -94,7 +88,8 @@ class ResStringPoolRefOffsetChunkChild(
         this
     }
 
-    override fun toString(): String = "Resource Pool Ref offset: string offset is $stringOffsetList, \n          style offset is $styleOffsetList"
+    override fun toString(): String =
+        "Resource Pool Ref offset: string offset is $stringOffsetList, \n          style offset is $styleOffsetList"
 
     private fun byteOffset(sourceBytes: ByteArray?) = run {
         val buffer = StringBuffer()
