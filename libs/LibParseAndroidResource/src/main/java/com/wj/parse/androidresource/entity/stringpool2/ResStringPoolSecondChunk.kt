@@ -19,7 +19,7 @@ class ResStringPoolSecondChunk(
 ) : ChunkParseOperator {
 
     lateinit var resStringPoolHeader: ResStringPoolHeaderChunkChild
-    lateinit var resStringPoolRefOffset: ResStringPoolRefOffsetChunkChild
+    lateinit var resStringPoolRefOffset: ResStringPoolContentChunkChild
 
     /**
      * all childs of this chunk
@@ -40,11 +40,13 @@ class ResStringPoolSecondChunk(
             ResStringPoolHeaderChunkChild(resArrayStartZeroOffset)
         var childStartOffsetInParent = resStringPoolHeader.chunkEndOffset
         // string offset and style offset
-        resStringPoolRefOffset = ResStringPoolRefOffsetChunkChild(
+        resStringPoolRefOffset = ResStringPoolContentChunkChild(
             resArrayStartZeroOffset,
             startOffset = childStartOffsetInParent,
             stringCount = resStringPoolHeader.stringCount,
-            styleCount = resStringPoolHeader.styleCount
+            styleCount = resStringPoolHeader.styleCount,
+            stringStart = resStringPoolHeader.stringStart,
+            stylesStart = resStringPoolHeader.stylesStart
         )
         return this
     }

@@ -52,12 +52,20 @@ class ResTablePackageThirdChunk(
 ) : ChunkParseOperator {
 
     lateinit var header: ResChunkHeader
+    var id: Int = -1
+    var name: CharArray = CharArray(128)
+    var typeStrings: Int = -1
+    var lastPublicType: Int = -1
+    var keyStrings: Int = -1
+    var lastPublicKey: Int = -1
 
     override val chunkEndOffset: Int
         get() = TODO("Not yet implemented")
 
     override fun chunkParseOperator(): ChunkParseOperator {
-        header
+        var attributeStartOffset = 0
+        header = ResChunkHeader(resArrayStartZeroOffset)
+        attributeStartOffset += header.chunkEndOffset
         return this
     }
 

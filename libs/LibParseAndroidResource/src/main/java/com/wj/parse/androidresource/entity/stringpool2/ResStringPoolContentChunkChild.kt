@@ -1,18 +1,21 @@
 package com.wj.parse.androidresource.entity.stringpool2
 
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunkChild.Companion.OFFSET_BYTE
+import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunkChild.Companion.TWO_BYTE
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import java.lang.IllegalStateException
+import kotlin.experimental.and
 
 /**
  * This is second child of [ResStringPoolSecondChunk]
  * Reference to a string in a string pool
+ *  TODO rename and find struct
  *
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#425
- *  TODO rename and find struct
+ *
  * * struct ResStringPool_ref
  *  {
  *  // Index into the string pool table (uint32_t-offset from the indices
@@ -22,7 +25,7 @@ import java.lang.IllegalStateException
  *  };
  *
  */
-class ResStringPoolRefOffsetChunkChild(
+class ResStringPoolContentChunkChild(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -32,11 +35,14 @@ class ResStringPoolRefOffsetChunkChild(
      */
     override val startOffset: Int,
     private val stringCount: Int,
-    private val styleCount: Int
+    private val styleCount: Int,
+    private val stringStart: Int,
+    private val stylesStart: Int
 ) : ChunkParseOperator {
 
     var stringOffsetList = mutableListOf<Int>()
     var styleOffsetList = mutableListOf<Int>()
+    var stringList = mutableListOf<String>()
 
     override val chunkEndOffset: Int
         get() = stringCount * OFFSET_BYTE + styleCount * OFFSET_BYTE
@@ -69,7 +75,7 @@ class ResStringPoolRefOffsetChunkChild(
         }
         // read style offset
         //  TODO need to test it
-        childOffset = stringCount * OFFSET_BYTE
+        childOffset += stringCount * OFFSET_BYTE
         for (index in 0 until styleCount) {
             val sourceBytes: ByteArray? =
                 Utils.copyByte(
@@ -85,11 +91,47 @@ class ResStringPoolRefOffsetChunkChild(
                 throw IllegalStateException("Read style offset is null")
             }
         }
+        // read string list
+        // 每个字符串的头两个字节的最后一个字节是字符串的长度
+        //
+        childOffset += styleCount * OFFSET_BYTE
+        for (index in 0 until stringCount) {
+            val stringByteArray = Utils.copyByte(resArrayStartZeroOffset, childOffset, TWO_BYTE)
+            stringByteArray?.let {
+                val stringLength = (stringByteArray[1] and 0x7F).toInt()
+                when {
+                    stringLength > 0 -> {
+                        val stringByte = Utils.copyByte(
+                            resArrayStartZeroOffset,
+                            childOffset + TWO_BYTE,
+                            stringLength
+                        ) ?: kotlin.run {
+                            throw IllegalStateException("The string byte array is null")
+                        }
+                        // TODO the UTF_8 need to confirm!!
+                        stringList.add(String(stringByte, Charsets.UTF_8))
+                    }
+
+                    else -> {
+                        stringList.add("")
+                    }
+                }
+                // TODO why is 3
+                childOffset += (stringLength + 3)
+            } ?: run {
+                throw IllegalStateException("The string byte array is null")
+            }
+        }
         return this
     }
 
+    /**
+     * TODO toString() need to be optimized
+     */
     override fun toString(): String =
-        "Resource Pool Ref offset: string offset is $stringOffsetList, \n          style offset is $styleOffsetList"
+        "Resource Pool Ref offset: string offset is $stringOffsetList, \n   " +
+                "       style offset is $styleOffsetList, \n" +
+                "       string list is $stringList, \n"
 
     private fun byteOffset(sourceBytes: ByteArray?) = run {
         val buffer = StringBuffer()
