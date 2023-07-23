@@ -36,7 +36,7 @@ import com.wj.parse.androidresource.utils.Utils
  */
 class ResStringPoolHeaderChunkChild(
     /**
-     * the string pool chunk byte array which index has started from 0
+     * the string pool chunk byte array which index has started from 0 for this child chunk
      */
     override val inputResourceByteArray: ByteArray
 ) : ChunkParseOperator {
@@ -67,7 +67,7 @@ class ResStringPoolHeaderChunkChild(
         checkChunkAttributes()
     }
 
-    override fun chunkParseOperator(): ResStringPoolHeaderChunkChild = run {
+    override fun chunkParseOperator(): ResStringPoolHeaderChunkChild {
         var attributeStartOffset = startOffset
         header = ResChunkHeader(resArrayStartZeroOffset)
         // string count
@@ -110,7 +110,7 @@ class ResStringPoolHeaderChunkChild(
             STYLE_START_BYTE
         )
         stylesStart = Utils.byte2Int(styleStartByteArray)
-        this
+        return this
     }
 
     override fun toString(): String =

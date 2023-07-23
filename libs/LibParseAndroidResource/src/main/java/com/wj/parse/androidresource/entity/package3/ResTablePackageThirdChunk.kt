@@ -1,5 +1,6 @@
 package com.wj.parse.androidresource.entity.package3
 
+import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
@@ -50,11 +51,14 @@ class ResTablePackageThirdChunk(
     override val startOffset: Int
 ) : ChunkParseOperator {
 
+    lateinit var header: ResChunkHeader
+
     override val chunkEndOffset: Int
         get() = TODO("Not yet implemented")
 
     override fun chunkParseOperator(): ChunkParseOperator {
-        TODO("Not yet implemented")
+        header
+        return this
     }
 
     override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK

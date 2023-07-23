@@ -77,7 +77,7 @@ class ResChunkHeader(
     override val inputResourceByteArray: ByteArray
         get() = resArrayStartZeroOffset
 
-    override fun chunkParseOperator(): ResChunkHeader = run {
+    override fun chunkParseOperator(): ResChunkHeader {
         // read type
         var attributeStartOffset = startOffset
         val typeByteArray =
@@ -95,7 +95,7 @@ class ResChunkHeader(
         val sizeByteArray =
             Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, SIZE_BYTE)
         size = Utils.byte2Int(sizeByteArray)
-        this
+        return this
     }
 
     /**

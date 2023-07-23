@@ -59,7 +59,7 @@ class ResourceTableHeaderFirstChunk(
         checkChunkAttributes()
     }
 
-    override fun chunkParseOperator(): ResourceTableHeaderFirstChunk = run {
+    override fun chunkParseOperator(): ResourceTableHeaderFirstChunk {
         header = ResChunkHeader(resArrayStartZeroOffset)
         val packageCountByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
@@ -67,7 +67,7 @@ class ResourceTableHeaderFirstChunk(
             TABLE_HEADER_BYTE
         )
         packageCount = Utils.byte2Int(packageCountByteArray)
-        this
+        return this
     }
 
     override fun toString(): String =

@@ -34,7 +34,7 @@ class ResStringPoolSecondChunk(
         checkChunkAttributes()
     }
 
-    override fun chunkParseOperator(): ChunkParseOperator = run {
+    override fun chunkParseOperator(): ChunkParseOperator {
         // header
         resStringPoolHeader =
             ResStringPoolHeaderChunkChild(resArrayStartZeroOffset)
@@ -46,7 +46,7 @@ class ResStringPoolSecondChunk(
             stringCount = resStringPoolHeader.stringCount,
             styleCount = resStringPoolHeader.styleCount
         )
-        this
+        return this
     }
 
     /**

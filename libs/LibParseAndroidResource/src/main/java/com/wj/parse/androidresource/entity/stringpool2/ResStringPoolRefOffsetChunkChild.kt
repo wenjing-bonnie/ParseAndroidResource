@@ -24,7 +24,7 @@ import java.lang.IllegalStateException
  */
 class ResStringPoolRefOffsetChunkChild(
     /**
-     * the string pool chunk byte array which index has started from 0
+     * the string pool chunk byte array which index has started from 0 for this child chunk
      */
     override val inputResourceByteArray: ByteArray,
     /**
@@ -49,7 +49,7 @@ class ResStringPoolRefOffsetChunkChild(
         checkChunkAttributes()
     }
 
-    override fun chunkParseOperator(): ChunkParseOperator = run {
+    override fun chunkParseOperator(): ChunkParseOperator {
         // read string offset
         var childOffset = 0
         for (index in 0 until stringCount) {
@@ -85,7 +85,7 @@ class ResStringPoolRefOffsetChunkChild(
                 throw IllegalStateException("Read style offset is null")
             }
         }
-        this
+        return this
     }
 
     override fun toString(): String =
