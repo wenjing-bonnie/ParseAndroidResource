@@ -34,9 +34,12 @@ interface ChunkParseOperator {
      * [resArrayStartZeroOffset] should be the byte array which index start from 0
      */
     val resArrayStartZeroOffset: ByteArray
-        get() = Utils.copyByte(inputResourceByteArray, startOffset) ?: kotlin.run {
-            Logger.error("${this.javaClass.simpleName}has a bad state, the array is null")
-            throw IllegalStateException("${this.javaClass.simpleName} has a bad state, the array is null")
+        get() = kotlin.run {
+           // Logger.debug("${this.javaClass.simpleName} startOffset is $startOffset")
+            Utils.copyByte(inputResourceByteArray, startOffset) ?: kotlin.run {
+                Logger.error("${this.javaClass.simpleName}has a bad state, the array is null")
+                throw IllegalStateException("${this.javaClass.simpleName} has a bad state, the array is null")
+            }
         }
 
 

@@ -3,6 +3,7 @@ package com.wj.parse.androidresource.entity.stringpool2
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
+import com.wj.parse.androidresource.utils.Logger
 
 /**
  * This is the second chunk of resource.arsc file.
@@ -22,10 +23,35 @@ class ResStringPoolSecondChunk(
     lateinit var resStringPoolRefOffset: ResStringPoolContentChunkChild
 
     /**
-     * all childs of this chunk
+     * The end offset byte of this chunk
      */
     override val chunkEndOffset: Int
-        get() = startOffset + resStringPoolHeader.chunkEndOffset + resStringPoolRefOffset.chunkEndOffset
+        get() = run {
+            resStringPoolHeader.header.size
+        }.takeIf {
+            ::resStringPoolHeader.isInitialized
+        }?.let { size ->
+            size
+        }
+            ?: (startOffset + resStringPoolHeader.chunkEndOffset + resStringPoolRefOffset.chunkEndOffset)
+
+//            run {
+//            // maybe 2 byte 有其他作用
+//            val end =
+//                startOffset + resStringPoolHeader.chunkEndOffset + resStringPoolRefOffset.chunkEndOffset
+//            Logger.debug("startOffset+header is ${startOffset + resStringPoolHeader.chunkEndOffset}")
+//            Logger.debug("resStringPoolRefOffset is ${ resStringPoolRefOffset.chunkEndOffset}")
+//            Logger.debug("childOffset is ${ resStringPoolRefOffset.childOffset}")
+//
+//            Logger.debug("resStringPoolHeader.header.size-resStringPoolHeader.header.headerSize is ${resStringPoolHeader.header.size - resStringPoolHeader.header.headerSize}, resStringPoolRefOffset.chunkEndOffset is ${resStringPoolRefOffset.chunkEndOffset} ")
+//            run {
+//                Logger.debug("compute end size is $end, and the size in the header is ${resStringPoolHeader.header.size}")
+//                resStringPoolHeader.header.size
+//            }.takeIf {
+//                ::resStringPoolHeader.isInitialized
+//            }
+//                end
+//        }
 
     override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK
 

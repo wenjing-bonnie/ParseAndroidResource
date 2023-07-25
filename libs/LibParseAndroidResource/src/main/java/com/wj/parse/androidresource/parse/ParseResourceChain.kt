@@ -21,21 +21,21 @@ class ParseResourceChain() {
         result?.let { resourceByteArray ->
 
             /** read [ResourceTableHeaderFirstChunk]*/
-            Logger.debug("\n ...... begin to read first chunk: Table Header ......")
             var parentOffset = 0
+            Logger.debug("\n ...... begin to read first chunk: Table Header ...... parentOffset is $parentOffset")
             val tableHeaderChunk = ResourceTableHeaderFirstChunk(resourceByteArray).apply {
                 Logger.debug(toString())
             }
             /** read [ResStringPoolSecondChunk] */
-            Logger.debug("\n ...... begin to read second chunk: String Pool ......")
             parentOffset += tableHeaderChunk.chunkEndOffset
+            Logger.debug("\n ...... begin to read second chunk: String Pool ...... parentOffset is $parentOffset")
             val stringPoolChunk =
                 ResStringPoolSecondChunk(resourceByteArray, parentOffset).apply {
                     Logger.debug(toString())
                 }
             /** read [ResTablePackageThirdChunk] */
-            Logger.debug("\n ...... begin to read third chunk: table package ......")
             parentOffset += stringPoolChunk.chunkEndOffset
+            Logger.debug("\n ...... begin to read third chunk: table package ...... parentOffset is $parentOffset")
             val tablePackageChunk = ResTablePackageThirdChunk(resourceByteArray,parentOffset,)
 
 

@@ -44,8 +44,12 @@ class ResStringPoolContentChunkChild(
     var styleOffsetList = mutableListOf<Int>()
     var stringList = mutableListOf<String>()
 
+    // read string offset
+    var childOffset = 0
+
     override val chunkEndOffset: Int
-        get() = stringCount * OFFSET_BYTE + styleCount * OFFSET_BYTE
+        get() = childOffset
+
 
     override fun chunkProperty(): ChunkProperty =
         ChunkProperty.CHUNK_OTHER_CHILD
@@ -56,8 +60,7 @@ class ResStringPoolContentChunkChild(
     }
 
     override fun chunkParseOperator(): ChunkParseOperator {
-        // read string offset
-        var childOffset = 0
+
         for (index in 0 until stringCount) {
             val sourceBytes: ByteArray? =
                 Utils.copyByte(
@@ -76,6 +79,7 @@ class ResStringPoolContentChunkChild(
         // read style offset
         //  TODO need to test it
         childOffset += stringCount * OFFSET_BYTE
+       // Logger.debug("1 childOffset = $childOffset")
         for (index in 0 until styleCount) {
             val sourceBytes: ByteArray? =
                 Utils.copyByte(
@@ -95,6 +99,7 @@ class ResStringPoolContentChunkChild(
         // 每个字符串的头两个字节的最后一个字节是字符串的长度
         //
         childOffset += styleCount * OFFSET_BYTE
+       // Logger.error(" \n ===== style childOffset = $childOffset")
         for (index in 0 until stringCount) {
             val stringByteArray = Utils.copyByte(resArrayStartZeroOffset, childOffset, TWO_BYTE)
             stringByteArray?.let {
@@ -118,6 +123,7 @@ class ResStringPoolContentChunkChild(
                 }
                 // TODO why is 3
                 childOffset += (stringLength + 3)
+               // Logger.error(" \n =====$index  childOffset = ${childOffset} , stringList: ${stringList[index]}")
             } ?: run {
                 throw IllegalStateException("The string byte array is null")
             }

@@ -15,6 +15,6 @@ import java.util.zip.ZipFile
  */
 fun main(args: Array<String>) {
     val resourcePath =
-        "/Users/liuwenjing/Documents/code/ParseAndroidResource/libs/LibParseAndroidResource/src/main/resources/resources.arsc"
+         "/Users/liuwenjing/Documents/code/ParseAndroidResource/libs/LibParseAndroidResource/src/main/resources/resources.arsc"
     ParseResourceChain().startParseResource(resourcePath)
 }
