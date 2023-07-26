@@ -3,6 +3,7 @@ package com.wj.parse.androidresource.entity
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.interfaces.ChunkType
+import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 
@@ -60,6 +61,12 @@ class ResChunkHeader(
      */
     override val chunkEndOffset: Int
         get() = TYPE_BYTE + HEADER_SIZE_BYTE + SIZE_BYTE
+
+    override val header: ResChunkHeader?
+        get() = kotlin.run {
+            Logger.debug("Not need header because this chunk is header chunk.")
+            null
+        }
 
     init {
         chunkParseOperator()

@@ -1,5 +1,6 @@
 package com.wj.parse.androidresource.interfaces
 
+import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
@@ -10,6 +11,10 @@ import java.lang.IllegalStateException
  * Parse every chunk
  */
 interface ChunkParseOperator {
+    /**
+     * every chunk has a header
+     */
+    val header: ResChunkHeader?
     /**
      * start offset of this chunk
      */
@@ -59,7 +64,7 @@ interface ChunkParseOperator {
                 if (startOffset != 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName} is a child of chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed index to start from 0")
                 }
-                Logger.debug("** Great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow .... ")
+                Logger.debug("** Check ${this.javaClass.simpleName} attributes is great! ** it has set the collect values, start the parse flow .... ")
                 true
             }
 
@@ -71,7 +76,7 @@ interface ChunkParseOperator {
                 if (this !is ResourceTableHeaderFirstChunk && startOffset == 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName} is a chunk, the startOffset should be not 0")
                 }
-                Logger.debug("** Great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")
+                Logger.debug("** Check attributes is great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")
                 true
             }
         }

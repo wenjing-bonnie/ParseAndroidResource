@@ -1,5 +1,6 @@
 package com.wj.parse.androidresource.entity.stringpool2
 
+import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
@@ -35,23 +36,11 @@ class ResStringPoolSecondChunk(
         }
             ?: (startOffset + resStringPoolHeader.chunkEndOffset + resStringPoolRefOffset.chunkEndOffset)
 
-//            run {
-//            // maybe 2 byte 有其他作用
-//            val end =
-//                startOffset + resStringPoolHeader.chunkEndOffset + resStringPoolRefOffset.chunkEndOffset
-//            Logger.debug("startOffset+header is ${startOffset + resStringPoolHeader.chunkEndOffset}")
-//            Logger.debug("resStringPoolRefOffset is ${ resStringPoolRefOffset.chunkEndOffset}")
-//            Logger.debug("childOffset is ${ resStringPoolRefOffset.childOffset}")
-//
-//            Logger.debug("resStringPoolHeader.header.size-resStringPoolHeader.header.headerSize is ${resStringPoolHeader.header.size - resStringPoolHeader.header.headerSize}, resStringPoolRefOffset.chunkEndOffset is ${resStringPoolRefOffset.chunkEndOffset} ")
-//            run {
-//                Logger.debug("compute end size is $end, and the size in the header is ${resStringPoolHeader.header.size}")
-//                resStringPoolHeader.header.size
-//            }.takeIf {
-//                ::resStringPoolHeader.isInitialized
-//            }
-//                end
-//        }
+    override val header: ResChunkHeader?
+        get() = kotlin.run {
+            Logger.debug("Not need header because this chunk has two childs")
+            null
+        }
 
     override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK
 

@@ -3,7 +3,6 @@ package com.wj.parse.androidresource.entity.table1
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
-import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 /**
@@ -28,25 +27,21 @@ class ResourceTableHeaderFirstChunk(
 ) : ChunkParseOperator {
 
     /**
-     * the first [ResChunkHeader#getChunkByteSize()] Byte is header
-     */
-    lateinit var header: ResChunkHeader
-
-    /**
      * the next 4 Byte is package count
      */
     var packageCount: Int = 0
+
+    /**
+     * the first [ResChunkHeader#getChunkByteSize()] Byte is header
+     */
+    override val header: ResChunkHeader
+        get() = ResChunkHeader(resArrayStartZeroOffset)
 
     override fun chunkProperty(): ChunkProperty =
         ChunkProperty.CHUNK
 
     override val chunkEndOffset: Int
-        get() = if (::header.isInitialized) {
-            header.chunkEndOffset + TABLE_HEADER_BYTE
-        } else {
-            Logger.error("The header hasn't been initialized, please check.")
-            throw IllegalCallerException("The header hasn't been initialized, please check.")
-        }
+        get() = header.chunkEndOffset + TABLE_HEADER_BYTE
 
     /**
      * The startOffset of this chunk is 0
@@ -60,7 +55,6 @@ class ResourceTableHeaderFirstChunk(
     }
 
     override fun chunkParseOperator(): ResourceTableHeaderFirstChunk {
-        header = ResChunkHeader(resArrayStartZeroOffset)
         val packageCountByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
             header.chunkEndOffset,

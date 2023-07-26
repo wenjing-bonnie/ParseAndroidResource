@@ -3,7 +3,6 @@ package com.wj.parse.androidresource.entity.stringpool2
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
-import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 
@@ -41,7 +40,6 @@ class ResStringPoolHeaderChunkChild(
      */
     override val inputResourceByteArray: ByteArray
 ) : ChunkParseOperator {
-    lateinit var header: ResChunkHeader
     var stringCount: Int = 0
     var styleCount: Int = 0
     var flags: Int = 0
@@ -50,17 +48,12 @@ class ResStringPoolHeaderChunkChild(
 
     /**
      * this is child of [ResStringPoolSecondChunk], so it returns the size of this child chunk
+     * header.chunkEndOffset + STRING_COUNT_BYTE + STYLE_COUNT_BYTE + FLAGS_BYTE + STRING_START_BYTE + STYLE_START_BYTE
      */
     override val chunkEndOffset: Int
-        get() = run {
-            header.headerSize.toInt()
-        }.takeIf {
-            ::header.isInitialized
-        }?.let { headerSize ->
-            headerSize
-        }
-            ?: (header.chunkEndOffset + STRING_COUNT_BYTE + STYLE_COUNT_BYTE + FLAGS_BYTE + STRING_START_BYTE + STYLE_START_BYTE)
-
+        get() = header.headerSize.toInt()
+    override val header: ResChunkHeader
+        get() = ResChunkHeader(resArrayStartZeroOffset)
 
     /**
      * this is part of [ResStringPoolSecondChunk], so it returns 0
@@ -78,7 +71,6 @@ class ResStringPoolHeaderChunkChild(
 
     override fun chunkParseOperator(): ResStringPoolHeaderChunkChild {
         var attributeStartOffset = startOffset
-        header = ResChunkHeader(resArrayStartZeroOffset)
         // string count
         attributeStartOffset += header.chunkEndOffset
         val stringByteArray = Utils.copyByte(

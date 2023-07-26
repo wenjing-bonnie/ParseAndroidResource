@@ -1,5 +1,6 @@
 package com.wj.parse.androidresource.entity.stringpool2
 
+import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunkChild.Companion.OFFSET_BYTE
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunkChild.Companion.TWO_BYTE
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
@@ -49,6 +50,11 @@ class ResStringPoolContentChunkChild(
 
     override val chunkEndOffset: Int
         get() = childOffset
+    override val header: ResChunkHeader?
+        get() = kotlin.run {
+            Logger.debug("Not need header because this chunk is a child chunk.")
+            null
+        }
 
 
     override fun chunkProperty(): ChunkProperty =
