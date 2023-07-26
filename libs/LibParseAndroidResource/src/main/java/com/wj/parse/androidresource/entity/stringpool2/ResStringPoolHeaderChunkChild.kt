@@ -70,47 +70,46 @@ class ResStringPoolHeaderChunkChild(
     }
 
     override fun chunkParseOperator(): ResStringPoolHeaderChunkChild {
-        var attributeStartOffset = startOffset
         // string count
-        attributeStartOffset += header.chunkEndOffset
-        val stringByteArray = Utils.copyByte(
+        var attributeStartOffset = startOffset + header.chunkEndOffset
+        var attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
             attributeStartOffset,
             STRING_COUNT_BYTE
         )
-        stringCount = Utils.byte2Int(stringByteArray)
+        stringCount = Utils.byte2Int(attributeByteArray)
         // style count
         attributeStartOffset += STYLE_COUNT_BYTE
-        val styleCountByteArray = Utils.copyByte(
+        attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
             attributeStartOffset,
             STYLE_COUNT_BYTE
         )
-        styleCount = Utils.byte2Int(styleCountByteArray)
+        styleCount = Utils.byte2Int(attributeByteArray)
         // flags count
         attributeStartOffset += FLAGS_BYTE
-        val flagByteArray = Utils.copyByte(
+        attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
             attributeStartOffset,
             FLAGS_BYTE
         )
-        flags = Utils.byte2Int(flagByteArray)
+        flags = Utils.byte2Int(attributeByteArray)
         // string start
         attributeStartOffset += STRING_START_BYTE
-        val stringStartByteArray = Utils.copyByte(
+        attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
             attributeStartOffset,
             STRING_START_BYTE
         )
-        stringStart = Utils.byte2Int(stringStartByteArray)
+        stringStart = Utils.byte2Int(attributeByteArray)
         // style start
         attributeStartOffset += STYLE_START_BYTE
-        val styleStartByteArray = Utils.copyByte(
+        attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
             attributeStartOffset,
             STYLE_START_BYTE
         )
-        stylesStart = Utils.byte2Int(styleStartByteArray)
+        stylesStart = Utils.byte2Int(attributeByteArray)
         return this
     }
 

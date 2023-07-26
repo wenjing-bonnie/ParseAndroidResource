@@ -36,7 +36,10 @@ class ParseResourceChain() {
             /** read [ResTablePackageThirdChunk] */
             parentOffset += stringPoolChunk.chunkEndOffset
             Logger.debug("\n ...... begin to read third chunk: table package ...... parentOffset is $parentOffset")
-            val tablePackageChunk = ResTablePackageThirdChunk(resourceByteArray, parentOffset)
+            val tablePackageChunk =
+                ResTablePackageThirdChunk(resourceByteArray, parentOffset).apply {
+                    Logger.debug(toString())
+                }
 
 
         } ?: run {

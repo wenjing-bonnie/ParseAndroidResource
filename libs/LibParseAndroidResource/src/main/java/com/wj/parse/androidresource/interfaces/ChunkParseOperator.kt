@@ -36,11 +36,12 @@ interface ChunkParseOperator {
     val inputResourceByteArray: ByteArray
 
     /**
-     * [resArrayStartZeroOffset] should be the byte array which index start from 0
+     * [resArrayStartZeroOffset] should be the byte array which index start from 0 without the previous chunk byte data.
+     * Therefore we can read first attribute data of this chunk which start from [ResChunkHeader.chunkEndOffset]
      */
     val resArrayStartZeroOffset: ByteArray
         get() = kotlin.run {
-           // Logger.debug("${this.javaClass.simpleName} startOffset is $startOffset")
+            // Logger.debug("${this.javaClass.simpleName} startOffset is $startOffset")
             Utils.copyByte(inputResourceByteArray, startOffset) ?: kotlin.run {
                 Logger.error("${this.javaClass.simpleName}has a bad state, the array is null")
                 throw IllegalStateException("${this.javaClass.simpleName} has a bad state, the array is null")

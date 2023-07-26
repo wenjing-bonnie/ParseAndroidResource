@@ -87,21 +87,21 @@ class ResChunkHeader(
     override fun chunkParseOperator(): ResChunkHeader {
         // read type
         var attributeStartOffset = startOffset
-        val typeByteArray =
+        var attributeByteArray =
             Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, TYPE_BYTE)
-        type = Utils.byte2Short(typeByteArray)
+        type = Utils.byte2Short(attributeByteArray)
 
         // read header size
         attributeStartOffset += TYPE_BYTE
-        val headerSizeByteArray =
+        attributeByteArray =
             Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, HEADER_SIZE_BYTE)
-        headerSize = Utils.byte2Short(headerSizeByteArray)
+        headerSize = Utils.byte2Short(attributeByteArray)
 
         // read size
         attributeStartOffset += HEADER_SIZE_BYTE
-        val sizeByteArray =
+        attributeByteArray =
             Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, SIZE_BYTE)
-        size = Utils.byte2Int(sizeByteArray)
+        size = Utils.byte2Int(attributeByteArray)
         return this
     }
 

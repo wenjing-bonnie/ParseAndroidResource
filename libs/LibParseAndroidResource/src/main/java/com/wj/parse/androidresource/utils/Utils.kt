@@ -69,4 +69,14 @@ object Utils {
     } ?: run {
         null
     }
+
+    fun byte2StringFilterStringNull(srcArray: ByteArray?): String? =
+        srcArray?.let { bytes ->
+            String(
+                bytes.filter {
+                    it.toInt() != 0
+                }.toByteArray()
+            )
+        } ?: null
+
 }
