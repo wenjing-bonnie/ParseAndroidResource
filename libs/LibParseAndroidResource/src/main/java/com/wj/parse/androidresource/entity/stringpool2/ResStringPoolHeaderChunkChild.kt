@@ -62,7 +62,7 @@ class ResStringPoolHeaderChunkChild(
         get() = 0
 
     override fun chunkProperty(): ChunkProperty =
-        ChunkProperty.CHUNK_FIRST_CHILD
+        ChunkProperty.CHUNK_HEADER
 
     init {
         chunkParseOperator()

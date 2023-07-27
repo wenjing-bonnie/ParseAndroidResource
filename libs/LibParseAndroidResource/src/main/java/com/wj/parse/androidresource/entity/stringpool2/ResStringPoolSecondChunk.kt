@@ -9,7 +9,7 @@ import com.wj.parse.androidresource.utils.Logger
 /**
  * This is the second chunk of resource.arsc file.
  */
-class ResStringPoolSecondChunk(
+open class ResStringPoolSecondChunk(
     /**
      * whole resource byte array
      */
@@ -43,11 +43,6 @@ class ResStringPoolSecondChunk(
         }
 
     override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK
-
-    init {
-        chunkParseOperator()
-        checkChunkAttributes()
-    }
 
     override fun chunkParseOperator(): ChunkParseOperator {
         // header

@@ -49,11 +49,6 @@ class ResourceTableHeaderFirstChunk(
     override val startOffset: Int
         get() = 0
 
-    init {
-        chunkParseOperator()
-        checkChunkAttributes()
-    }
-
     override fun chunkParseOperator(): ResourceTableHeaderFirstChunk {
         val packageCountByteArray = Utils.copyByte(
             resArrayStartZeroOffset,

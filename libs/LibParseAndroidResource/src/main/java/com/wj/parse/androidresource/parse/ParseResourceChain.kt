@@ -1,7 +1,9 @@
 package com.wj.parse.androidresource.parse
 
-import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
+import com.wj.parse.androidresource.entity.package3.ResTablePackageHeaderThirdChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
+import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolFourChunk
+import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolFiveChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.utils.Logger
 import java.io.ByteArrayOutputStream
@@ -26,20 +28,45 @@ class ParseResourceChain() {
             val tableHeaderChunk = ResourceTableHeaderFirstChunk(resourceByteArray).apply {
                 Logger.debug(toString())
             }
+            tableHeaderChunk.startParseChunk().also {
+                Logger.debug(it.toString())
+            }
+
             /** read [ResStringPoolSecondChunk] */
             parentOffset += tableHeaderChunk.chunkEndOffset
             Logger.debug("\n ...... begin to read second chunk: String Pool ...... parentOffset is $parentOffset")
             val stringPoolChunk =
-                ResStringPoolSecondChunk(resourceByteArray, parentOffset).apply {
-                    Logger.debug(toString())
-                }
-            /** read [ResTablePackageThirdChunk] */
+                ResStringPoolSecondChunk(resourceByteArray, parentOffset)
+            stringPoolChunk.startParseChunk().also {
+                Logger.debug(it.toString())
+            }
+
+            /** read [ResTablePackageHeaderThirdChunk] */
             parentOffset += stringPoolChunk.chunkEndOffset
             Logger.debug("\n ...... begin to read third chunk: table package ...... parentOffset is $parentOffset")
             val tablePackageChunk =
-                ResTablePackageThirdChunk(resourceByteArray, parentOffset).apply {
-                    Logger.debug(toString())
-                }
+                ResTablePackageHeaderThirdChunk(resourceByteArray, parentOffset)
+            tablePackageChunk.startParseChunk().also {
+                Logger.debug(it.toString())
+            }
+
+            /** read [ResTypeStringPoolFourChunk] */
+            val typeStringOffset = parentOffset + tablePackageChunk.typeStrings
+            Logger.debug("\n ...... begin to read four chunk: type string pool ...... parentOffset is $typeStringOffset")
+            val typeStringPoolChunk =
+                ResTypeStringPoolFourChunk(resourceByteArray, typeStringOffset)
+            typeStringPoolChunk.startParseChunk().also {
+                Logger.debug(it.toString())
+            }
+
+            /** read [ResTypeStringPoolFourChunk] */
+            val keyStringsOffset = parentOffset + tablePackageChunk.keyStrings
+            Logger.debug("\n ...... begin to read five chunk: key strings pool ...... parentOffset is $keyStringsOffset")
+            val keyStringsPoolChunk =
+                ResKeyStringsPoolFiveChunk(resourceByteArray, keyStringsOffset)
+            keyStringsPoolChunk.startParseChunk().also {
+                Logger.debug(it.toString())
+            }
 
 
         } ?: run {

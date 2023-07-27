@@ -5,7 +5,6 @@ import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
-import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 /**
@@ -42,7 +41,7 @@ import com.wj.parse.androidresource.utils.Utils
  *    uint32_t typeIdOffset;
  * };
  */
-class ResTablePackageThirdChunk(
+class ResTablePackageHeaderThirdChunk(
     /**
      * whole resource byte array
      */
@@ -60,13 +59,8 @@ class ResTablePackageThirdChunk(
     var keyStrings: Int = -1
     var lastPublicKey: Int = -1
 
-    init {
-        checkChunkAttributes()
-        chunkParseOperator()
-    }
-
     override val chunkEndOffset: Int
-        get() = header.size
+        get() = header.headerSize.toInt()
 
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
@@ -106,7 +100,6 @@ class ResTablePackageThirdChunk(
         attributeByteArray =
             Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, LAST_PUBLIC_KEY_BYTE)
         lastPublicKey = Utils.byte2Int(attributeByteArray)
-
         return this
     }
 

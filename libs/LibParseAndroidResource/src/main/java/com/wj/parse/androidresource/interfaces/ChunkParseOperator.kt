@@ -43,11 +43,24 @@ interface ChunkParseOperator {
         get() = kotlin.run {
             // Logger.debug("${this.javaClass.simpleName} startOffset is $startOffset")
             Utils.copyByte(inputResourceByteArray, startOffset) ?: kotlin.run {
-                Logger.error("${this.javaClass.simpleName}has a bad state, the array is null")
+                Logger.error("${this.javaClass.simpleName} has a bad state, the array is null, from $inputResourceByteArray starting from $startOffset")
                 throw IllegalStateException("${this.javaClass.simpleName} has a bad state, the array is null")
             }
         }
 
+    fun startParseChunk(): ChunkParseOperator =
+        when (chunkProperty()) {
+            ChunkProperty.CHUNK -> {
+                checkChunkAttributes()
+                chunkParseOperator()
+                this
+            }
+
+            else -> {
+                Logger.debug("${this.javaClass.simpleName} is not CHUNK, start parse chunk automatically ")
+                this
+            }
+        }
 
     /**
      * parse chunk resource data
@@ -61,7 +74,7 @@ interface ChunkParseOperator {
      */
     fun checkChunkAttributes() =
         when (chunkProperty()) {
-            ChunkProperty.CHUNK_FIRST_CHILD -> {
+            ChunkProperty.CHUNK_HEADER -> {
                 if (startOffset != 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName} is a child of chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed index to start from 0")
                 }
