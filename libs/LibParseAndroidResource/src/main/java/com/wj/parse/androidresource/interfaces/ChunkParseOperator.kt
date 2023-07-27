@@ -57,7 +57,7 @@ interface ChunkParseOperator {
             }
 
             else -> {
-                Logger.debug("${this.javaClass.simpleName} is not CHUNK, start parse chunk automatically ")
+                Logger.debug("${this.javaClass.simpleName} is a part of chunk, start parse chunk automatically ")
                 this
             }
         }
