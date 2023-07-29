@@ -58,7 +58,7 @@ class ResStringPoolContentChunkChild(
 
 
     override fun chunkProperty(): ChunkProperty =
-        ChunkProperty.CHUNK_OTHER_CHILD
+        ChunkProperty.CHUNK_CHILD
 
     init {
         chunkParseOperator()
@@ -143,7 +143,7 @@ class ResStringPoolContentChunkChild(
     override fun toString(): String =
         "Resource Pool Ref offset: string offset is $stringOffsetList, \n   " +
                 "       style offset is $styleOffsetList, \n" +
-                "       string list is $stringList, \n"
+                "          string list is $stringList, \n"
 
     private fun byteOffset(sourceBytes: ByteArray?) = run {
         val buffer = StringBuffer()

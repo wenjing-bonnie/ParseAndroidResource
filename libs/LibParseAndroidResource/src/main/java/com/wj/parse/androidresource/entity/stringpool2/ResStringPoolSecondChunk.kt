@@ -27,14 +27,10 @@ open class ResStringPoolSecondChunk(
      * The end offset byte of this chunk
      */
     override val chunkEndOffset: Int
-        get() = run {
-            resStringPoolHeader.header.size
-        }.takeIf {
-            ::resStringPoolHeader.isInitialized
-        }?.let { size ->
-            size
+        get() = when {
+            ::resStringPoolHeader.isInitialized -> resStringPoolHeader.header.size
+            else -> (startOffset + resStringPoolHeader.chunkEndOffset + resStringPoolRefOffset.chunkEndOffset)
         }
-            ?: (startOffset + resStringPoolHeader.chunkEndOffset + resStringPoolRefOffset.chunkEndOffset)
 
     override val header: ResChunkHeader?
         get() = kotlin.run {

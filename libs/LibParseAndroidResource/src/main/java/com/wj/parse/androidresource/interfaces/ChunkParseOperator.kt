@@ -83,11 +83,12 @@ interface ChunkParseOperator {
             }
 
             else -> {
-
+                // the first chunk and the startOffset should be 0
                 if (this is ResourceTableHeaderFirstChunk && startOffset != 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
                 }
-                if (this !is ResourceTableHeaderFirstChunk && startOffset == 0) {
+                // not first chunk and the startOffset shouldn't be 9
+                if ((this !is ResourceTableHeaderFirstChunk) && startOffset == 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName} is a chunk, the startOffset should be not 0")
                 }
                 Logger.debug("** Check attributes is great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")

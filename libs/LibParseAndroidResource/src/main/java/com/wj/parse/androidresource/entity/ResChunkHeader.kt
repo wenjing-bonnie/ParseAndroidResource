@@ -111,7 +111,7 @@ class ResChunkHeader(
      * 1MB = 1024KB
      */
     override fun toString(): String =
-        "Chunk header is { type is ${ChunkType.valueOf(type.toInt())}, header size is $headerSize, size is ${size}bit (about ${(size / 1024.0)}B) }"
+        "Chunk header is { type is ${ChunkType.valueOf(type)}, header size is $headerSize, size is ${size}bit (about ${(size / 1024.0)}B) }"
 
     override fun chunkProperty(): ChunkProperty =
         ChunkProperty.COMMON_HEADER

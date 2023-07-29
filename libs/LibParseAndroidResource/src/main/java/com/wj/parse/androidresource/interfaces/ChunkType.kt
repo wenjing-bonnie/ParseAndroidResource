@@ -1,6 +1,6 @@
 package com.wj.parse.androidresource.interfaces
 
-enum class ChunkType(val value: Int) {
+enum class ChunkType(val value: Short) {
     RES_NULL_TYPE(0x0000),
     RES_STRING_POOL_TYPE(0x0001),
     RES_TABLE_TYPE(0x0002),
@@ -30,7 +30,7 @@ enum class ChunkType(val value: Int) {
     }
 
     companion object {
-        fun valueOf(value: Int): String? = when (value) {
+        fun valueOf(value: Short): String? = when (value) {
             RES_STRING_POOL_TYPE.value -> RES_STRING_POOL_TYPE.name
             RES_TABLE_TYPE.value -> RES_TABLE_TYPE.name
             RES_XML_TYPE.value -> RES_XML_TYPE.name

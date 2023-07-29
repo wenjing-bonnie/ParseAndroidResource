@@ -1,11 +1,7 @@
 package com.wj.parse.androidresource.entity.stringpool4
 
-import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
-import com.wj.parse.androidresource.interfaces.ChunkParseOperator
-import com.wj.parse.androidresource.interfaces.ChunkProperty
-import com.wj.parse.androidresource.utils.Logger
 
 /**
  * create by wenjing.liu at 2023/7/27

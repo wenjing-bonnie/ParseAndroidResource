@@ -5,6 +5,7 @@ import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolFourChunk
 import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolFiveChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
+import com.wj.parse.androidresource.entity.typespec6.ResTypeSpecAndTypeInfoSixChunk
 import com.wj.parse.androidresource.utils.Logger
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -68,6 +69,13 @@ class ParseResourceChain() {
                 Logger.debug(it.toString())
             }
 
+            /** read [ResTypeSpecAndTypeInfoSixChunk] */
+            parentOffset = keyStringsOffset + keyStringsPoolChunk.chunkEndOffset
+            Logger.debug("\n ...... begin to read six chunk: type spec and type info  ...... parentOffset is $parentOffset")
+            val typeChunk = ResTypeSpecAndTypeInfoSixChunk(resourceByteArray, parentOffset)
+            typeChunk.startParseChunk().also {
+                Logger.debug(it.toString())
+            }
 
         } ?: run {
             Logger.error("The resource data is null, there is something wrong.")
