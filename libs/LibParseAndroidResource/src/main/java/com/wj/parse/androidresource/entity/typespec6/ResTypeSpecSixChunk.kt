@@ -12,8 +12,37 @@ import kotlin.experimental.and
 
 /**
  * create by wenjing.liu at 2023/7/29
+ * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#1369
+ * A specification of the resources defined by a particular type.
+ * There should be one of these chunks for each resource type.
  *
- * ResTable_typeSpec
+ * This structure is followed by an array of integers providing the set of
+ * configuration change flags (ResTable_config::CONFIG_*) that have multiple
+ * resources for that configuration.  In addition, the high bit is set if that
+ * resource has been made public. 
+ *  struct ResTable_typeSpec
+ *   {
+ *     struct ResChunk_header header;
+ *       // The type identifier this chunk is holding.  Type IDs start
+ *       // at 1 (corresponding to the value of the type bits in a
+ *       // resource identifier).  0 is invalid.
+ *     uint8_t id;
+    
+ *     // Must be 0.
+ *     uint8_t res0;
+ *     // Must be 0.
+ *     uint16_t res1;    
+ *     // Number of uint32_t entry configuration masks that follow.
+ *     uint32_t entryCount;
+ *     enum : uint32_t {
+ *         // Additional flag indicating an entry is public.
+ *       SPEC_PUBLIC = 0x40000000u,
+ *        // Additional flag indicating the resource id for this resource may change in a future
+ *        // build. If this flag is set, the SPEC_PUBLIC flag is also set since the resource must be
+ *       // public to be exposed as an API to other applications.
+ *       SPEC_STAGED_API = 0x20000000u,
+ *     };
+ *    };
  */
 class ResTypeSpecSixChunk(
     override val inputResourceByteArray: ByteArray,
