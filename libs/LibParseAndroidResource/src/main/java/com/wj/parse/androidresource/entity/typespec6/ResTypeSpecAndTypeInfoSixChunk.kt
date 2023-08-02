@@ -86,6 +86,7 @@ class ResTypeSpecAndTypeInfoSixChunk(
 
     companion object {
         const val SPEC_PUBLIC = 0x40000000
+        const val SPEC_STAGED_API = 0x20000000u
         const val ID_BYTE = 1
         const val RES0_BYTE = 1
         const val RES1_BYTE = 2
