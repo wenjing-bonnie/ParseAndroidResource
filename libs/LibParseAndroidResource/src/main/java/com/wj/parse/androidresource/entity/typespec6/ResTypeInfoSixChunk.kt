@@ -9,37 +9,57 @@ import kotlin.experimental.and
 
 /**
  * create by wenjing.liu at 2023/7/29
- * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#1369
- * A specification of the resources defined by a particular type.
- * There should be one of these chunks for each resource type.
+ * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#1421
+ * A collection of resource entries for a particular resource data
+ * type.
  *
- * This structure is followed by an array of integers providing the set of
- * configuration change flags (ResTable_config::CONFIG_*) that have multiple
- * resources for that configuration.  In addition, the high bit is set if that
- * resource has been made public. 
- *  struct ResTable_typeSpec
- *   {
- *     struct ResChunk_header header;
- *       // The type identifier this chunk is holding.  Type IDs start
- *       // at 1 (corresponding to the value of the type bits in a
- *       // resource identifier).  0 is invalid.
- *     uint8_t id;
-    
- *     // Must be 0.
- *     uint8_t res0;
- *     // Must be 0.
- *     uint16_t res1;    
- *     // Number of uint32_t entry configuration masks that follow.
- *     uint32_t entryCount;
- *     enum : uint32_t {
- *         // Additional flag indicating an entry is public.
- *       SPEC_PUBLIC = 0x40000000u,
- *        // Additional flag indicating the resource id for this resource may change in a future
- *        // build. If this flag is set, the SPEC_PUBLIC flag is also set since the resource must be
- *       // public to be exposed as an API to other applications.
- *       SPEC_STAGED_API = 0x20000000u,
- *     };
+ * If the flag FLAG_SPARSE is not set in `flags`, then this struct is
+ * followed by an array of uint32_t defining the resource
+ * values, corresponding to the array of type strings in the
+ * ResTable_package::typeStrings string block. Each of these hold an
+ * index from entriesStart; a value of NO_ENTRY means that entry is
+ * not defined.
+ *
+ * If the flag FLAG_SPARSE is set in `flags`, then this struct is followed
+ * by an array of ResTable_sparseTypeEntry defining only the entries that
+ * have values for this type. Each entry is sorted by their entry ID such
+ * that a binary search can be performed over the entries. The ID and offset
+ * are encoded in a uint32_t. See ResTabe_sparseTypeEntry.
+ *
+ * There may be multiple of these chunks for a particular resource type,
+ * supply different configuration variations for the resource values of
+ * that type.
+ *
+ * It would be nice to have an additional ordered index of entries, so
+ * we can do a binary search if trying to find a resource by string name.
+ *  struct ResTable_type
+ *  {
+ *   struct ResChunk_header header;
+ *   enum {
+ *       NO_ENTRY = 0xFFFFFFFF
+ *   };    
+ *   // The type identifier this chunk is holding.  Type IDs start
+ *   // at 1 (corresponding to the value of the type bits in a
+ *    // resource identifier).  0 is invalid.
+ *   uint8_t id;   
+ *    enum {
+ *      // If set, the entry is sparse, and encodes both the entry ID and offset into each entry,
+ *      // and a binary search is used to find the key. Only available on platforms >= O.
+ *      // Mark any types that use this with a v26 qualifier to prevent runtime issues on older
+ *      // platforms.
+ *      FLAG_SPARSE = 0x01,
  *    };
+ *    uint8_t flags;
+ *    // Must be 0.
+ *    uint16_t reserved;
+    
+ *    // Number of uint32_t entry indices that follow.
+ *    uint32_t entryCount;
+ *   // Offset from header where ResTable_entry data starts.
+ *    uint32_t entriesStart;
+ *    // Configuration this collection of entries is designed for. This must always be last.
+ *    ResTable_config config;
+ *   };
  */
 class ResTypeInfoSixChunk(
     override val inputResourceByteArray: ByteArray,
