@@ -1,6 +1,10 @@
 package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
+import com.wj.parse.androidresource.entity.package3.ResTablePackageHeaderThirdChunk
+import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
+import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolFiveChunk
+import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.interfaces.ChunkType
@@ -11,7 +15,13 @@ import com.wj.parse.androidresource.utils.Utils
  * create by wenjing.liu at 2023/7/29
  */
 class ResTypeSpecAndTypeInfoSixChunk(
+    /**
+     * whole resource byte array
+     */
     override val inputResourceByteArray: ByteArray,
+    /**
+     * The [startOffset] of this chunk is [ResourceTableHeaderFirstChunk.chunkEndOffset] + [ResStringPoolSecondChunk.chunkEndOffset] + [ResTablePackageHeaderThirdChunk.keyStrings] + [ResKeyStringsPoolFiveChunk.chunkEndOffset]
+     */
     override val startOffset: Int
 ) : ChunkParseOperator {
     lateinit var typeChunk: ChunkParseOperator
@@ -64,7 +74,11 @@ class ResTypeSpecAndTypeInfoSixChunk(
             endOffset += typeChunk.chunkEndOffset
             childByteArray =
                 Utils.copyByte(inputResourceByteArray, endOffset) ?: run {
-                    Logger.debug("has read all byte array")
+                    Logger.debug(
+                        "\n ^^^^^^^^ \n" +
+                                " !Oh, thanks goodness, we has finished to parse all resource type symbol table and resource key symbol table in the ${this.javaClass.simpleName}" +
+                                "\n ^^^^^^^^ \n"
+                    )
                     null
                 }
         }

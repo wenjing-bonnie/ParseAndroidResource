@@ -54,6 +54,7 @@ class ResTablePackageHeaderThirdChunk(
 
     var id: Int = -1
     var name: String = ""
+    // TODO 可以理解为在偏移该值就是resource type symbol table
     var typeStrings: Int = -1
     var lastPublicType: Int = -1
     var keyStrings: Int = -1

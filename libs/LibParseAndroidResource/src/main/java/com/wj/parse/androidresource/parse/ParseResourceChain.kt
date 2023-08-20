@@ -60,7 +60,7 @@ class ParseResourceChain() {
                 Logger.debug(it.toString())
             }
 
-            /** read [ResTypeStringPoolFourChunk] */
+            /** read [ResKeyStringsPoolFiveChunk] */
             val keyStringsOffset = parentOffset + tablePackageChunk.keyStrings
             Logger.debug("\n ...... begin to read five chunk: key strings pool ...... parentOffset is $keyStringsOffset")
             val keyStringsPoolChunk =

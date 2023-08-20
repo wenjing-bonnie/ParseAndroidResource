@@ -3,7 +3,7 @@ package com.wj.parse.androidresource.entity.typespec6
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
-import com.wj.parse.androidresource.interfaces.ChunkType
+import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import kotlin.experimental.and
 
@@ -37,11 +37,11 @@ import kotlin.experimental.and
  *   struct ResChunk_header header;
  *   enum {
  *       NO_ENTRY = 0xFFFFFFFF
- *   };    
+ *   };
  *   // The type identifier this chunk is holding.  Type IDs start
  *   // at 1 (corresponding to the value of the type bits in a
  *    // resource identifier).  0 is invalid.
- *   uint8_t id;   
+ *   uint8_t id;
  *    enum {
  *      // If set, the entry is sparse, and encodes both the entry ID and offset into each entry,
  *      // and a binary search is used to find the key. Only available on platforms >= O.
@@ -52,7 +52,7 @@ import kotlin.experimental.and
  *    uint8_t flags;
  *    // Must be 0.
  *    uint16_t reserved;
-    
+
  *    // Number of uint32_t entry indices that follow.
  *    uint32_t entryCount;
  *   // Offset from header where ResTable_entry data starts.
@@ -71,6 +71,9 @@ class ResTypeInfoSixChunk(
     var res1: Short = -1
     var entryCount: Int = -1
     var entriesStart: Int = -1
+
+    // TODO rename
+    var resConfig: String = ""
 
 
     override val header: ResChunkHeader
@@ -121,6 +124,11 @@ class ResTypeInfoSixChunk(
             ResTypeSpecAndTypeInfoSixChunk.ENTRIES_START_BYTE
         )
         entriesStart = Utils.byte2Int(attributeByteArray)
+        // ResTable_config
+        attributeOffset += ResTypeSpecAndTypeInfoSixChunk.ENTRIES_START_BYTE
+        val resTableConfig =
+            ResTypeInfoTableConfigChunkChild(resArrayStartZeroOffset, attributeOffset)
+        resConfig = resTableConfig.toString()
         return this
     }
 
@@ -130,6 +138,7 @@ class ResTypeInfoSixChunk(
     override fun toString(): String =
         "Part6: ->Type info header is ${header}\n" +
                 "          id is $id, res0 is $res0, res1 is $res1,  entryCount is $entryCount, entriesStart is $entriesStart \n" +
+                "          $resConfig" +
                 "\nPart6: -> End..."
 
 

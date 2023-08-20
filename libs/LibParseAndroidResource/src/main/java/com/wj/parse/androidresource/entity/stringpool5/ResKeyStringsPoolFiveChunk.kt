@@ -1,5 +1,6 @@
 package com.wj.parse.androidresource.entity.stringpool5
 
+import com.wj.parse.androidresource.entity.package3.ResTablePackageHeaderThirdChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 
@@ -12,7 +13,8 @@ class ResKeyStringsPoolFiveChunk(
      */
     override val inputResourceByteArray: ByteArray,
     /**
-     * The [startOffset] of this chunk is [ResourceTableHeaderFirstChunk.chunkEndOffset]
+     * The [startOffset] of this chunk is [ResourceTableHeaderFirstChunk.chunkEndOffset] + [ResStringPoolSecondChunk.chunkEndOffset]  + [ResTablePackageHeaderThirdChunk.keyStrings]
+     *                                    +[]
      */
     override val startOffset: Int
 ) : ResStringPoolSecondChunk(inputResourceByteArray, startOffset) {

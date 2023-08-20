@@ -44,6 +44,9 @@ class ResStringPoolContentChunkChild(
     var stringOffsetList = mutableListOf<Int>()
     var styleOffsetList = mutableListOf<Int>()
     var stringList = mutableListOf<String>()
+    // TODO styleList?????
+    var styleList = mutableListOf<String>()
+
 
     // read string offset
     var childOffset = 0
@@ -139,6 +142,7 @@ class ResStringPoolContentChunkChild(
 
     /**
      * TODO toString() need to be optimized
+     *
      */
     override fun toString(): String =
         "Resource Pool Ref offset: string offset is $stringOffsetList, \n   " +
