@@ -22,7 +22,11 @@ class ResTypeSpecAndTypeInfoSixChunk(
     /**
      * The [startOffset] of this chunk is [ResourceTableHeaderFirstChunk.chunkEndOffset] + [ResStringPoolSecondChunk.chunkEndOffset] + [ResTablePackageHeaderThirdChunk.keyStrings] + [ResKeyStringsPoolFiveChunk.chunkEndOffset]
      */
-    override val startOffset: Int
+    override val startOffset: Int,
+    /**
+     * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
+     */
+    val typeStringList: MutableList<String> = mutableListOf()
 ) : ChunkParseOperator {
     lateinit var typeChunk: ChunkParseOperator
     private var toStringBuffer: StringBuffer = StringBuffer()
@@ -61,7 +65,8 @@ class ResTypeSpecAndTypeInfoSixChunk(
                     }
 
                     else -> {
-                        typeChunk = ResTypeInfoSixChunk(inputResourceByteArray, endOffset)
+                        typeChunk =
+                            ResTypeInfoSixChunk(inputResourceByteArray, endOffset, typeStringList)
                         typeChunk.startParseChunk().also {
                             toStringBuffer.append(it)
                             toStringBuffer.append("\n")

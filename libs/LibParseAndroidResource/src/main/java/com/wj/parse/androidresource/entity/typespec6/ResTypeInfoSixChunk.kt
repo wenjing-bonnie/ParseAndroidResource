@@ -63,7 +63,11 @@ import kotlin.experimental.and
  */
 class ResTypeInfoSixChunk(
     override val inputResourceByteArray: ByteArray,
-    override val startOffset: Int
+    override val startOffset: Int,
+    /**
+     * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
+     */
+    val typeStringList: MutableList<String> = mutableListOf()
 ) : ChunkParseOperator {
 
     var id: Int = -1
@@ -129,6 +133,8 @@ class ResTypeInfoSixChunk(
         val resTableConfig =
             ResTypeInfoTableConfigChunkChild(resArrayStartZeroOffset, attributeOffset)
         resConfig = resTableConfig.toString()
+        // TODO [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
+        Logger.debug("All resource type $typeStringList")
         return this
     }
 

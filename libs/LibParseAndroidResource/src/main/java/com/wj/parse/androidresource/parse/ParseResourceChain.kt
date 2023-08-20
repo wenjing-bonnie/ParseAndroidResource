@@ -72,7 +72,11 @@ class ParseResourceChain() {
             /** read [ResTypeSpecAndTypeInfoSixChunk] */
             parentOffset = keyStringsOffset + keyStringsPoolChunk.chunkEndOffset
             Logger.debug("\n ...... begin to read six chunk: type spec and type info  ...... parentOffset is $parentOffset")
-            val typeChunk = ResTypeSpecAndTypeInfoSixChunk(resourceByteArray, parentOffset)
+            val typeChunk = ResTypeSpecAndTypeInfoSixChunk(
+                resourceByteArray,
+                parentOffset,
+                typeStringList = typeStringPoolChunk.resStringPoolRefOffset.stringList
+            )
             typeChunk.startParseChunk().also {
                 Logger.debug(it.toString())
             }
