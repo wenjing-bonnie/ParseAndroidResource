@@ -61,8 +61,12 @@ open class ResStringPoolSecondChunk(
      * all childs of this chunk
      */
     override fun toString(): String =
-        "Part2: -> First child =>=> ${resStringPoolHeader}\n" +
-                "          Second child =>=> $resStringPoolRefOffset" +
-                "\nPart2: -> End..."
+        formatToString(
+            part = 2,
+            childPart = 0,
+            chunkName = "Resource String Pool",
+            resStringPoolHeader.toString(),
+            resStringPoolRefOffset.toString()
+        )
 
 }

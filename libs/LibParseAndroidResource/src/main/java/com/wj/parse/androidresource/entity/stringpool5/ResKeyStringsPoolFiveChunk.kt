@@ -3,6 +3,7 @@ package com.wj.parse.androidresource.entity.stringpool5
 import com.wj.parse.androidresource.entity.package3.ResTablePackageHeaderThirdChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
+import com.wj.parse.androidresource.utils.Logger
 
 /**
  * create by wenjing.liu at 2023/7/27
@@ -24,6 +25,6 @@ class ResKeyStringsPoolFiveChunk(
      */
     override fun toString(): String =
         "Part5: -> First child =>=> ${resStringPoolHeader}\n" +
-                "          Second child =>=> $resStringPoolRefOffset" +
-                "\nPart5: -> End..."
+                "${Logger.TAG_SPACE}Second child =>=> $resStringPoolRefOffset\n" +
+                "${Logger.TAG_SPACE}>>> Part5 is Ended <<<"
 }

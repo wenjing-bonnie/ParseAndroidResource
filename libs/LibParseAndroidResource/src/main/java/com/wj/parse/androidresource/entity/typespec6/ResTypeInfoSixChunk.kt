@@ -5,6 +5,7 @@ import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
+import java.lang.IllegalStateException
 import kotlin.experimental.and
 
 /**
@@ -67,7 +68,7 @@ class ResTypeInfoSixChunk(
     /**
      * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
      */
-    val typeStringList: MutableList<String> = mutableListOf()
+    val resourceTypeStringList: MutableList<String> = mutableListOf()
 ) : ChunkParseOperator {
 
     var id: Int = -1
@@ -78,6 +79,11 @@ class ResTypeInfoSixChunk(
 
     // TODO rename
     var resConfig: String = ""
+
+    /**
+     * current resource type
+     */
+    lateinit var resourceType: String
 
 
     override val header: ResChunkHeader
@@ -133,8 +139,13 @@ class ResTypeInfoSixChunk(
         val resTableConfig =
             ResTypeInfoTableConfigChunkChild(resArrayStartZeroOffset, attributeOffset)
         resConfig = resTableConfig.toString()
-        // TODO [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
-        Logger.debug("All resource type $typeStringList")
+        // typeStringList: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
+        val typeIndex = id - 1
+        if (typeIndex >= resourceTypeStringList.size) {
+            throw IllegalStateException("The id $id is wrong, can't find it in the $resourceTypeStringList")
+        }
+        resourceType = resourceTypeStringList[typeIndex]
+
         return this
     }
 
@@ -142,10 +153,10 @@ class ResTypeInfoSixChunk(
 
 
     override fun toString(): String =
-        "Part6: ->Type info header is ${header}\n" +
-                "          id is $id, res0 is $res0, res1 is $res1,  entryCount is $entryCount, entriesStart is $entriesStart \n" +
-                "          $resConfig" +
-                "\nPart6: -> End..."
+        "Part6: Resource type is <$resourceType>.\n" +
+                "${Logger.TAG_SPACE}${header}\n" +
+                "${Logger.TAG_SPACE}id is $id, res0 is $res0, res1 is $res1,  entryCount is $entryCount, entriesStart is $entriesStart \n" +
+                "${Logger.TAG_SPACE}$resConfig\n"
 
 
 }

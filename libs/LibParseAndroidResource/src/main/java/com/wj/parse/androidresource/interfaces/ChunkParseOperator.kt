@@ -78,7 +78,7 @@ interface ChunkParseOperator {
                 if (startOffset != 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName} is a child of chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed index to start from 0")
                 }
-                Logger.debug("** Check ${this.javaClass.simpleName} attributes is great! ** it has set the collect values, start the parse flow .... ")
+                // Logger.debug("** Check ${this.javaClass.simpleName} attributes is great! ** it has set the collect values, start the parse flow .... ")
                 true
             }
 
@@ -91,8 +91,39 @@ interface ChunkParseOperator {
                 if ((this !is ResourceTableHeaderFirstChunk) && startOffset == 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName} is a chunk, the startOffset should be not 0")
                 }
-                Logger.debug("** Check attributes is great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")
+                // Logger.debug("** Check attributes is great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")
                 true
             }
         }
+
+    /**
+     *  format toString()
+     *  @param part the order number of every single chunk.
+     *  @param childPart the order number of multi-part chunk.
+     */
+    fun formatToString(
+        part: Int,
+        childPart: Int,
+        chunkName: String,
+        vararg chunkInfo: String
+    ): String {
+        var start = "Part$part: $chunkName:"
+        var end = "\n${Logger.END_TAG_START} Part $part is ended ${Logger.END_TAG_END}"
+        when {
+            childPart > 0 -> {
+                start = ">> No.$childPart child $chunkName in a multi-part chunk"
+                end =
+                    "\n${Logger.TAG_SPACE}${Logger.END_TAG_START} Child chunk $childPart is ended ${Logger.END_TAG_END}"
+            }
+
+            else -> {
+
+            }
+        }
+        return "$start${
+            chunkInfo.joinToString {
+                "\n${Logger.TAG_SPACE}$it"
+            }
+        }$end"
+    }
 }

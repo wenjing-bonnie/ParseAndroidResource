@@ -44,6 +44,7 @@ class ResStringPoolContentChunkChild(
     var stringOffsetList = mutableListOf<Int>()
     var styleOffsetList = mutableListOf<Int>()
     var stringList = mutableListOf<String>()
+
     // TODO styleList?????
     var styleList = mutableListOf<String>()
 
@@ -88,7 +89,7 @@ class ResStringPoolContentChunkChild(
         // read style offset
         //  TODO need to test it
         childOffset += stringCount * OFFSET_BYTE
-       // Logger.debug("1 childOffset = $childOffset")
+        // Logger.debug("1 childOffset = $childOffset")
         for (index in 0 until styleCount) {
             val sourceBytes: ByteArray? =
                 Utils.copyByte(
@@ -108,7 +109,7 @@ class ResStringPoolContentChunkChild(
         // 每个字符串的头两个字节的最后一个字节是字符串的长度
         //
         childOffset += styleCount * OFFSET_BYTE
-       // Logger.error(" \n ===== style childOffset = $childOffset")
+        // Logger.error(" \n ===== style childOffset = $childOffset")
         for (index in 0 until stringCount) {
             val stringByteArray = Utils.copyByte(resArrayStartZeroOffset, childOffset, TWO_BYTE)
             stringByteArray?.let {
@@ -132,7 +133,7 @@ class ResStringPoolContentChunkChild(
                 }
                 // TODO why is 3
                 childOffset += (stringLength + 3)
-               // Logger.error(" \n =====$index  childOffset = ${childOffset} , stringList: ${stringList[index]}")
+                // Logger.error(" \n =====$index  childOffset = ${childOffset} , stringList: ${stringList[index]}")
             } ?: run {
                 throw IllegalStateException("The string byte array is null")
             }
@@ -145,9 +146,13 @@ class ResStringPoolContentChunkChild(
      *
      */
     override fun toString(): String =
-        "Resource Pool Ref offset: string offset is $stringOffsetList, \n   " +
-                "       style offset is $styleOffsetList, \n" +
-                "          string list is $stringList, \n"
+        formatToString(
+            part = 2,
+            childPart = 2,
+            chunkName = "Resource Pool Ref offset",
+            "string offset is $stringOffsetList",
+            "string list is $stringList"
+        )
 
     private fun byteOffset(sourceBytes: ByteArray?) = run {
         val buffer = StringBuffer()

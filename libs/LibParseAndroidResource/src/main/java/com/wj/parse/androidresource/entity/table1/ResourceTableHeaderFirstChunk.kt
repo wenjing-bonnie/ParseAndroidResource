@@ -3,6 +3,7 @@ package com.wj.parse.androidresource.entity.table1
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
+import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 /**
@@ -60,9 +61,13 @@ class ResourceTableHeaderFirstChunk(
     }
 
     override fun toString(): String =
-        "Part1: -> Resource Table header: $header,\n" +
-                "         packageCount is $packageCount." +
-                "\nPart1: -> End..."
+        formatToString(
+            part = 1,
+            childPart = 0,
+            chunkName = "Resource Table header",
+            "$header",
+            "packageCount is $packageCount."
+        )
 
     companion object {
         const val TABLE_HEADER_BYTE = 4

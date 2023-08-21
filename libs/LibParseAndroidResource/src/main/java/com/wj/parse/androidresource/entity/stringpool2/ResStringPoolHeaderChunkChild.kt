@@ -114,13 +114,19 @@ class ResStringPoolHeaderChunkChild(
     }
 
     override fun toString(): String =
-        "Resource String Pool header: $header,\n" +
-                "          stringCount is $stringCount, styleCount is $styleCount, flags is ${
-                    when (flags) {
-                        Flags.UTF8_FLAG.value -> "UTF-8"
-                        else -> "strcmp16"
-                    }
-                }, stringStart is $stringStart, stylesStart is $stylesStart."
+        formatToString(
+            part = 2,
+            childPart = 1,
+            chunkName = "Resource String Pool header",
+            "$header",
+            "stringCount is $stringCount, styleCount is $styleCount, flags is ${
+                when (flags) {
+                    Flags.UTF8_FLAG.value -> "UTF-8"
+                    else -> "strcmp16"
+                }
+            }, stringStart is $stringStart, stylesStart is $stylesStart."
+        )
+
 
     enum class Flags(var value: Int) {
         /** strcmp16() */

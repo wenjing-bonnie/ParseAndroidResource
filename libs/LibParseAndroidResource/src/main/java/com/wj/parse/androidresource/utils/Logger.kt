@@ -21,4 +21,7 @@ object Logger {
 
     private const val DEBUG = true
     private val TAG = LoggerFactory.getLogger("ParseAndroidResource")
+    const val TAG_SPACE = "       "
+    const val END_TAG_START = ">>>>>>"
+    const val END_TAG_END= "<<<<<<"
 }

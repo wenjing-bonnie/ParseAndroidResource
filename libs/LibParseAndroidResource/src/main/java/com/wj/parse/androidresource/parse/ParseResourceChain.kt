@@ -25,10 +25,8 @@ class ParseResourceChain() {
 
             /** read [ResourceTableHeaderFirstChunk]*/
             var parentOffset = 0
-            Logger.debug("\n ...... begin to read first chunk: Table Header ...... parentOffset is $parentOffset")
-            val tableHeaderChunk = ResourceTableHeaderFirstChunk(resourceByteArray).apply {
-                Logger.debug(toString())
-            }
+            Logger.debug("\n>>> Begin to read first chunk \"Table Header\", parentOffset is $parentOffset <<<")
+            val tableHeaderChunk = ResourceTableHeaderFirstChunk(resourceByteArray)
             tableHeaderChunk.startParseChunk().also {
                 Logger.debug(it.toString())
             }

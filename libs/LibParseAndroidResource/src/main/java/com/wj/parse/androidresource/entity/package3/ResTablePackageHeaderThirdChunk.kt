@@ -5,6 +5,7 @@ import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
+import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 /**
@@ -54,6 +55,7 @@ class ResTablePackageHeaderThirdChunk(
 
     var id: Int = -1
     var name: String = ""
+
     // TODO 可以理解为在偏移该值就是resource type symbol table
     var typeStrings: Int = -1
     var lastPublicType: Int = -1
@@ -107,9 +109,13 @@ class ResTablePackageHeaderThirdChunk(
     override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK
 
     override fun toString(): String =
-        "Part3: -> Resource Table Package: $header,\n" +
-                "         id is $id, name is $name, typeStrings is $typeStrings, lastPublicType is $lastPublicType, keyStrings is $keyStrings, lastPublicKey is $lastPublicKey." +
-                "\nPart3: -> End..."
+        formatToString(
+            part = 3,
+            childPart = 0,
+            chunkName = "Resource Table Package",
+            "$header",
+            "id is $id, name is $name, typeStrings is $typeStrings, lastPublicType is $lastPublicType, keyStrings is $keyStrings, lastPublicKey is $lastPublicKey."
+        )
 
     companion object {
         const val ID_BYTE = 4
