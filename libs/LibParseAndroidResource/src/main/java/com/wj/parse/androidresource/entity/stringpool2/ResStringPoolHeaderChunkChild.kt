@@ -40,10 +40,38 @@ class ResStringPoolHeaderChunkChild(
      */
     override val inputResourceByteArray: ByteArray
 ) : ChunkParseOperator {
+    /**
+     *      // Number of strings in this pool (number of uint32_t indices that follow
+     *      // in the data).
+     *      uint32_t stringCount;
+     */
     var stringCount: Int = 0
+    /**
+     *      // Number of style span arrays in the pool (number of uint32_t indices
+     *      // follow the string indices).
+     *      uint32_t styleCount;
+     */
     var styleCount: Int = 0
+    /**
+     *      // Flags.
+     *      enum {
+     *      // If set, the string index is sorted by the string values (based
+     *      // on strcmp16()).
+     *           SORTED_FLAG = 1<<0,
+     *      // String pool is encoded in UTF-8
+     *          UTF8_FLAG = 1<<8
+     *      };
+     */
     var flags: Int = 0
+    /**
+     *     // Index from header of the string data.
+     *     uint32_t stringsStart;
+     */
     var stringStart: Int = 0
+    /**
+     *     // Index from header of the style data.
+     *     uint32_t stylesStart;
+     */
     var stylesStart: Int = 0
 
     /**
