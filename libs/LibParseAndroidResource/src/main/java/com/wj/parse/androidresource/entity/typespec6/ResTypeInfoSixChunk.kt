@@ -41,7 +41,7 @@ import kotlin.experimental.and
  *   };
  *   // The type identifier this chunk is holding.  Type IDs start
  *   // at 1 (corresponding to the value of the type bits in a
- *    // resource identifier).  0 is invalid.
+ *   // resource identifier).  0 is invalid.
  *   uint8_t id;
  *    enum {
  *      // If set, the entry is sparse, and encodes both the entry ID and offset into each entry,
@@ -70,14 +70,35 @@ class ResTypeInfoSixChunk(
      */
     val resourceTypeStringList: MutableList<String> = mutableListOf()
 ) : ChunkParseOperator {
-
+   /**
+    *   // The type identifier this chunk is holding.  Type IDs start
+    *   // at 1 (corresponding to the value of the type bits in a
+    *   // resource identifier).  0 is invalid.
+    *   uint8_t id;
+    */
     var id: Int = -1
     var res0: Byte = -1
+    /**
+     *
+     */
     var res1: Short = -1
+    /**
+     *
+     * // Number of uint32_t entry indices that follow.
+     * uint32_t entryCount;
+     */
     var entryCount: Int = -1
+    /**
+     * // Offset from header where ResTable_entry data starts.
+     * uint32_t entriesStart;
+     */
     var entriesStart: Int = -1
 
-    // TODO rename
+    /**
+    *  // Configuration this collection of entries is designed for. This must always be last.
+    *  ResTable_config config;
+    * /
+    // TODO change resConfig to lateinit var config: ResTypeInfoTableConfigChunkChild
     var resConfig: String = ""
 
     /**
