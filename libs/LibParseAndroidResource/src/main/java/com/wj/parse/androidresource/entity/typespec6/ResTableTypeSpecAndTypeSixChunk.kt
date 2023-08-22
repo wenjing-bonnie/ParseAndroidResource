@@ -28,7 +28,7 @@ class ResTableTypeSpecAndTypeSixChunk(
      */
     val typeStringList: MutableList<String> = mutableListOf()
 ) : ChunkParseOperator {
-   private val typeChunks = mutableListOf<ChunkParseOperator>()
+    private val typeChunks = mutableListOf<ChunkParseOperator>()
     override val header: ResChunkHeader?
         get() = kotlin.run {
             Logger.debug("Not need header because this chunk has many childs")
@@ -99,6 +99,7 @@ class ResTableTypeSpecAndTypeSixChunk(
                     null
                 }
         }
+
         return this
     }
 
@@ -107,12 +108,13 @@ class ResTableTypeSpecAndTypeSixChunk(
 
     override fun chunkProperty() = ChunkProperty.CHUNK
 
-    /***
-     * TODO optimise
-     */
-    override fun toString(): String = typeChunks.map { chunk ->
-        chunk.toString()
-    }.joinToString()
+    override fun toString(): String =
+        formatToString(
+            chunkName = "Res Table Type Spec and Type",
+            *typeChunks.map {
+                it.toString()
+            }.toTypedArray()
+        )
 
     companion object {
         const val SPEC_PUBLIC = 0x40000000

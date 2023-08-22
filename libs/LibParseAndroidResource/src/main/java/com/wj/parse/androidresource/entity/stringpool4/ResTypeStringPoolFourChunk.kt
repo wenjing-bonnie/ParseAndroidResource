@@ -27,7 +27,6 @@ class ResTypeStringPoolFourChunk(
 
     /**
      * all childs of this chunk
-     * TODO consider how to toString()
      */
     override fun toString(): String =
         formatToString(

@@ -114,11 +114,11 @@ interface ChunkParseOperator {
         vararg chunkInfo: String
     ): String {
         var start = "Part$position: $chunkName:"
-        var end = "\n${Logger.END_TAG_START} Part $position is ended ${Logger.END_TAG_END}"
+        var end = "\n${Logger.TITLE_TAG_START} Part $position is ended ${Logger.TITLE_TAG_END}"
         when {
             childPosition > 0 -> {
                 if (chunkProperty() == ChunkProperty.CHUNK_CHILD_CHILD) {
-                    start = "$chunkName is the child of child"
+                    start = "$chunkName is the child of child is"
                     end = ""
                     // "\n${Logger.TAG_SPACE}${Logger.TITLE_TAG_START} Child chunk $childPosition is ended ${Logger.TITLE_TAG_END}"
                 } else {
