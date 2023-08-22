@@ -13,9 +13,8 @@ import com.wj.parse.androidresource.utils.Utils
 
 /**
  * create by wenjing.liu at 2023/7/29
- * TODO rename to ResTypeSpecAndTableTypeSixChunk
  */
-class ResTypeSpecAndTypeInfoSixChunk(
+class ResTableTypeSpecAndTypeSixChunk(
     /**
      * whole resource byte array
      */
@@ -29,8 +28,7 @@ class ResTypeSpecAndTypeInfoSixChunk(
      */
     val typeStringList: MutableList<String> = mutableListOf()
 ) : ChunkParseOperator {
-    lateinit var typeChunk: ChunkParseOperator
-    private var toStringBuffer: StringBuffer = StringBuffer()
+   private val typeChunks = mutableListOf<ChunkParseOperator>()
     override val header: ResChunkHeader?
         get() = kotlin.run {
             Logger.debug("Not need header because this chunk has many childs")
@@ -41,45 +39,56 @@ class ResTypeSpecAndTypeInfoSixChunk(
      * TODO this is wrong, should consider
      */
     override val chunkEndOffset: Int
-        get() = typeChunk.chunkEndOffset
+        get() = TODO()
+
+    override val position: Int
+        get() = 6
+
+    override val childPosition: Int
+        get() = 0
 
     override fun chunkParseOperator(): ChunkParseOperator {
         var endOffset = startOffset
         val sourceSize = inputResourceByteArray.size
         var childByteArray: ByteArray? = resArrayStartZeroOffset
         // loop every chunk
-        var chunkIndex = 1
+        var chunkPosition = 1
         while (!isTypeChunkParsingCompleted(endOffset = endOffset, sourceSize = sourceSize)) {
             childByteArray?.let { child ->
                 val childHeader = ResChunkHeader(child)
-                // TODO add chunkIndex to while chunk
                 // Logger.debug("sourceSize is $sourceSize, endOffset is $endOffset, header.type is ${childHeader.type}")
                 when (childHeader.type) {
                     ChunkType.RES_TABLE_TYPE_SPEC_TYPE.value -> {
-                        typeChunk = ResTypeSpecSixChunk(
+                        val typeChunk = ResTableTypeSpecSixChunk(
                             inputResourceByteArray,
-                            endOffset
+                            endOffset,
+                            chunkPosition
                         )
                         typeChunk.startParseChunk().also {
-                            toStringBuffer.append(it)
-                            toStringBuffer.append("\n")
+                            typeChunks.add(it)
+                            // go to next chunk
+                            endOffset += typeChunk.chunkEndOffset
                         }
                     }
 
                     else -> {
-                        typeChunk =
-                            ResTypeInfoSixChunk(inputResourceByteArray, endOffset, typeStringList)
+                        val typeChunk =
+                            ResTableTypeSixChunk(
+                                inputResourceByteArray,
+                                endOffset,
+                                chunkPosition,
+                                typeStringList
+                            )
                         typeChunk.startParseChunk().also {
-                            toStringBuffer.append(it)
-                            toStringBuffer.append("\n")
+                            typeChunks.add(it)
+                            // go to next chunk
+                            endOffset += typeChunk.chunkEndOffset
                         }
                     }
                 }
             }
-
             // go to next chunk
-            endOffset += typeChunk.chunkEndOffset
-            chunkIndex += 1
+            chunkPosition += 1
             childByteArray =
                 Utils.copyByte(inputResourceByteArray, endOffset) ?: run {
                     Logger.debug(
@@ -101,10 +110,9 @@ class ResTypeSpecAndTypeInfoSixChunk(
     /***
      * TODO optimise
      */
-    override fun toString(): String = when {
-        ::typeChunk.isInitialized -> "$toStringBuffer"
-        else -> "Not isInitialized"
-    }
+    override fun toString(): String = typeChunks.map { chunk ->
+        chunk.toString()
+    }.joinToString()
 
     companion object {
         const val SPEC_PUBLIC = 0x40000000

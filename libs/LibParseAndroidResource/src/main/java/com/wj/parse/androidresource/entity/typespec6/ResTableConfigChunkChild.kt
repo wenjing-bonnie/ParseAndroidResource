@@ -11,8 +11,7 @@ import com.wj.parse.androidresource.utils.Utils
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#946
  * ResTable_config
  */
-// TODO rename to ResTableConfigChunkChild
-class ResTypeInfoTableConfigChunkChild(
+class ResTableConfigChunkChild(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -56,7 +55,7 @@ class ResTypeInfoTableConfigChunkChild(
      *   struct {
      *       // This field can take three different forms:
      *       // - \0\0 means "any".
-     *       
+     *
      *       // - Two 7 bit ascii values interpreted as ISO-639-1 language
      *       //   codes ('fr', 'en' etc. etc.). The high bit for both bytes is
      *       //   zero.
@@ -75,7 +74,7 @@ class ResTypeInfoTableConfigChunkChild(
      *       // two letter codes are represented in that format.
      *       //
      *       // The layout is always bigendian irrespective of the runtime
-     *       // architecture. 
+     *       // architecture.
      *      char language[2];
      *       // This field can take three different forms:
      *       // - \0\0 means "any".
@@ -248,7 +247,12 @@ class ResTypeInfoTableConfigChunkChild(
             null
         }
 
-    override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK_CHILD
+    override val position: Int
+        get() = 6
+    override val childPosition: Int
+        get() = 10000
+
+    override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK_CHILD_CHILD
 
     override fun chunkParseOperator(): ChunkParseOperator {
         // <Attribute_1>
@@ -437,20 +441,21 @@ class ResTypeInfoTableConfigChunkChild(
         return this
     }
 
-    override fun toString(): String {
-        return "Res table config:\n" +
-                "size: $size,\n" +
-                "union 2: $union2Mobile,\n" +
-                "union 3: $union3Locale,\n" +
-                "union 4: $union4ScreenType,\n" +
-                "union 5: $union5Input,\n" +
-                "union 6: $union6ScreenSize,\n" +
-                "union 7: $union7Version,\n" +
-                "union 8: $union8ScreenConfig,\n" +
-                "union 9: $union9ScreenSizeDp,\n" +
-                "localeScript: $localeScript,\n" +
-                "localeVariant: $localeVariant"
-    }
+    override fun toString(): String =
+        formatToString(
+            "Res table config",
+            "{\n${Logger.TAG_SPACE} size: $size",
+            " union 2: $union2Mobile",
+            " union 3: $union3Locale",
+            " union 4: $union4ScreenType",
+            " union 5: $union5Input",
+            " union 6: $union6ScreenSize",
+            " union 7: $union7Version",
+            " union 8: $union8ScreenConfig",
+            " union 9: $union9ScreenSizeDp",
+            " localeScript: $localeScript",
+            " localeVariant: $localeVariant\n${Logger.TAG_SPACE}}"
+        )
 
     companion object {
         const val SIZE_BYTE = 4

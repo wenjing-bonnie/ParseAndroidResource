@@ -83,6 +83,12 @@ class ResStringPoolHeaderChunkChild(
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
 
+    override val position: Int
+        get() = 2
+
+    override val childPosition: Int
+        get() = 1
+
     /**
      * this is part of [ResStringPoolSecondChunk], so it returns 0
      */
@@ -143,8 +149,6 @@ class ResStringPoolHeaderChunkChild(
 
     override fun toString(): String =
         formatToString(
-            part = 2,
-            childPart = 1,
             chunkName = "Resource String Pool header",
             "$header",
             "stringCount is $stringCount, styleCount is $styleCount, flags is ${

@@ -3,7 +3,6 @@ package com.wj.parse.androidresource.entity.table1
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
-import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 /**
@@ -38,6 +37,12 @@ class ResourceTableHeaderFirstChunk(
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
 
+    override val position: Int
+        get() = 1
+
+    override val childPosition: Int
+        get() = 0
+
     override fun chunkProperty(): ChunkProperty =
         ChunkProperty.CHUNK
 
@@ -62,8 +67,6 @@ class ResourceTableHeaderFirstChunk(
 
     override fun toString(): String =
         formatToString(
-            part = 1,
-            childPart = 0,
             chunkName = "Resource Table header",
             "$header",
             "packageCount is $packageCount."

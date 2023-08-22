@@ -20,17 +20,20 @@ class ResKeyStringsPoolFiveChunk(
     override val startOffset: Int
 ) : ResStringPoolSecondChunk(inputResourceByteArray, startOffset) {
 
+    override val position: Int
+        get() = 5
+
+    override val childPosition: Int
+        get() = 0
+
     /**
      * all childs of this chunk
+     * TODO consider how to toString()
      */
     override fun toString(): String =
         formatToString(
-            part = 5,
-            childPart = 0,
             chunkName = "Resource Key String Pool",
-            "First child",
             "$resStringPoolHeader",
-            "Second child:",
             "$resStringPoolRefOffset"
         )
 }

@@ -19,17 +19,20 @@ class ResTypeStringPoolFourChunk(
     override val startOffset: Int
 ) : ResStringPoolSecondChunk(inputResourceByteArray, startOffset) {
 
+    override val position: Int
+        get() = 4
+
+    override val childPosition: Int
+        get() = 0
+
     /**
      * all childs of this chunk
+     * TODO consider how to toString()
      */
     override fun toString(): String =
         formatToString(
-            part = 4,
-            childPart = 0,
             chunkName = "Resource type String pool",
-            "First child",
             "$resStringPoolHeader",
-            "Second child:",
             "$resStringPoolRefOffset"
         )
 }

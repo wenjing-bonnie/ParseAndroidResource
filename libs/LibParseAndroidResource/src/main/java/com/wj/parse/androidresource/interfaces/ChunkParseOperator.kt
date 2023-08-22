@@ -36,6 +36,16 @@ interface ChunkParseOperator {
     val inputResourceByteArray: ByteArray
 
     /**
+     * The position of this chunk in the .arsc
+     */
+    val position: Int
+
+    /**
+     * If this chunk is a child chunk, it is the position in this part
+     */
+    val childPosition: Int
+
+    /**
      * [resArrayStartZeroOffset] should be the byte array which index start from 0 without the previous chunk byte data.
      * Therefore we can read first attribute data of this chunk which start from [ResChunkHeader.chunkEndOffset]
      */
@@ -76,7 +86,7 @@ interface ChunkParseOperator {
         when (chunkProperty()) {
             ChunkProperty.CHUNK_HEADER -> {
                 if (startOffset != 0) {
-                    throw IllegalArgumentException("${this.javaClass.simpleName} is a child of chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed index to start from 0")
+                    throw IllegalArgumentException("${this.javaClass.simpleName} is a header chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed index to start from 0")
                 }
                 // Logger.debug("** Check ${this.javaClass.simpleName} attributes is great! ** it has set the collect values, start the parse flow .... ")
                 true
@@ -87,7 +97,7 @@ interface ChunkParseOperator {
                 if (this is ResourceTableHeaderFirstChunk && startOffset != 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
                 }
-                // not first chunk and the startOffset shouldn't be 9
+                // not first chunk and the startOffset shouldn't be 0
                 if ((this !is ResourceTableHeaderFirstChunk) && startOffset == 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName} is a chunk, the startOffset should be not 0")
                 }
@@ -98,22 +108,25 @@ interface ChunkParseOperator {
 
     /**
      *  format toString()
-     *  @param part the order number of every single chunk.
-     *  @param childPart the order number of multi-part chunk.
      */
     fun formatToString(
-        part: Int,
-        childPart: Int,
         chunkName: String,
         vararg chunkInfo: String
     ): String {
-        var start = "Part$part: $chunkName:"
-        var end = "\n${Logger.END_TAG_START} Part $part is ended ${Logger.END_TAG_END}"
+        var start = "Part$position: $chunkName:"
+        var end = "\n${Logger.END_TAG_START} Part $position is ended ${Logger.END_TAG_END}"
         when {
-            childPart > 0 -> {
-                start = ">> No.$childPart child $chunkName in a multi-part chunk"
-                end =
-                    "\n${Logger.TAG_SPACE}${Logger.END_TAG_START} Child chunk $childPart is ended ${Logger.END_TAG_END}"
+            childPosition > 0 -> {
+                if (chunkProperty() == ChunkProperty.CHUNK_CHILD_CHILD) {
+                    start = "$chunkName is the child of child"
+                    end = ""
+                    // "\n${Logger.TAG_SPACE}${Logger.TITLE_TAG_START} Child chunk $childPosition is ended ${Logger.TITLE_TAG_END}"
+                } else {
+                    start = ">> No.$childPosition child $chunkName in a multi-part chunk"
+                    end =
+                        "\n${Logger.TAG_SPACE}${Logger.END_TAG_START} Child of child chunk $childPosition is ended ${Logger.END_TAG_END}"
+                }
+
             }
 
             else -> {
@@ -126,4 +139,5 @@ interface ChunkParseOperator {
             }
         }$end"
     }
+
 }

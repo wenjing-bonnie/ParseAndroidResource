@@ -60,6 +60,11 @@ class ResStringPoolContentChunkChild(
             null
         }
 
+    override val position: Int
+        get() = 2
+
+    override val childPosition: Int
+        get() = 2
 
     override fun chunkProperty(): ChunkProperty =
         ChunkProperty.CHUNK_CHILD
@@ -147,8 +152,6 @@ class ResStringPoolContentChunkChild(
      */
     override fun toString(): String =
         formatToString(
-            part = 2,
-            childPart = 2,
             chunkName = "Resource Pool Ref offset",
             "string offset is $stringOffsetList",
             "string list is $stringList"

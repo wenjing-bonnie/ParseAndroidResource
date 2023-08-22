@@ -5,7 +5,6 @@ import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
-import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
 /**
@@ -65,6 +64,12 @@ class ResTablePackageHeaderThirdChunk(
     override val chunkEndOffset: Int
         get() = header.headerSize.toInt()
 
+    override val position: Int
+        get() = 3
+
+    override val childPosition: Int
+        get() = 0
+
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
 
@@ -110,8 +115,6 @@ class ResTablePackageHeaderThirdChunk(
 
     override fun toString(): String =
         formatToString(
-            part = 3,
-            childPart = 0,
             chunkName = "Resource Table Package",
             "$header",
             "id is $id, name is $name, typeStrings is $typeStrings, lastPublicType is $lastPublicType, keyStrings is $keyStrings, lastPublicKey is $lastPublicKey."

@@ -74,6 +74,12 @@ class ResChunkHeader(
     override val chunkEndOffset: Int
         get() = TYPE_BYTE + HEADER_SIZE_BYTE + SIZE_BYTE
 
+    override val position: Int
+        get() = 0
+
+    override val childPosition: Int
+        get() = 0
+
     override val header: ResChunkHeader?
         get() = kotlin.run {
             Logger.debug("Not need header because this chunk is header chunk.")

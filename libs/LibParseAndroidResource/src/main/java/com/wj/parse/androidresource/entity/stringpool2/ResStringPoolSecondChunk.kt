@@ -38,6 +38,12 @@ open class ResStringPoolSecondChunk(
             null
         }
 
+    override val position: Int
+        get() = 2
+
+    override val childPosition: Int
+        get() = 0
+
     override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK
 
     override fun chunkParseOperator(): ChunkParseOperator {
@@ -62,8 +68,6 @@ open class ResStringPoolSecondChunk(
      */
     override fun toString(): String =
         formatToString(
-            part = 2,
-            childPart = 0,
             chunkName = "Resource String Pool",
             resStringPoolHeader.toString(),
             resStringPoolRefOffset.toString()

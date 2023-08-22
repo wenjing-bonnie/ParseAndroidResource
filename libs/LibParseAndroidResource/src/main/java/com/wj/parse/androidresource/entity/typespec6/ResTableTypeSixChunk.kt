@@ -3,7 +3,6 @@ package com.wj.parse.androidresource.entity.typespec6
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
-import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import java.lang.IllegalStateException
 import kotlin.experimental.and
@@ -61,22 +60,23 @@ import kotlin.experimental.and
  *    ResTable_config config;
  *   };
  */
-// TODO rename this chunk to ResTableTypeSixChunk
-class ResTypeInfoSixChunk(
+class ResTableTypeSixChunk(
     override val inputResourceByteArray: ByteArray,
     override val startOffset: Int,
+    override val childPosition: Int,
     /**
      * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
      */
-    val resourceTypeStringList: MutableList<String> = mutableListOf()
+    private val resourceTypeStringList: MutableList<String> = mutableListOf()
 ) : ChunkParseOperator {
-   /**
-    *   // The type identifier this chunk is holding.  Type IDs start
-    *   // at 1 (corresponding to the value of the type bits in a
-    *   // resource identifier).  0 is invalid.
-    *   uint8_t id;
-    */
+    /**
+     *   // The type identifier this chunk is holding.  Type IDs start
+     *   // at 1 (corresponding to the value of the type bits in a
+     *   // resource identifier).  0 is invalid.
+     *   uint8_t id;
+     */
     var id: Int = -1
+
     /**
      *    enum {
      *      // If set, the entry is sparse, and encodes both the entry ID and offset into each entry,
@@ -86,20 +86,21 @@ class ResTypeInfoSixChunk(
      *      FLAG_SPARSE = 0x01,
      *    };
      */
-    // TODO rename to flags
-    var res0: Byte = -1
+    var flags: Byte = -1
+
     /**
-     * TODO rename to reserved
      *    // Must be 0.
      *    uint16_t reserved;
      */
-    var res1: Short = -1
+    var reserved: Short = -1
+
     /**
      *
      * // Number of uint32_t entry indices that follow.
      * uint32_t entryCount;
      */
     var entryCount: Int = -1
+
     /**
      * // Offset from header where ResTable_entry data starts.
      * uint32_t entriesStart;
@@ -107,16 +108,15 @@ class ResTypeInfoSixChunk(
     var entriesStart: Int = -1
 
     /**
-    *  // Configuration this collection of entries is designed for. This must always be last.
-    *  ResTable_config config;
-    */
-    // TODO change resConfig to lateinit var config: ResTypeInfoTableConfigChunkChild
-    var resConfig: String = ""
+     *  // Configuration this collection of entries is designed for. This must always be last.
+     *  ResTable_config config;
+     */
+    lateinit var config: ResTableConfigChunkChild
 
     /**
      * current resource type
      */
-    lateinit var resourceType: String
+    lateinit var resourceTypeString: String
 
 
     override val header: ResChunkHeader
@@ -125,75 +125,73 @@ class ResTypeInfoSixChunk(
     override val chunkEndOffset: Int
         get() = header.size
 
+    override val position: Int
+        get() = 6
+
     override fun chunkParseOperator(): ChunkParseOperator {
         var attributeOffset = header.chunkEndOffset
         var attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
-            ResTypeSpecAndTypeInfoSixChunk.ID_BYTE
+            ResTableTypeSpecAndTypeSixChunk.ID_BYTE
         )
         id = attributeByteArray?.let { idArray ->
             (idArray[0] and 0xFF.toByte()).toInt()
         } ?: -1
 
         // this res0 is standing by, it is 0
-        attributeOffset += ResTypeSpecAndTypeInfoSixChunk.ID_BYTE
+        attributeOffset += ResTableTypeSpecAndTypeSixChunk.ID_BYTE
         attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
-            ResTypeSpecAndTypeInfoSixChunk.RES0_BYTE
+            ResTableTypeSpecAndTypeSixChunk.RES0_BYTE
         )
-        res0 = attributeByteArray?.let { res0Array ->
+        flags = attributeByteArray?.let { res0Array ->
             (res0Array[0] and 0xFF.toByte())
         } ?: -1
 
         // this res1 is standing by, it is 0
-        attributeOffset += ResTypeSpecAndTypeInfoSixChunk.RES0_BYTE
+        attributeOffset += ResTableTypeSpecAndTypeSixChunk.RES0_BYTE
         attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
-            ResTypeSpecAndTypeInfoSixChunk.RES1_BYTE
+            ResTableTypeSpecAndTypeSixChunk.RES1_BYTE
         )
-        res1 = Utils.byte2Short(attributeByteArray)
+        reserved = Utils.byte2Short(attributeByteArray)
 
-        attributeOffset += ResTypeSpecAndTypeInfoSixChunk.RES1_BYTE
+        attributeOffset += ResTableTypeSpecAndTypeSixChunk.RES1_BYTE
         attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
-            ResTypeSpecAndTypeInfoSixChunk.ENTRY_COUNT_BYTE
+            ResTableTypeSpecAndTypeSixChunk.ENTRY_COUNT_BYTE
         )
         entryCount = Utils.byte2Int(attributeByteArray)
 
-        attributeOffset += ResTypeSpecAndTypeInfoSixChunk.ENTRY_COUNT_BYTE
+        attributeOffset += ResTableTypeSpecAndTypeSixChunk.ENTRY_COUNT_BYTE
         attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
             attributeOffset,
-            ResTypeSpecAndTypeInfoSixChunk.ENTRIES_START_BYTE
+            ResTableTypeSpecAndTypeSixChunk.ENTRIES_START_BYTE
         )
         entriesStart = Utils.byte2Int(attributeByteArray)
         // ResTable_config
-        attributeOffset += ResTypeSpecAndTypeInfoSixChunk.ENTRIES_START_BYTE
-        val resTableConfig =
-            ResTypeInfoTableConfigChunkChild(resArrayStartZeroOffset, attributeOffset)
-        resConfig = resTableConfig.toString()
-        // typeStringList: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
+        attributeOffset += ResTableTypeSpecAndTypeSixChunk.ENTRIES_START_BYTE
+        config =
+            ResTableConfigChunkChild(resArrayStartZeroOffset, attributeOffset)
+        // resourceTypeStringList: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
         val typeIndex = id - 1
         if (typeIndex >= resourceTypeStringList.size) {
             throw IllegalStateException("The id $id is wrong, can't find it in the $resourceTypeStringList")
         }
-        resourceType = resourceTypeStringList[typeIndex]
+        resourceTypeString = resourceTypeStringList[typeIndex]
 
         return this
     }
 
     override fun chunkProperty() = ChunkProperty.CHUNK
 
-
     override fun toString(): String =
         formatToString(
-            part = 6,
-            // TODO this index should be set from ResTypeSpecAndTypeInfoSixChunk    
-            childPart = 0,
-            chunkName = "Resource Type",
+            chunkName = "Resource Type <$resourceTypeString>",
             "$header",
-            "id is $id, res0 is $res0, res1 is $res1,  entryCount is $entryCount, entriesStart is $entriesStart",
-            "$resConfig"
-         )
-         
+            "id is $id, flags is $flags, reserved is $reserved,  entryCount is $entryCount, entriesStart is $entriesStart",
+            "$config"
+        )
+
 }
