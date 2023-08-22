@@ -41,16 +41,28 @@ class ResChunkHeader(
 
     /**
      * first 2 Byte is type
+     *    // Type identifier for this chunk.  The meaning of this value depends
+     *    // on the containing chunk.
+     *    uint16_t type;
      */
     var type: Short = 0
 
     /**
      * the next 2 Byte is header size
+     *    // Size of the chunk header (in bytes).  Adding this value to
+     *    // the address of the chunk allows you to find its associated data (if any).
+     *    uint16_t headerSize;
      */
     var headerSize: Short = 0
 
     /**
      * the next 4 Byte is size
+     *    // Total size of this chunk (in bytes).  This is the chunkSize plus
+     *    // the size of any data associated with the chunk.  Adding this value
+     *    // to the chunk allows you to completely skip its contents (including
+     *    // any child chunks).  If this value is the same as chunkSize, there is
+     *    // no data associated with the chunk.
+     *    uint32_t size;
      */
     var size: Int = 0
 
