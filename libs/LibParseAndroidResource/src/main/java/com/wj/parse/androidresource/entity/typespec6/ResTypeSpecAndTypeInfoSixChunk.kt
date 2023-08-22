@@ -13,6 +13,7 @@ import com.wj.parse.androidresource.utils.Utils
 
 /**
  * create by wenjing.liu at 2023/7/29
+ * TODO rename to ResTypeSpecAndTableTypeSixChunk
  */
 class ResTypeSpecAndTypeInfoSixChunk(
     /**
