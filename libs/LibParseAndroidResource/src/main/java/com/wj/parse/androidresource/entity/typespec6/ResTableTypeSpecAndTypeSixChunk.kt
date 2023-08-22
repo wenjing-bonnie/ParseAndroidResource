@@ -56,6 +56,7 @@ class ResTableTypeSpecAndTypeSixChunk(
         while (!isTypeChunkParsingCompleted(endOffset = endOffset, sourceSize = sourceSize)) {
             childByteArray?.let { child ->
                 val childHeader = ResChunkHeader(child)
+                // the offset is ok.
                 // Logger.debug("sourceSize is $sourceSize, endOffset is $endOffset, header.type is ${childHeader.type}")
                 when (childHeader.type) {
                     ChunkType.RES_TABLE_TYPE_SPEC_TYPE.value -> {

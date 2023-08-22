@@ -237,9 +237,10 @@ class ResTableConfigChunkChild(
         checkChunkAttributes()
     }
 
-    // TODO
+    // TODO 36 or 48???
+    // TODO 为什么读48的数组，但是实际上只有36呢？？从图上只有36， where is localeScript localeVariant
     override val chunkEndOffset: Int
-        get() = 48
+        get() = 36
 
     override val header: ResChunkHeader?
         get() = kotlin.run {

@@ -3,6 +3,7 @@ package com.wj.parse.androidresource.entity.typespec6
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
+import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import java.lang.IllegalStateException
 import kotlin.experimental.and
@@ -130,6 +131,7 @@ class ResTableTypeSixChunk(
 
     override fun chunkParseOperator(): ChunkParseOperator {
         var attributeOffset = header.chunkEndOffset
+        /** id is behind the [ResChunkHeader]*/
         var attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
             ResTableTypeSpecAndTypeSixChunk.ID_BYTE
@@ -138,6 +140,7 @@ class ResTableTypeSixChunk(
             (idArray[0] and 0xFF.toByte()).toInt()
         } ?: -1
 
+        /** Next is the flags */
         // this res0 is standing by, it is 0
         attributeOffset += ResTableTypeSpecAndTypeSixChunk.ID_BYTE
         attributeByteArray = Utils.copyByte(
@@ -148,6 +151,7 @@ class ResTableTypeSixChunk(
             (res0Array[0] and 0xFF.toByte())
         } ?: -1
 
+        /** Next is the reserved */
         // this res1 is standing by, it is 0
         attributeOffset += ResTableTypeSpecAndTypeSixChunk.RES0_BYTE
         attributeByteArray = Utils.copyByte(
@@ -156,6 +160,7 @@ class ResTableTypeSixChunk(
         )
         reserved = Utils.byte2Short(attributeByteArray)
 
+        /** Next is the entryCount */
         attributeOffset += ResTableTypeSpecAndTypeSixChunk.RES1_BYTE
         attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
@@ -163,6 +168,7 @@ class ResTableTypeSixChunk(
         )
         entryCount = Utils.byte2Int(attributeByteArray)
 
+        /** Next is the entriesStart */
         attributeOffset += ResTableTypeSpecAndTypeSixChunk.ENTRY_COUNT_BYTE
         attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
@@ -172,15 +178,33 @@ class ResTableTypeSixChunk(
         entriesStart = Utils.byte2Int(attributeByteArray)
         // ResTable_config
         attributeOffset += ResTableTypeSpecAndTypeSixChunk.ENTRIES_START_BYTE
+
+        /** Next is the ResTable_config */
         config =
             ResTableConfigChunkChild(resArrayStartZeroOffset, attributeOffset)
         // resourceTypeStringList: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
+
+        /** Next is the ResTable_entry */
         val typeIndex = id - 1
         if (typeIndex >= resourceTypeStringList.size) {
             throw IllegalStateException("The id $id is wrong, can't find it in the $resourceTypeStringList")
         }
+        // get the current resource type
         resourceTypeString = resourceTypeStringList[typeIndex]
-
+        // get the entryCount
+        val entries = mutableListOf<Int>()
+        // TODO why config.chunkEndOffset is 36, not 48?
+        // attributeOffset += config.chunkEndOffset
+        // attributeOffset += 4
+        // TODO why the header.headerSize中的config的size只有36, not 48?
+        for (index in 0 until entryCount) {
+            attributeOffset = header.headerSize + index * 4
+            attributeByteArray = Utils.copyByte(resArrayStartZeroOffset, attributeOffset)
+            val element = Utils.byte2Int(attributeByteArray)
+            entries.add(element)
+        }
+        Logger.debug(entries.toString())
+        // TODO next is ResTableEntry
         return this
     }
 
