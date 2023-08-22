@@ -90,7 +90,7 @@ class ResTypeInfoSixChunk(
     var res0: Byte = -1
     /**
      * TODO rename to reserved
-    *    // Must be 0.
+     *    // Must be 0.
      *    uint16_t reserved;
      */
     var res1: Short = -1
@@ -109,7 +109,7 @@ class ResTypeInfoSixChunk(
     /**
     *  // Configuration this collection of entries is designed for. This must always be last.
     *  ResTable_config config;
-    * /
+    */
     // TODO change resConfig to lateinit var config: ResTypeInfoTableConfigChunkChild
     var resConfig: String = ""
 
