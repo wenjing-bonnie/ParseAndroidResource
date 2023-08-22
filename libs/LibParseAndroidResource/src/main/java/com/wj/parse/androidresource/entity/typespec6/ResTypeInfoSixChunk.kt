@@ -62,6 +62,7 @@ import kotlin.experimental.and
  *    ResTable_config config;
  *   };
  */
+// TODO rename this chunk to ResTypeSixChunk
 class ResTypeInfoSixChunk(
     override val inputResourceByteArray: ByteArray,
     override val startOffset: Int,
