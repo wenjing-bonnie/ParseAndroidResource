@@ -48,10 +48,11 @@ class ResTypeSpecAndTypeInfoSixChunk(
         val sourceSize = inputResourceByteArray.size
         var childByteArray: ByteArray? = resArrayStartZeroOffset
         // loop every chunk
+        var chunkIndex = 1
         while (!isTypeChunkParsingCompleted(endOffset = endOffset, sourceSize = sourceSize)) {
             childByteArray?.let { child ->
                 val childHeader = ResChunkHeader(child)
-                //
+                // TODO add chunkIndex to while chunk
                 // Logger.debug("sourceSize is $sourceSize, endOffset is $endOffset, header.type is ${childHeader.type}")
                 when (childHeader.type) {
                     ChunkType.RES_TABLE_TYPE_SPEC_TYPE.value -> {
@@ -78,6 +79,7 @@ class ResTypeSpecAndTypeInfoSixChunk(
 
             // go to next chunk
             endOffset += typeChunk.chunkEndOffset
+            chunkIndex += 1
             childByteArray =
                 Utils.copyByte(inputResourceByteArray, endOffset) ?: run {
                     Logger.debug(
