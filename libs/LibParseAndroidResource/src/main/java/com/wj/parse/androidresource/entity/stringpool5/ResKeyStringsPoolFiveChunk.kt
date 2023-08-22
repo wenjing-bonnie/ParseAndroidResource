@@ -24,7 +24,13 @@ class ResKeyStringsPoolFiveChunk(
      * all childs of this chunk
      */
     override fun toString(): String =
-        "Part5: -> First child =>=> ${resStringPoolHeader}\n" +
-                "${Logger.TAG_SPACE}Second child =>=> $resStringPoolRefOffset\n" +
-                "${Logger.TAG_SPACE}>>> Part5 is Ended <<<"
+        formatToString(
+            part = 5,
+            childPart = 0,
+            chunkName = "Resource Key String Pool",
+            "First child",
+            "$resStringPoolHeader",
+            "Second child:",
+            "$resStringPoolRefOffset"
+        )
 }
