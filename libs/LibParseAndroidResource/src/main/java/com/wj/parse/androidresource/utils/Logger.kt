@@ -25,5 +25,5 @@ object Logger {
     const val END_TAG_START = ">>>>>>"
     const val END_TAG_END= "<<<<<<"
     const val TITLE_TAG_START = ">> "
-    const val TITLE_TAG_START = " <<"
+    const val TITLE_TAG_END = " <<"
 }
