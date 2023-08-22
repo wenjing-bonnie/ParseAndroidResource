@@ -11,6 +11,7 @@ import com.wj.parse.androidresource.utils.Utils
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#946
  * ResTable_config
  */
+// TODO rename to ResTableConfigChunkChild
 class ResTypeInfoTableConfigChunkChild(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
