@@ -24,6 +24,7 @@ class ResTypeInfoTableConfigChunkChild(
 
     /**
      * <Attribute_1>
+     * Number of bytes in this structure.
      * uint32_t size;
      */
     var size: Int = -1
@@ -52,7 +53,41 @@ class ResTypeInfoTableConfigChunkChild(
      * <Union_3>
      * union {
      *   struct {
+     *       // This field can take three different forms:
+     *       // - \0\0 means "any".
+     *       
+     *       // - Two 7 bit ascii values interpreted as ISO-639-1 language
+     *       //   codes ('fr', 'en' etc. etc.). The high bit for both bytes is
+     *       //   zero.
+     *       //
+     *       // - A single 16 bit little endian packed value representing an
+     *       //   ISO-639-2 3 letter language code. This will be of the form:
+     *       //
+     *       //   {1, t, t, t, t, t, s, s, s, s, s, f, f, f, f, f}
+     *       //
+     *       //   bit[0, 4] = first letter of the language code
+     *       //   bit[5, 9] = second letter of the language code
+     *       //   bit[10, 14] = third letter of the language code.
+     *       //   bit[15] = 1 always
+     *       //
+     *       // For backwards compatibility, languages that have unambiguous
+     *       // two letter codes are represented in that format.
+     *       //
+     *       // The layout is always bigendian irrespective of the runtime
+     *       // architecture. 
      *      char language[2];
+     *       // This field can take three different forms:
+     *       // - \0\0 means "any".
+     *       //
+     *       // - Two 7 bit ascii values interpreted as 2 letter region
+     *       //   codes ('US', 'GB' etc.). The high bit for both bytes is zero.
+     *       //
+     *       // - An UN M.49 3 digit region code. For simplicity, these are packed
+     *       //   in the same manner as the language codes, though we should need
+     *       //   only 10 bits to represent them, instead of the 15.
+     *       //
+     *       // The layout is always bigendian irrespective of the runtime
+     *       // architecture.
      *      char country[2];
      *   };
      *    uint32_t locale;
@@ -186,7 +221,12 @@ class ResTypeInfoTableConfigChunkChild(
 
     /**
      * <Attribute_10 ~ Attribute_11>
+     * // The ISO-15924 short name for the script corresponding to this
+     * // configuration. (eg. Hant, Latn, etc.). Interpreted in conjunction with
+     * // the locale field.
      * char localeScript[4];
+     * // A single BCP-47 variant subtag. Will vary in length between 4 and 8
+     * // chars. Interpreted in conjunction with the locale field.
      * char localeVariant[8];
      */
     var localeScript: ByteArray = ByteArray(4)
