@@ -93,8 +93,8 @@ class ResStringPoolHeaderChunkChild(
         ChunkProperty.CHUNK_HEADER
 
     init {
-        chunkParseOperator()
         checkChunkAttributes()
+        chunkParseOperator()
     }
 
     override fun chunkParseOperator(): ResStringPoolHeaderChunkChild {

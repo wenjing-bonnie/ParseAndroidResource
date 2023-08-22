@@ -193,7 +193,7 @@ class ResTypeInfoSixChunk(
             chunkName = "Resource Type",
             "$header",
             "id is $id, res0 is $res0, res1 is $res1,  entryCount is $entryCount, entriesStart is $entriesStart",
-            $resConfig
+            "$resConfig"
          )
          
 }

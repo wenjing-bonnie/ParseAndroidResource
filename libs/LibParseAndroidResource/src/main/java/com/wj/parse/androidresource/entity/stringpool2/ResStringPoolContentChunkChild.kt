@@ -65,8 +65,8 @@ class ResStringPoolContentChunkChild(
         ChunkProperty.CHUNK_CHILD
 
     init {
-        chunkParseOperator()
         checkChunkAttributes()
+        chunkParseOperator()
     }
 
     override fun chunkParseOperator(): ChunkParseOperator {
