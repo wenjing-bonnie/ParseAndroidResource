@@ -174,10 +174,14 @@ class ResTypeInfoSixChunk(
 
 
     override fun toString(): String =
-        "Part6: Resource type is <$resourceType>.\n" +
-                "${Logger.TAG_SPACE}${header}\n" +
-                "${Logger.TAG_SPACE}id is $id, res0 is $res0, res1 is $res1,  entryCount is $entryCount, entriesStart is $entriesStart \n" +
-                "${Logger.TAG_SPACE}$resConfig\n"
-
-
+        formatToString(
+            part = 6,
+            // TODO this index should be set from ResTypeSpecAndTypeInfoSixChunk    
+            childPart = 0,
+            chunkName = "Resource Type",
+            "$header",
+            "id is $id, res0 is $res0, res1 is $res1,  entryCount is $entryCount, entriesStart is $entriesStart",
+            $resConfig
+         )
+         
 }
