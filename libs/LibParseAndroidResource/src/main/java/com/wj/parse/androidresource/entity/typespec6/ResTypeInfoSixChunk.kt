@@ -53,7 +53,6 @@ import kotlin.experimental.and
  *    uint8_t flags;
  *    // Must be 0.
  *    uint16_t reserved;
-
  *    // Number of uint32_t entry indices that follow.
  *    uint32_t entryCount;
  *   // Offset from header where ResTable_entry data starts.
@@ -78,9 +77,21 @@ class ResTypeInfoSixChunk(
     *   uint8_t id;
     */
     var id: Int = -1
+    /**
+     *    enum {
+     *      // If set, the entry is sparse, and encodes both the entry ID and offset into each entry,
+     *      // and a binary search is used to find the key. Only available on platforms >= O.
+     *      // Mark any types that use this with a v26 qualifier to prevent runtime issues on older
+     *      // platforms.
+     *      FLAG_SPARSE = 0x01,
+     *    };
+     */
+    // TODO rename to flags
     var res0: Byte = -1
     /**
-     *
+     * TODO rename to reserved
+    *    // Must be 0.
+     *    uint16_t reserved;
      */
     var res1: Short = -1
     /**
