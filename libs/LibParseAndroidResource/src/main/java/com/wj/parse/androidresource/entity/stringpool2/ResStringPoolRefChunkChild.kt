@@ -39,7 +39,15 @@ class ResStringPoolRefChunkChild(
     private val stringStart: Int,
     private val stylesStart: Int
 ) : ChunkParseOperator {
-
+    /**
+     * It is the beginning index of string byte array.
+     * one string byte array is like this:
+     *       stringOffsetList[1] ->|                                                         stringOffsetList[0] ->|
+     * ... ---- the next string----|-------------------------------- the first string -----------------------------|
+     * ... |---------1(B)----------|----3(B)---|------length of this string(B)----|---------1(B)----------|--1(B)--|
+     * ... | length of this string |    null   |   res/layout/activity_main.xml   | length of this string |        |
+     * ... |---------1(B)----------|----3(B)---|------length of this string(B)----|---------1(B)----------|--1(B)--|
+     */
     var stringOffsetList = mutableListOf<ResStringPoolRef>()
     var styleOffsetList = mutableListOf<ResStringPoolRef>()
     var stringList = mutableListOf<String>()
@@ -112,20 +120,34 @@ class ResStringPoolRefChunkChild(
         // read string list
         /** one string in the chunk is
          * 1. read the length of string from first two byte , the last byte is length of this string
+         *       stringOffsetList[1] ->|                                                         stringOffsetList[0] ->|
          * ... ---- the next string----|-------------------------------- the first string -----------------------------|
-         * ... |---------1(B)----------|----3(B)---|------length of this string(B)----|--1(B)--|---------1(B)----------|
-         * ... | length of this string |      ?    |   res/layout/activity_main.xml   |        | length of this string |
-         * ... |---------1(B)----------|----3(B)---|------length of this string(B)----|--1(B)--|---------1(B)----------|
+         * ... |---------1(B)----------|----3(B)---|------length of this string(B)----|---------1(B)----------|--1(B)--|
+         * ... | length of this string |    null   |   res/layout/activity_main.xml   | length of this string |        |
+         * ... |---------1(B)----------|----3(B)---|------length of this string(B)----|---------1(B)----------|--1(B)--|
          *
          */
         childOffset += styleCount * OFFSET_BYTE
         // Logger.error(" \n ===== style childOffset = $childOffset")
+        // stringListByChildOffset()
+        stringListByStringOffset()
+        //TODO read style list
+        return this
+    }
+
+    /**
+     * @Deprecated
+     * we can use [ResStringPoolRefChunkChild.stringOffsetList] to get the string list
+     * so this method has been replaced by [ResStringPoolRefChunkChild.stringListByStringOffset]
+     */
+    private fun stringListByChildOffset() {
         for (index in 0 until stringCount) {
             // 1.read the length of string from first two byte , the last byte is length of this string
             val stringByteArray =
                 Utils.copyByte(resArrayStartZeroOffset, childOffset, OFFSET_BYTE / 2)
             stringByteArray?.let {
                 val stringLength = (stringByteArray[1] and 0x7F).toInt()
+                // Logger.error(" ===== stringLength = $stringLength, childOffset = ${childOffset}")
                 when {
                     stringLength > 0 -> {
                         val stringByte = Utils.copyByte(
@@ -141,7 +163,7 @@ class ResStringPoolRefChunkChild(
                                 if (flags == ResStringPoolHeaderChunkChild.Flags.UTF8_FLAG.value)
                                     Charsets.UTF_8
                                 else
-                                    // TODO strcmp16()
+                                // TODO strcmp16()
                                     Charsets.UTF_8
                             )
                         )
@@ -151,15 +173,44 @@ class ResStringPoolRefChunkChild(
                         stringList.add("")
                     }
                 }
-                // TODO why is 3
+                // there is 3 byte is null after the string byte
                 childOffset += (stringLength + 3)
                 // Logger.error(" \n =====$index  childOffset = ${childOffset} , stringList: ${stringList[index]}")
             } ?: run {
                 throw IllegalStateException("The string byte array is null")
             }
         }
-        //TODO read style list
-        return this
+    }
+
+    private fun stringListByStringOffset() {
+        val previousChildOffset = childOffset
+        stringOffsetList.forEach { ref ->
+            // 1.read the length of string from first two byte , the last byte is length of this string
+            val stringLengthArray =
+                Utils.copyByte(resArrayStartZeroOffset, childOffset, OFFSET_BYTE / 2)
+            val stringLength = stringLengthArray?.let {
+                (stringLengthArray[1] and 0x7F).toInt()
+            } ?: 0
+            if (stringLength <= 0) {
+                return@forEach
+            }
+
+            Utils.copyByte(resArrayStartZeroOffset, childOffset + OFFSET_BYTE / 2, stringLength)
+                ?.let {
+                    stringList.add(
+                        String(
+                            it,
+                            if (flags == ResStringPoolHeaderChunkChild.Flags.UTF8_FLAG.value)
+                                Charsets.UTF_8
+                            else
+                            // TODO strcmp16()
+                                Charsets.UTF_8
+                        )
+                    )
+                }
+            // next string
+            childOffset = previousChildOffset + ref.index
+        }
     }
 
     /**
