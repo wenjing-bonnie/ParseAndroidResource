@@ -134,54 +134,6 @@ class ResStringPoolRefChunkChild(
         //TODO read style list
         return this
     }
-
-    /**
-     * @Deprecated
-     * we can use [ResStringPoolRefChunkChild.stringOffsetList] to get the string list
-     * so this method has been replaced by [ResStringPoolRefChunkChild.stringListByStringOffset]
-     */
-    private fun stringListByChildOffset() {
-        for (index in 0 until stringCount) {
-            // 1.read the length of string from first two byte , the last byte is length of this string
-            val stringByteArray =
-                Utils.copyByte(resArrayStartZeroOffset, childOffset, OFFSET_BYTE / 2)
-            stringByteArray?.let {
-                val stringLength = (stringByteArray[1] and 0x7F).toInt()
-                // Logger.error(" ===== stringLength = $stringLength, childOffset = ${childOffset}")
-                when {
-                    stringLength > 0 -> {
-                        val stringByte = Utils.copyByte(
-                            resArrayStartZeroOffset,
-                            childOffset + OFFSET_BYTE / 2,
-                            stringLength
-                        ) ?: kotlin.run {
-                            throw IllegalStateException("The string byte array is null")
-                        }
-                        stringList.add(
-                            String(
-                                stringByte,
-                                if (flags == ResStringPoolHeaderChunkChild.Flags.UTF8_FLAG.value)
-                                    Charsets.UTF_8
-                                else
-                                // TODO strcmp16()
-                                    Charsets.UTF_8
-                            )
-                        )
-                    }
-
-                    else -> {
-                        stringList.add("")
-                    }
-                }
-                // there is 3 byte is null after the string byte
-                childOffset += (stringLength + 3)
-                // Logger.error(" \n =====$index  childOffset = ${childOffset} , stringList: ${stringList[index]}")
-            } ?: run {
-                throw IllegalStateException("The string byte array is null")
-            }
-        }
-    }
-
     private fun stringListByStringOffset() {
         val previousChildOffset = childOffset
         stringOffsetList.forEach { ref ->
@@ -231,4 +183,52 @@ class ResStringPoolRefChunkChild(
         }
         buffer.toString()
     }
+
+    /**
+     * @Deprecated
+     * we can use [ResStringPoolRefChunkChild.stringOffsetList] to get the string list
+     * so this method has been replaced by [ResStringPoolRefChunkChild.stringListByStringOffset]
+     */
+    private fun stringListByChildOffset() {
+        for (index in 0 until stringCount) {
+            // 1.read the length of string from first two byte , the last byte is length of this string
+            val stringByteArray =
+                Utils.copyByte(resArrayStartZeroOffset, childOffset, OFFSET_BYTE / 2)
+            stringByteArray?.let {
+                val stringLength = (stringByteArray[1] and 0x7F).toInt()
+                // Logger.error(" ===== stringLength = $stringLength, childOffset = ${childOffset}")
+                when {
+                    stringLength > 0 -> {
+                        val stringByte = Utils.copyByte(
+                            resArrayStartZeroOffset,
+                            childOffset + OFFSET_BYTE / 2,
+                            stringLength
+                        ) ?: kotlin.run {
+                            throw IllegalStateException("The string byte array is null")
+                        }
+                        stringList.add(
+                            String(
+                                stringByte,
+                                if (flags == ResStringPoolHeaderChunkChild.Flags.UTF8_FLAG.value)
+                                    Charsets.UTF_8
+                                else
+                                // TODO strcmp16()
+                                    Charsets.UTF_8
+                            )
+                        )
+                    }
+
+                    else -> {
+                        stringList.add("")
+                    }
+                }
+                // there is 3 byte is null after the string byte
+                childOffset += (stringLength + 3)
+                // Logger.error(" \n =====$index  childOffset = ${childOffset} , stringList: ${stringList[index]}")
+            } ?: run {
+                throw IllegalStateException("The string byte array is null")
+            }
+        }
+    }
+
 }
