@@ -26,6 +26,7 @@ import kotlin.experimental.and
  *  };
  *
  */
+// TODO rename to ResStringPoolRefChunkChild
 class ResStringPoolContentChunkChild(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
@@ -41,6 +42,7 @@ class ResStringPoolContentChunkChild(
     private val stylesStart: Int
 ) : ChunkParseOperator {
 
+    // TODO mutableListOf<ResStringPoolRef>()
     var stringOffsetList = mutableListOf<Int>()
     var styleOffsetList = mutableListOf<Int>()
     var stringList = mutableListOf<String>()
