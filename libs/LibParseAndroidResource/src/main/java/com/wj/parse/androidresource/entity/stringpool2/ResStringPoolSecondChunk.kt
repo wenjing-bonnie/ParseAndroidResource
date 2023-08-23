@@ -55,6 +55,7 @@ open class ResStringPoolSecondChunk(
         resStringPoolRefOffset = ResStringPoolRefChunkChild(
             resArrayStartZeroOffset,
             startOffset = childStartOffsetInParent,
+            headerSize = resStringPoolHeader.header.headerSize,
             flags = resStringPoolHeader.flags,
             stringCount = resStringPoolHeader.stringCount,
             styleCount = resStringPoolHeader.styleCount,

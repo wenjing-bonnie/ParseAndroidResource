@@ -33,9 +33,14 @@ class ResStringPoolRefChunkChild(
      * the child offset in the parent byte array
      */
     override val startOffset: Int,
+    private val headerSize: Short,
     private val flags: Int,
     private val stringCount: Int,
     private val styleCount: Int,
+    /**
+     * Index from header of the string data.
+     * It means the index contains header.headerSize
+     */
     private val stringStart: Int,
     private val stylesStart: Int
 ) : ChunkParseOperator {
@@ -134,10 +139,11 @@ class ResStringPoolRefChunkChild(
         //TODO read style list
         return this
     }
+
     private fun stringListByStringOffset() {
-        val previousChildOffset = childOffset
         stringOffsetList.forEach { ref ->
             // 1.read the length of string from first two byte , the last byte is length of this string
+            // Logger.error("  ===== style childOffset = $childOffset")
             val stringLengthArray =
                 Utils.copyByte(resArrayStartZeroOffset, childOffset, OFFSET_BYTE / 2)
             val stringLength = stringLengthArray?.let {
@@ -161,7 +167,7 @@ class ResStringPoolRefChunkChild(
                     )
                 }
             // next string
-            childOffset = previousChildOffset + ref.index
+            childOffset = stringStart - headerSize + ref.index
         }
     }
 
