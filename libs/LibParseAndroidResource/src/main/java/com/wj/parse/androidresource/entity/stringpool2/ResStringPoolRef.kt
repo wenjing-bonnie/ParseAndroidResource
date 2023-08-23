@@ -1,4 +1,4 @@
-
+package com.wj.parse.androidresource.entity.stringpool2
 
 /**
  * Reference to a string in a string pool.
@@ -10,4 +10,4 @@
  *    uint32_t index;
  * };
  */
-data class ResStringPoolRef(val index:Int)
+data class ResStringPoolRef(val index: Int)

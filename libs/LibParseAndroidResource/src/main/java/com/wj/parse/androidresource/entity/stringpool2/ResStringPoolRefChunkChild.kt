@@ -2,7 +2,6 @@ package com.wj.parse.androidresource.entity.stringpool2
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunkChild.Companion.OFFSET_BYTE
-import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunkChild.Companion.TWO_BYTE
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -12,9 +11,8 @@ import kotlin.experimental.and
 
 /**
  * This is second child of [ResStringPoolSecondChunk]
- * Reference to a string in a string pool
- *  TODO rename and find struct
  *
+ * Reference to a string in a string pool
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#425
  *
  * * struct ResStringPool_ref
@@ -26,8 +24,7 @@ import kotlin.experimental.and
  *  };
  *
  */
-// TODO rename to ResStringPoolRefChunkChild
-class ResStringPoolContentChunkChild(
+class ResStringPoolRefChunkChild(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -36,15 +33,15 @@ class ResStringPoolContentChunkChild(
      * the child offset in the parent byte array
      */
     override val startOffset: Int,
+    private val flags: Int,
     private val stringCount: Int,
     private val styleCount: Int,
     private val stringStart: Int,
     private val stylesStart: Int
 ) : ChunkParseOperator {
 
-    // TODO mutableListOf<ResStringPoolRef>()
-    var stringOffsetList = mutableListOf<Int>()
-    var styleOffsetList = mutableListOf<Int>()
+    var stringOffsetList = mutableListOf<ResStringPoolRef>()
+    var styleOffsetList = mutableListOf<ResStringPoolRef>()
     var stringList = mutableListOf<String>()
 
     // TODO styleList?????
@@ -77,7 +74,7 @@ class ResStringPoolContentChunkChild(
     }
 
     override fun chunkParseOperator(): ChunkParseOperator {
-
+        // read string offset list
         for (index in 0 until stringCount) {
             val sourceBytes: ByteArray? =
                 Utils.copyByte(
@@ -86,14 +83,14 @@ class ResStringPoolContentChunkChild(
                     OFFSET_BYTE
                 )
             sourceBytes?.let {
-                stringOffsetList.add(Utils.byte2Int(it))
+                stringOffsetList.add(ResStringPoolRef(Utils.byte2Int(it)))
 //                Logger.debug("The $index byte array is ${byteOffset(it)},  string offset is ${stringOffsetList[index]} ")
             } ?: run {
                 Logger.error("Read string offset is null")
                 throw IllegalStateException("Read string offset is null")
             }
         }
-        // read style offset
+        // read style offset list
         //  TODO need to test it
         childOffset += stringCount * OFFSET_BYTE
         // Logger.debug("1 childOffset = $childOffset")
@@ -105,7 +102,7 @@ class ResStringPoolContentChunkChild(
                     OFFSET_BYTE
                 )
             sourceBytes?.let {
-                styleOffsetList.add(Utils.byte2Int(it))
+                styleOffsetList.add(ResStringPoolRef(Utils.byte2Int(it)))
                 Logger.debug("The $index byte array is ${byteOffset(it)},  style offset is ${styleOffsetList[index]} ")
             } ?: run {
                 Logger.error("Read style offset is null")
@@ -113,25 +110,41 @@ class ResStringPoolContentChunkChild(
             }
         }
         // read string list
-        // 每个字符串的头两个字节的最后一个字节是字符串的长度
-        //
+        /** one string in the chunk is
+         * 1. read the length of string from first two byte , the last byte is length of this string
+         * ... ---- the next string----|-------------------------------- the first string -----------------------------|
+         * ... |---------1(B)----------|----3(B)---|------length of this string(B)----|--1(B)--|---------1(B)----------|
+         * ... | length of this string |      ?    |   res/layout/activity_main.xml   |        | length of this string |
+         * ... |---------1(B)----------|----3(B)---|------length of this string(B)----|--1(B)--|---------1(B)----------|
+         *
+         */
         childOffset += styleCount * OFFSET_BYTE
         // Logger.error(" \n ===== style childOffset = $childOffset")
         for (index in 0 until stringCount) {
-            val stringByteArray = Utils.copyByte(resArrayStartZeroOffset, childOffset, TWO_BYTE)
+            // 1.read the length of string from first two byte , the last byte is length of this string
+            val stringByteArray =
+                Utils.copyByte(resArrayStartZeroOffset, childOffset, OFFSET_BYTE / 2)
             stringByteArray?.let {
                 val stringLength = (stringByteArray[1] and 0x7F).toInt()
                 when {
                     stringLength > 0 -> {
                         val stringByte = Utils.copyByte(
                             resArrayStartZeroOffset,
-                            childOffset + TWO_BYTE,
+                            childOffset + OFFSET_BYTE / 2,
                             stringLength
                         ) ?: kotlin.run {
                             throw IllegalStateException("The string byte array is null")
                         }
-                        // TODO the UTF_8 need to confirm!!
-                        stringList.add(String(stringByte, Charsets.UTF_8))
+                        stringList.add(
+                            String(
+                                stringByte,
+                                if (flags == ResStringPoolHeaderChunkChild.Flags.UTF8_FLAG.value)
+                                    Charsets.UTF_8
+                                else
+                                    // TODO strcmp16()
+                                    Charsets.UTF_8
+                            )
+                        )
                     }
 
                     else -> {
@@ -145,12 +158,12 @@ class ResStringPoolContentChunkChild(
                 throw IllegalStateException("The string byte array is null")
             }
         }
+        //TODO read style list
         return this
     }
 
     /**
      * TODO toString() need to be optimized
-     *
      */
     override fun toString(): String =
         formatToString(

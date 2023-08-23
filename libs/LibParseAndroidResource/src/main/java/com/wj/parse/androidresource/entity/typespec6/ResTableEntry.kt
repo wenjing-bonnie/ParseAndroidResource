@@ -1,4 +1,4 @@
-
+package com.wj.parse.androidresource.entity.typespec6
 /**
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#1491
  * This is the beginning of information about an entry in the resource

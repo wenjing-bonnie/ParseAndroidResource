@@ -21,7 +21,7 @@ open class ResStringPoolSecondChunk(
 ) : ChunkParseOperator {
 
     lateinit var resStringPoolHeader: ResStringPoolHeaderChunkChild
-    lateinit var resStringPoolRefOffset: ResStringPoolContentChunkChild
+    lateinit var resStringPoolRefOffset: ResStringPoolRefChunkChild
 
     /**
      * The end offset byte of this chunk
@@ -52,9 +52,10 @@ open class ResStringPoolSecondChunk(
             ResStringPoolHeaderChunkChild(resArrayStartZeroOffset)
         var childStartOffsetInParent = resStringPoolHeader.chunkEndOffset
         // string offset and style offset
-        resStringPoolRefOffset = ResStringPoolContentChunkChild(
+        resStringPoolRefOffset = ResStringPoolRefChunkChild(
             resArrayStartZeroOffset,
             startOffset = childStartOffsetInParent,
+            flags = resStringPoolHeader.flags,
             stringCount = resStringPoolHeader.stringCount,
             styleCount = resStringPoolHeader.styleCount,
             stringStart = resStringPoolHeader.stringStart,
