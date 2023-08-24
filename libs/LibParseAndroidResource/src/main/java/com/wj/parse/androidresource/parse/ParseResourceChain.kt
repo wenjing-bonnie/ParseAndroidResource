@@ -1,6 +1,6 @@
 package com.wj.parse.androidresource.parse
 
-import com.wj.parse.androidresource.entity.package3.ResTablePackageHeaderThirdChunk
+import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolFourChunk
 import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolFiveChunk
@@ -40,11 +40,11 @@ class ParseResourceChain() {
                 Logger.debug(it.toString())
             }
 
-            /** read [ResTablePackageHeaderThirdChunk] */
+            /** read [ResTablePackageThirdChunk] */
             parentOffset += stringPoolChunk.chunkEndOffset
             Logger.debug("\n${Logger.TITLE_TAG_START} begin to read third chunk: table package, parentOffset is $parentOffset ${Logger.TITLE_TAG_END}")
             val tablePackageChunk =
-                ResTablePackageHeaderThirdChunk(resourceByteArray, parentOffset)
+                ResTablePackageThirdChunk(resourceByteArray, parentOffset)
             tablePackageChunk.startParseChunk().also {
                 Logger.debug(it.toString())
             }

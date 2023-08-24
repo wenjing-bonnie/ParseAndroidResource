@@ -41,8 +41,8 @@ import com.wj.parse.androidresource.utils.Utils
  *    uint32_t typeIdOffset;
  * };
  */
-// TODO rename to ResTablePackageThirdChunk
-class ResTablePackageHeaderThirdChunk(
+
+class ResTablePackageThirdChunk(
     /**
      * whole resource byte array
      */
