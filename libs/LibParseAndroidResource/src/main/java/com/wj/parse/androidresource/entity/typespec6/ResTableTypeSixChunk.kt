@@ -1,11 +1,11 @@
 package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
+import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
-import java.lang.IllegalStateException
 import kotlin.experimental.and
 
 /**
@@ -68,7 +68,15 @@ class ResTableTypeSixChunk(
     /**
      * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
      */
-    private val resourceTypeStringList: MutableList<String> = mutableListOf()
+    private val resTypeStringList: MutableList<String> = mutableListOf(),
+    /**
+     * [ResTablePackageThirdChunk.id]
+     */
+    private val packageId: Int,
+    /**
+     * [ResTableTypeSpecSixChunk.id]
+     */
+    private val resTypeSpecId: Int
 ) : ChunkParseOperator {
     /**
      *   // The type identifier this chunk is holding.  Type IDs start
@@ -127,10 +135,11 @@ class ResTableTypeSixChunk(
         get() = header.size
 
     override val position: Int
-        get() = 6
+        get() = ResTableTypeSpecAndTypeSixChunk.POSITION
 
     override fun chunkParseOperator(): ChunkParseOperator {
         var attributeOffset = header.chunkEndOffset
+
         /** id is behind the [ResChunkHeader]*/
         var attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
@@ -180,33 +189,65 @@ class ResTableTypeSixChunk(
         attributeOffset += ResTableTypeSpecAndTypeSixChunk.ENTRIES_START_BYTE
 
         /** Next is the ResTable_config */
+        // TODO why config.chunkEndOffset is 36, not 48?
+        // TODO why the header.headerSize中的config的size只有36, not 48?
         config =
             ResTableConfigChunkChild(resArrayStartZeroOffset, attributeOffset)
         // resourceTypeStringList: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
 
         /** Next is the ResTable_entry */
         val typeIndex = id - 1
-        if (typeIndex >= resourceTypeStringList.size) {
-            throw IllegalStateException("The id $id is wrong, can't find it in the $resourceTypeStringList")
+        if (typeIndex >= resTypeStringList.size) {
+            throw IllegalStateException("The id $id is wrong, can't find it in the $resTypeStringList")
         }
         // get the current resource type
-        resourceTypeString = resourceTypeStringList[typeIndex]
+        resourceTypeString = resTypeStringList[typeIndex]
         // get the entryCount
         val entries = mutableListOf<Int>()
-        // TODO why config.chunkEndOffset is 36, not 48?
-        // attributeOffset += config.chunkEndOffset
-        // attributeOffset += 4
-        // TODO why the header.headerSize中的config的size只有36, not 48?
+        // entries is right after the header
         for (index in 0 until entryCount) {
             attributeOffset = header.headerSize + index * 4
             attributeByteArray = Utils.copyByte(resArrayStartZeroOffset, attributeOffset)
             val element = Utils.byte2Int(attributeByteArray)
             entries.add(element)
         }
-        Logger.debug(entries.toString())
-        // TODO next is ResTableEntry
+        // Logger.debug(entries.toString())
+        // next is ResTableEntry,
+        val resTableEntries = mutableListOf<ResTableTypeEntryChunkChild>()
+        /**
+         * | -------------------------- header --------------------  headerSize ->|--- entryCount x 4 ->|<- entriesStart ------ |
+         * |-- headerSize --|- 1 -|--- 3  ---|---- 4  ----|---- 4  ----- |---36 --|----              ---|                    ---|
+         * |    header      |  id | reserved | entryCount | entriesStart | config | entry offset array  |  ResTable_entry array |
+         * |-- headerSize --|- 1 -|--- 3  ---|---- 4  ----|---- 4  ----- |---36 --|----              ---|                    ---|
+         */
+        attributeOffset = entriesStart
+        for (index in 0 until entryCount) {
+            val resourceId = getResourceId(index)
+            val entry = ResTableTypeEntryChunkChild(resArrayStartZeroOffset, attributeOffset)
+            Logger.debug("resourceId is $resourceId, entry is $entry, attributeOffset is $attributeOffset")
+            when (entry.flags) {
+                // If set FLAG_COMPLEX, this is a complex entry, holding a set of name/value
+                // mappings. It is followed by an array of ResTable_map structures.
+                ResTableTypeEntryChunkChild.Flags.FLAG_COMPLEX.value -> {
+
+                }
+
+                else -> {
+
+                }
+            }
+
+        }
         return this
     }
+
+    /**
+     * the resourceId is
+     * | packageId | resTypeSpecId | entryId |
+     */
+    private fun getResourceId(entryId: Int) =
+        packageId shl 24 or (resTypeSpecId and 0xFF shl 16) or (entryId and 0xFFFF)
+
 
     override fun chunkProperty() = ChunkProperty.CHUNK
 

@@ -73,7 +73,8 @@ class ParseResourceChain() {
             val typeChunk = ResTableTypeSpecAndTypeSixChunk(
                 resourceByteArray,
                 parentOffset,
-                typeStringList = typeStringPoolChunk.resStringPoolRefOffset.stringList
+                typeStringList = typeStringPoolChunk.resStringPoolRefOffset.stringList,
+                packageId = tablePackageChunk.id
             )
             typeChunk.startParseChunk().also {
                 Logger.debug(it.toString())

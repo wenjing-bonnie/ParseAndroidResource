@@ -62,6 +62,9 @@ class ResTablePackageThirdChunk(
     var keyStrings: Int = -1
     var lastPublicKey: Int = -1
 
+    /**
+     * this chunk is the part of header
+     */
     override val chunkEndOffset: Int
         get() = header.headerSize.toInt()
 

@@ -2,6 +2,7 @@ package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
+import com.wj.parse.androidresource.interfaces.ChunkParseOperator.Companion.CHILD_CHILD_POSITION
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
@@ -233,8 +234,8 @@ class ResTableConfigChunkChild(
     var localeVariant: ByteArray = ByteArray(8)
 
     init {
-        chunkParseOperator()
         checkChunkAttributes()
+        chunkParseOperator()
     }
 
     // TODO 36 or 48???
@@ -249,9 +250,9 @@ class ResTableConfigChunkChild(
         }
 
     override val position: Int
-        get() = 6
+        get() = ResTableTypeSpecAndTypeSixChunk.POSITION
     override val childPosition: Int
-        get() = 10000
+        get() = CHILD_CHILD_POSITION
 
     override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK_CHILD_CHILD
 

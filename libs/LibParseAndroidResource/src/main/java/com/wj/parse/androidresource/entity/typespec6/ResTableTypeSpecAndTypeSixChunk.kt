@@ -26,7 +26,11 @@ class ResTableTypeSpecAndTypeSixChunk(
     /**
      * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
      */
-    val typeStringList: MutableList<String> = mutableListOf()
+    val typeStringList: MutableList<String> = mutableListOf(),
+    /**
+     * [ResTablePackageThirdChunk.id]
+     */
+    private val packageId: Int,
 ) : ChunkParseOperator {
     private val typeChunks = mutableListOf<ChunkParseOperator>()
     override val header: ResChunkHeader?
@@ -42,7 +46,7 @@ class ResTableTypeSpecAndTypeSixChunk(
         get() = TODO()
 
     override val position: Int
-        get() = 6
+        get() = POSITION
 
     override val childPosition: Int
         get() = 0
@@ -53,6 +57,7 @@ class ResTableTypeSpecAndTypeSixChunk(
         var childByteArray: ByteArray? = resArrayStartZeroOffset
         // loop every chunk
         var chunkPosition = 1
+        var resTypeSpecId = 0
         while (!isTypeChunkParsingCompleted(endOffset = endOffset, sourceSize = sourceSize)) {
             childByteArray?.let { child ->
                 val childHeader = ResChunkHeader(child)
@@ -70,6 +75,7 @@ class ResTableTypeSpecAndTypeSixChunk(
                             // go to next chunk
                             endOffset += typeChunk.chunkEndOffset
                         }
+                        resTypeSpecId = typeChunk.id
                     }
 
                     else -> {
@@ -78,7 +84,9 @@ class ResTableTypeSpecAndTypeSixChunk(
                                 inputResourceByteArray,
                                 endOffset,
                                 chunkPosition,
-                                typeStringList
+                                typeStringList,
+                                packageId = packageId,
+                                resTypeSpecId = resTypeSpecId
                             )
                         typeChunk.startParseChunk().also {
                             typeChunks.add(it)
@@ -120,6 +128,7 @@ class ResTableTypeSpecAndTypeSixChunk(
     companion object {
         const val SPEC_PUBLIC = 0x40000000
         const val SPEC_STAGED_API = 0x20000000u
+        const val POSITION = 6
         const val ID_BYTE = 1
         const val RES0_BYTE = 1
         const val RES1_BYTE = 2

@@ -81,7 +81,7 @@ class ResTableTypeSpecSixChunk(
         get() = header.size
 
     override val position: Int
-        get() = 6
+        get() = ResTableTypeSpecAndTypeSixChunk.POSITION
 
     override fun chunkParseOperator(): ChunkParseOperator {
         var attributeOffset = header.chunkEndOffset

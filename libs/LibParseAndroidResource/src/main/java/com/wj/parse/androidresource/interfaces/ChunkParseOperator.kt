@@ -25,6 +25,7 @@ interface ChunkParseOperator {
     val startOffset: Int
 
     /**
+     * Normally this chunkEndOffset is [ChunkParseOperator.header.size]
      *  If this chunk is a whole chunk, [chunkEndOffset] should return the end of this chunk in bit unit
      *  if this chunk is a child chunk, [chunkEndOffset] should return the size of this chunk in bit unit
      */
@@ -138,6 +139,10 @@ interface ChunkParseOperator {
                 "\n${Logger.TAG_SPACE}$it"
             }
         }$end"
+    }
+
+    companion object {
+        const val CHILD_CHILD_POSITION = 10000
     }
 
 }

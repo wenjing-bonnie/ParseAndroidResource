@@ -28,6 +28,7 @@ open class ResStringPoolSecondChunk(
      */
     override val chunkEndOffset: Int
         get() = when {
+            // normally resStringPoolHeader is initialized
             ::resStringPoolHeader.isInitialized -> resStringPoolHeader.header.size
             else -> (startOffset + resStringPoolHeader.chunkEndOffset + resStringPoolRefOffset.chunkEndOffset)
         }

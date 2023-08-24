@@ -10,4 +10,7 @@ package com.wj.parse.androidresource.entity.stringpool2
  *    uint32_t index;
  * };
  */
-data class ResStringPoolRef(val index: Int)
+data class ResStringPoolRef(val index: Int) {
+    val size: Int get() = 4
+    override fun toString(): String = "index is $index"
+}
