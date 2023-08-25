@@ -7,6 +7,21 @@ import com.wj.parse.androidresource.utils.Logger
 
 /**
  * create by wenjing.liu at 2023/8/25
+ * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#1531
+ * /**
+ * A single name/value mapping that is part of a complex resource
+ * entry.
+ * /
+ * struct ResTable_map
+ * {
+ *   // The resource identifier defining this mapping's name.  For attribute
+ *   // resources, 'name' can be one of the following special resource types
+ *   // to supply meta-data about the attribute; for all other resource types
+ *   // it must be an attribute resource.
+ *   ResTable_ref name;
+ *    // This mapping's value.
+ *   Res_value value;
+ * };
  */
 class ResTableTypeMapChunkChild(
     /**
@@ -19,7 +34,7 @@ class ResTableTypeMapChunkChild(
     override val startOffset: Int,
 ) : ChunkParseOperator {
     lateinit var name: ResTableRef
-    lateinit var value: ResTableTypeMapChunkChild
+    lateinit var value: ResTableTypeValueChunkChild
 
     override val position: Int
         get() = ResTableTypeSpecAndTypeSixChunk.POSITION
