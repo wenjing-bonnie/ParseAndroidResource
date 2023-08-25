@@ -11,6 +11,7 @@ package com.wj.parse.androidresource.entity.stringpool2
  * };
  */
 data class ResStringPoolRef(val index: Int) {
-    val size: Int get() = 4
-    override fun toString(): String = "index is $index"
+    companion object{
+        const val SIZE_IN_BYTE = 4
+    }
 }

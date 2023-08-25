@@ -4,7 +4,8 @@ import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
-import java.lang.IllegalArgumentException
+import com.wj.parse.androidresource.utils.Utils
+import kotlin.experimental.and
 
 /**
  * create by wenjing.liu at 2023/8/25
@@ -57,7 +58,26 @@ class ResTableTypeValueChunkChild(
         get() = SIZE_IN_BYTE + RES0_IN_BYTE + DATA_TYPE_IN_BYTE + DATA_IN_BYTE
 
     override fun chunkParseOperator(): ChunkParseOperator {
-        TODO("Not yet implemented")
+        var attributeOffset = 0
+        var attributeByteArray = Utils.copyByte(resArrayStartZeroOffset, SIZE_IN_BYTE)
+        size = Utils.byte2Short(attributeByteArray)
+
+        attributeOffset += SIZE_IN_BYTE
+        attributeByteArray = Utils.copyByte(resArrayStartZeroOffset, RES0_IN_BYTE)
+        attributeByteArray?.let {
+            res0 = it[0] and 0xFF.toByte()
+        }
+
+        attributeOffset += RES0_IN_BYTE
+        attributeByteArray = Utils.copyByte(resArrayStartZeroOffset, DATA_TYPE_IN_BYTE)
+        attributeByteArray?.let {
+            dataType = it[0] and 0xFF.toByte()
+        }
+
+        attributeOffset += DATA_TYPE_IN_BYTE
+        attributeByteArray = Utils.copyByte(resArrayStartZeroOffset, DATA_IN_BYTE)
+        data = Utils.byte2Int(attributeByteArray)
+        return this
     }
 
     override fun chunkProperty() = ChunkProperty.CHUNK_CHILD_CHILD
@@ -65,7 +85,7 @@ class ResTableTypeValueChunkChild(
     override fun toString() =
         formatToString(
             chunkName = "Res Table Value",
-            "size is $size, res0 is $res0, dataType is $dataType, data is $data"
+            "size is $size, res0 is $res0, dataType is ${DataType.valueOf(dataType)}, data is $data"
         )
 
     companion object {
@@ -184,27 +204,29 @@ class ResTableTypeValueChunkChild(
          */
         TYPE_LAST_INT(0x1f);
 
-        fun valueOf(value: Byte) = when (value) {
-            TYPE_NULL.value -> TYPE_NULL.name
-            TYPE_REFERENCE.value -> TYPE_REFERENCE.name
-            TYPE_ATTRIBUTE.value -> TYPE_ATTRIBUTE.name
-            TYPE_STRING.value -> TYPE_STRING.name
-            TYPE_FLOAT.value -> TYPE_FLOAT.name
-            TYPE_DIMENSION.value -> TYPE_DIMENSION.name
-            TYPE_FRACTION.value -> TYPE_FRACTION.name
-            TYPE_FIRST_INT.value -> TYPE_FIRST_INT.name
-            TYPE_INT_DEC.value -> TYPE_FIRST_INT.name
-            TYPE_INT_HEX.value -> TYPE_FIRST_INT.name
-            TYPE_INT_BOOLEAN.value -> TYPE_INT_BOOLEAN.name
-            TYPE_FIRST_COLOR_INT.value -> TYPE_FIRST_COLOR_INT.name
-            TYPE_INT_COLOR_ARGB8.value -> TYPE_INT_COLOR_ARGB8.name
-            TYPE_INT_COLOR_RGB8.value -> TYPE_INT_COLOR_RGB8.name
-            TYPE_INT_COLOR_ARGB4.value -> TYPE_INT_COLOR_ARGB4.name
-            TYPE_INT_COLOR_RGB4.value -> TYPE_INT_COLOR_RGB4.name
-            TYPE_LAST_COLOR_INT.value -> TYPE_LAST_COLOR_INT.name
-            TYPE_LAST_INT.value -> TYPE_LAST_INT.name
-            else -> {
-                throw IllegalArgumentException("A wrong value for this enum class")
+        companion object {
+            fun valueOf(value: Byte) = when (value) {
+                TYPE_NULL.value -> TYPE_NULL.name
+                TYPE_REFERENCE.value -> TYPE_REFERENCE.name
+                TYPE_ATTRIBUTE.value -> TYPE_ATTRIBUTE.name
+                TYPE_STRING.value -> TYPE_STRING.name
+                TYPE_FLOAT.value -> TYPE_FLOAT.name
+                TYPE_DIMENSION.value -> TYPE_DIMENSION.name
+                TYPE_FRACTION.value -> TYPE_FRACTION.name
+                TYPE_FIRST_INT.value -> TYPE_FIRST_INT.name
+                TYPE_INT_DEC.value -> TYPE_FIRST_INT.name
+                TYPE_INT_HEX.value -> TYPE_FIRST_INT.name
+                TYPE_INT_BOOLEAN.value -> TYPE_INT_BOOLEAN.name
+                TYPE_FIRST_COLOR_INT.value -> TYPE_FIRST_COLOR_INT.name
+                TYPE_INT_COLOR_ARGB8.value -> TYPE_INT_COLOR_ARGB8.name
+                TYPE_INT_COLOR_RGB8.value -> TYPE_INT_COLOR_RGB8.name
+                TYPE_INT_COLOR_ARGB4.value -> TYPE_INT_COLOR_ARGB4.name
+                TYPE_INT_COLOR_RGB4.value -> TYPE_INT_COLOR_RGB4.name
+                TYPE_LAST_COLOR_INT.value -> TYPE_LAST_COLOR_INT.name
+                TYPE_LAST_INT.value -> TYPE_LAST_INT.name
+                else -> {
+                    throw IllegalArgumentException("A wrong value for this enum class")
+                }
             }
         }
     }

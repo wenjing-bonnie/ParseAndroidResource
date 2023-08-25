@@ -68,7 +68,11 @@ class ResTableTypeSixChunk(
     /**
      * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
      */
-    private val resTypeStringList: MutableList<String> = mutableListOf(),
+    private val resTypeStringList: MutableList<String>,
+    /**
+     * all resource key list
+     */
+    private val resKeyStringList: MutableList<String>,
     /**
      * [ResTablePackageThirdChunk.id]
      */
@@ -221,15 +225,23 @@ class ResTableTypeSixChunk(
          * |-- headerSize --|- 1 -|--- 3  ---|---- 4  ----|---- 4  ----- |---36 --|----              ---|                    ---|
          */
         attributeOffset = entriesStart
+        Logger.debug("entriesStart is $entriesStart, headerSize is ${header.headerSize}")
         for (index in 0 until entryCount) {
             val resourceId = getResourceId(index)
-            val entry = ResTableTypeEntryChunkChild(resArrayStartZeroOffset, attributeOffset)
-            Logger.debug("resourceId is $resourceId, entry is $entry, attributeOffset is $attributeOffset")
+            val entry = ResTableTypeEntryChunkChild(
+                resArrayStartZeroOffset,
+                attributeOffset,
+                resKeyStringList[index]
+            )
+            Logger.debug("resourceId is $resourceId, entry is $entry")
             when (entry.flags) {
                 // If set FLAG_COMPLEX, this is a complex entry, holding a set of name/value
                 // mappings. It is followed by an array of ResTable_map structures.
                 ResTableTypeEntryChunkChild.Flags.FLAG_COMPLEX.value -> {
-
+                    val mapOffset = attributeOffset+entry.size
+                    Logger.debug(" mapOffset is $mapOffset")
+                    val map = ResTableTypeMapChunkChild(resArrayStartZeroOffset, mapOffset)
+                    Logger.debug("map is $map")
                 }
 
                 else -> {

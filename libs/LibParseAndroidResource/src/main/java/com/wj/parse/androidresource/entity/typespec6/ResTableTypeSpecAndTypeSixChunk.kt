@@ -26,7 +26,11 @@ class ResTableTypeSpecAndTypeSixChunk(
     /**
      * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
      */
-    val typeStringList: MutableList<String> = mutableListOf(),
+    val typeStringList: MutableList<String>,
+    /**
+     * all resource key list
+     */
+    val keyStringList: MutableList<String>,
     /**
      * [ResTablePackageThirdChunk.id]
      */
@@ -84,7 +88,8 @@ class ResTableTypeSpecAndTypeSixChunk(
                                 inputResourceByteArray,
                                 endOffset,
                                 chunkPosition,
-                                typeStringList,
+                                resTypeStringList = typeStringList,
+                                resKeyStringList = keyStringList,
                                 packageId = packageId,
                                 resTypeSpecId = resTypeSpecId
                             )

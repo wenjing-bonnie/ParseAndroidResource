@@ -4,6 +4,7 @@ import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
+import com.wj.parse.androidresource.utils.Utils
 
 /**
  * create by wenjing.liu at 2023/8/25
@@ -36,6 +37,11 @@ class ResTableTypeMapChunkChild(
     lateinit var name: ResTableRef
     lateinit var value: ResTableTypeValueChunkChild
 
+    init {
+        checkChunkAttributes()
+        chunkParseOperator()
+    }
+
     override val position: Int
         get() = ResTableTypeSpecAndTypeSixChunk.POSITION
 
@@ -54,11 +60,19 @@ class ResTableTypeMapChunkChild(
         }
 
     override fun chunkParseOperator(): ChunkParseOperator {
+        var attributeOffset = 0
+        var attributeByteArray =
+            Utils.copyByte(resArrayStartZeroOffset, attributeOffset, ResTableRef.SIZE_IN_BYTE)
+        name = ResTableRef(Utils.byte2Int(attributeByteArray))
+
+        attributeOffset += ResTableRef.SIZE_IN_BYTE
+        value = ResTableTypeValueChunkChild(resArrayStartZeroOffset, attributeOffset)
         return this
     }
 
     override fun toString() = formatToString(
-        chunkName = "Res Table Entry Map"
+        chunkName = "Res Table Entry Map",
+        "name is $name, value is $value"
     )
 
     /**
@@ -75,6 +89,8 @@ class ResTableTypeMapChunkChild(
      * };
      */
     data class ResTableRef(val ident: Int) {
-        val size: Int get() = 4
+        companion object {
+            const val SIZE_IN_BYTE = 4
+        }
     }
 }

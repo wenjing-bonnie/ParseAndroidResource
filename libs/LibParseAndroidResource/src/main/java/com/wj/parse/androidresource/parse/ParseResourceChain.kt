@@ -74,6 +74,7 @@ class ParseResourceChain() {
                 resourceByteArray,
                 parentOffset,
                 typeStringList = typeStringPoolChunk.resStringPoolRefOffset.stringList,
+                keyStringList = keyStringsPoolChunk.resStringPoolRefOffset.stringList,
                 packageId = tablePackageChunk.id
             )
             typeChunk.startParseChunk().also {

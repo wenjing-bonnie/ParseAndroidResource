@@ -48,6 +48,7 @@ class ResTableTypeEntryChunkChild(
      * the child offset in the parent byte array
      */
     override val startOffset: Int,
+    private val resourceKey: String
 ) : ChunkParseOperator {
 
     /**
@@ -110,7 +111,7 @@ class ResTableTypeEntryChunkChild(
 
     override fun toString(): String = formatToString(
         chunkName = "Res Table Entry",
-        "size is $size, flags is ${Flags.valueOf(flags)}, key is $key"
+        "size is $size, flags is ${Flags.valueOf(flags)}, key is $key, resourceKey is $resourceKey"
     )
 
     companion object {
