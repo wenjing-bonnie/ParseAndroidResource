@@ -254,7 +254,8 @@ class ResTableConfigChunkChild(
     override val childPosition: Int
         get() = CHILD_CHILD_POSITION
 
-    override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK_CHILD_CHILD
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK_CHILD_CHILD
 
     override fun chunkParseOperator(): ChunkParseOperator {
         // <Attribute_1>

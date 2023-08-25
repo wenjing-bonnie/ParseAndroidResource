@@ -46,12 +46,14 @@ class ResStringPoolHeaderChunkChild(
      *      uint32_t stringCount;
      */
     var stringCount: Int = 0
+
     /**
      *      // Number of style span arrays in the pool (number of uint32_t indices
      *      // follow the string indices).
      *      uint32_t styleCount;
      */
     var styleCount: Int = 0
+
     /**
      *      // Flags.
      *      enum {
@@ -63,11 +65,13 @@ class ResStringPoolHeaderChunkChild(
      *      };
      */
     var flags: Int = 0
+
     /**
      *     // Index from header of the string data.
      *     uint32_t stringsStart;
      */
     var stringStart: Int = 0
+
     /**
      *     // Index from header of the style data.
      *     uint32_t stylesStart;
@@ -95,8 +99,8 @@ class ResStringPoolHeaderChunkChild(
     override val startOffset: Int
         get() = 0
 
-    override fun chunkProperty(): ChunkProperty =
-        ChunkProperty.CHUNK_HEADER
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK_HEADER
 
     init {
         checkChunkAttributes()

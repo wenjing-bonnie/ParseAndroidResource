@@ -43,8 +43,8 @@ class ResourceTableHeaderFirstChunk(
     override val childPosition: Int
         get() = 0
 
-    override fun chunkProperty(): ChunkProperty =
-        ChunkProperty.CHUNK
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK
 
     override val chunkEndOffset: Int
         get() = header.chunkEndOffset + TABLE_HEADER_BYTE

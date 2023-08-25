@@ -120,7 +120,8 @@ class ResTableTypeSpecAndTypeSixChunk(
     private fun isTypeChunkParsingCompleted(endOffset: Int, sourceSize: Int): Boolean =
         endOffset >= sourceSize
 
-    override fun chunkProperty() = ChunkProperty.CHUNK
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK
 
     override fun toString(): String =
         formatToString(

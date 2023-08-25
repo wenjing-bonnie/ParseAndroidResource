@@ -1,6 +1,7 @@
 package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeMapEntityChunkChild.ResTableRef
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -48,7 +49,8 @@ class ResTableTypeMapChunkChild(
     override val childPosition: Int
         get() = ChunkParseOperator.CHILD_CHILD_POSITION
 
-    override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK_CHILD_CHILD
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK_CHILD_CHILD
 
     override val chunkEndOffset: Int
         get() = TODO("Not yet implemented")
@@ -65,7 +67,7 @@ class ResTableTypeMapChunkChild(
             Utils.copyByte(resArrayStartZeroOffset, attributeOffset, ResTableRef.SIZE_IN_BYTE)
         name = ResTableRef(Utils.byte2Int(attributeByteArray))
 
-        attributeOffset += ResTableRef.SIZE_IN_BYTE
+        attributeOffset += ResTableTypeMapEntityChunkChild.ResTableRef.SIZE_IN_BYTE
         value = ResTableTypeValueChunkChild(resArrayStartZeroOffset, attributeOffset)
         return this
     }
@@ -74,23 +76,4 @@ class ResTableTypeMapChunkChild(
         chunkName = "Res Table Entry Map",
         "name is $name, value is $value"
     )
-
-    /**
-     * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#417
-     *  This is a reference to a unique entry (a ResTable_entry structure)
-     *  in a resource table.  The value is structured as: 0xpptteeee,
-     *  where pp is the package index, tt is the type index in that
-     *  package, and eeee is the entry index in that type.  The package
-     *  and type values start at 1 for the first item, to help catch cases
-     *  where they have not been supplied.
-     * struct ResTable_ref
-     * {
-     *    uint32_t ident;
-     * };
-     */
-    data class ResTableRef(val ident: Int) {
-        companion object {
-            const val SIZE_IN_BYTE = 4
-        }
-    }
 }

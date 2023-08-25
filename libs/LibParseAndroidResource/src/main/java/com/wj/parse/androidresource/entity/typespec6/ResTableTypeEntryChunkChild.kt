@@ -39,7 +39,7 @@ import java.lang.IllegalArgumentException
  *   struct ResStringPool_ref key;
  * };
  */
-class ResTableTypeEntryChunkChild(
+open class ResTableTypeEntryChunkChild(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -83,7 +83,8 @@ class ResTableTypeEntryChunkChild(
             null
         }
 
-    override fun chunkProperty() = ChunkProperty.CHUNK_CHILD_CHILD
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK_CHILD_CHILD
 
     override fun chunkParseOperator(): ChunkParseOperator {
         var attributeOffset = 0
@@ -149,7 +150,7 @@ class ResTableTypeEntryChunkChild(
                 FLAG_PUBLIC.value -> FLAG_PUBLIC.name
                 FLAG_WEAK.value -> FLAG_WEAK.name
                 else -> {
-                    throw IllegalArgumentException("A wrong value for this enum class")
+                    throw IllegalArgumentException("$value is a wrong value for this enum class")
                 }
             }
         }

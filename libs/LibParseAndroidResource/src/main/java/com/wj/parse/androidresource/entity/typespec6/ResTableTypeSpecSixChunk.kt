@@ -110,7 +110,8 @@ class ResTableTypeSpecSixChunk(
         return this
     }
 
-    override fun chunkProperty() = ChunkProperty.CHUNK
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK
 
 
     override fun toString(): String =

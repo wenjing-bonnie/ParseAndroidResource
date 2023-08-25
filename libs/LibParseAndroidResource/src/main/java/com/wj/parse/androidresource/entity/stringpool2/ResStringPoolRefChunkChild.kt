@@ -96,8 +96,8 @@ class ResStringPoolRefChunkChild(
     override val childPosition: Int
         get() = 2
 
-    override fun chunkProperty(): ChunkProperty =
-        ChunkProperty.CHUNK_CHILD
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK_CHILD
 
     init {
         checkChunkAttributes()

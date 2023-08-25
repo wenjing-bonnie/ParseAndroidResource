@@ -79,4 +79,12 @@ object Utils {
             )
         } ?: null
 
+
+    fun int2Byte(integer: Int): ByteArray? {
+        val byteNum =
+            (40 - Integer.numberOfLeadingZeros(if (integer < 0) integer.inv() else integer)) / 8
+        val byteArray = ByteArray(4)
+        for (n in 0 until byteNum) byteArray[3 - n] = (integer ushr n * 8).toByte()
+        return byteArray
+    }
 }

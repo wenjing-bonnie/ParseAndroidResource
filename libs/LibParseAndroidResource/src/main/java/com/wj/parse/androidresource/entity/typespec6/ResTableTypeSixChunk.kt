@@ -233,15 +233,19 @@ class ResTableTypeSixChunk(
                 attributeOffset,
                 resKeyStringList[index]
             )
-            Logger.debug("resourceId is $resourceId, entry is $entry")
+
+            Logger.debug("resourceId is $resourceId, entry is $entry, attributeOffset is $attributeOffset")
             when (entry.flags) {
                 // If set FLAG_COMPLEX, this is a complex entry, holding a set of name/value
                 // mappings. It is followed by an array of ResTable_map structures.
                 ResTableTypeEntryChunkChild.Flags.FLAG_COMPLEX.value -> {
-                    val mapOffset = attributeOffset+entry.size
-                    Logger.debug(" mapOffset is $mapOffset")
-                    val map = ResTableTypeMapChunkChild(resArrayStartZeroOffset, mapOffset)
-                    Logger.debug("map is $map")
+                    Logger.debug(" attributeOffset is $attributeOffset")
+                    val mapEntity = ResTableTypeMapEntityChunkChild(
+                        resArrayStartZeroOffset,
+                        attributeOffset,
+                        resKeyStringList[index]
+                    )
+                    //Logger.debug("map is $mapEntity")
                 }
 
                 else -> {
@@ -260,8 +264,8 @@ class ResTableTypeSixChunk(
     private fun getResourceId(entryId: Int) =
         packageId shl 24 or (resTypeSpecId and 0xFF shl 16) or (entryId and 0xFFFF)
 
-
-    override fun chunkProperty() = ChunkProperty.CHUNK
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK
 
     override fun toString(): String =
         formatToString(

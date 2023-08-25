@@ -80,7 +80,8 @@ class ResTableTypeValueChunkChild(
         return this
     }
 
-    override fun chunkProperty() = ChunkProperty.CHUNK_CHILD_CHILD
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK_CHILD_CHILD
 
     override fun toString() =
         formatToString(
@@ -225,7 +226,7 @@ class ResTableTypeValueChunkChild(
                 TYPE_LAST_COLOR_INT.value -> TYPE_LAST_COLOR_INT.name
                 TYPE_LAST_INT.value -> TYPE_LAST_INT.name
                 else -> {
-                    throw IllegalArgumentException("A wrong value for this enum class")
+                    throw IllegalArgumentException("$value is a wrong value for this enum class")
                 }
             }
         }

@@ -45,7 +45,8 @@ open class ResStringPoolSecondChunk(
     override val childPosition: Int
         get() = 0
 
-    override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK
+    override val chunkProperty
+        get() = ChunkProperty.CHUNK
 
     override fun chunkParseOperator(): ChunkParseOperator {
         // header

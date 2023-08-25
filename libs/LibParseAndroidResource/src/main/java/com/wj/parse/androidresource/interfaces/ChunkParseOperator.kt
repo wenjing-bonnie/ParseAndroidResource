@@ -2,6 +2,7 @@ package com.wj.parse.androidresource.interfaces
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeEntryChunkChild
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import java.lang.IllegalArgumentException
@@ -60,8 +61,8 @@ interface ChunkParseOperator {
         }
 
     fun startParseChunk(): ChunkParseOperator =
-        when (chunkProperty()) {
-            ChunkProperty.CHUNK -> {
+        when (chunkProperty) {
+            ChunkProperty.CHUNK-> {
                 checkChunkAttributes()
                 chunkParseOperator()
                 this
@@ -78,13 +79,13 @@ interface ChunkParseOperator {
      */
     fun chunkParseOperator(): ChunkParseOperator
 
-    fun chunkProperty(): ChunkProperty
+    val chunkProperty: ChunkProperty
 
     /**
      * check the attributes of this chunk have been set the collect value
      */
     fun checkChunkAttributes() =
-        when (chunkProperty()) {
+        when (chunkProperty) {
             ChunkProperty.CHUNK_HEADER -> {
                 if (startOffset != 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName} is a header chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed index to start from 0")
@@ -93,7 +94,7 @@ interface ChunkParseOperator {
                 true
             }
 
-            else -> {
+            ChunkProperty.CHUNK -> {
                 // the first chunk and the startOffset should be 0
                 if (this is ResourceTableHeaderFirstChunk && startOffset != 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
@@ -104,6 +105,10 @@ interface ChunkParseOperator {
                 }
                 // Logger.debug("** Check attributes is great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")
                 true
+            }
+
+            else -> {
+                //TODO have no idea about checking
             }
         }
 
@@ -118,7 +123,7 @@ interface ChunkParseOperator {
         var end = "\n${Logger.TITLE_TAG_START} Part $position is ended ${Logger.TITLE_TAG_END}"
         when {
             childPosition > 0 -> {
-                if (chunkProperty() == ChunkProperty.CHUNK_CHILD_CHILD) {
+                if (chunkProperty == ChunkProperty.CHUNK_CHILD_CHILD) {
                     start = "$chunkName is the child of child is"
                     end = ""
                     // "\n${Logger.TAG_SPACE}${Logger.TITLE_TAG_START} Child chunk $childPosition is ended ${Logger.TITLE_TAG_END}"

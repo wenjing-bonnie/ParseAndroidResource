@@ -115,7 +115,8 @@ class ResTablePackageThirdChunk(
         return this
     }
 
-    override fun chunkProperty(): ChunkProperty = ChunkProperty.CHUNK
+    override val chunkProperty
+        get() =  ChunkProperty.CHUNK
 
     override fun toString(): String =
         formatToString(

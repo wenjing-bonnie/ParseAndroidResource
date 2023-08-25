@@ -131,8 +131,8 @@ class ResChunkHeader(
     override fun toString(): String =
         "Chunk header: {type is ${ChunkType.valueOf(type)}, header size is $headerSize, size is ${size}bit (about ${(size / 1024.0)}B)}"
 
-    override fun chunkProperty(): ChunkProperty =
-        ChunkProperty.COMMON_HEADER
+    override val chunkProperty
+        get() = ChunkProperty.COMMON_HEADER
 
     companion object {
         const val TYPE_BYTE = 2
