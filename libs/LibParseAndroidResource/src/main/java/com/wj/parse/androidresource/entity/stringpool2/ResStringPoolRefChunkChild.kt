@@ -56,6 +56,7 @@ class ResStringPoolRefChunkChild(
     var stringOffsetList = mutableListOf<ResStringPoolRef>()
     var styleOffsetList = mutableListOf<ResStringPoolRef>()
     var stringList = mutableListOf<String>()
+
     /**
      * TODO implement
      * /**
@@ -160,7 +161,7 @@ class ResStringPoolRefChunkChild(
     private fun stringListByStringOffset() {
         stringOffsetList.forEach { ref ->
             // 1.read the length of string from first two byte , the last byte is length of this string
-             // next string TODO verify it
+            // stringStart contains headerSize, but resArrayStartZeroOffset is without header's data
             childOffset = stringStart - headerSize + ref.index
             // Logger.error("  ===== style childOffset = $childOffset")
             val stringLengthArray =

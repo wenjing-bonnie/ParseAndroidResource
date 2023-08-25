@@ -11,7 +11,7 @@ import com.wj.parse.androidresource.utils.Logger
  * /**
  * A single name/value mapping that is part of a complex resource
  * entry.
- * /
+ * */
  * struct ResTable_map
  * {
  *   // The resource identifier defining this mapping's name.  For attribute
