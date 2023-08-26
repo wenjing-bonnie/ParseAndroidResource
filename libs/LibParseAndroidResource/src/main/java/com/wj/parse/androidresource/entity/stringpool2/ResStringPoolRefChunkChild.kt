@@ -55,7 +55,7 @@ class ResStringPoolRefChunkChild(
      */
     var stringOffsetList = mutableListOf<ResStringPoolRef>()
     var styleOffsetList = mutableListOf<ResStringPoolRef>()
-    var stringList = mutableListOf<String>()
+    var globalStringList = mutableListOf<String>()
 
     /**
      * TODO implement
@@ -175,7 +175,7 @@ class ResStringPoolRefChunkChild(
 
             Utils.copyByte(resArrayStartZeroOffset, childOffset + OFFSET_BYTE / 2, stringLength)
                 ?.let {
-                    stringList.add(
+                    globalStringList.add(
                         String(
                             it,
                             if (flags == ResStringPoolHeaderChunkChild.Flags.UTF8_FLAG.value)
@@ -196,7 +196,7 @@ class ResStringPoolRefChunkChild(
         formatToString(
             chunkName = "Resource Pool Ref offset",
             "string offset is $stringOffsetList",
-            "string list is $stringList"
+            "string list is $globalStringList"
         )
 
     private fun byteOffset(sourceBytes: ByteArray?) = run {
@@ -230,7 +230,7 @@ class ResStringPoolRefChunkChild(
                         ) ?: kotlin.run {
                             throw IllegalStateException("The string byte array is null")
                         }
-                        stringList.add(
+                        globalStringList.add(
                             String(
                                 stringByte,
                                 if (flags == ResStringPoolHeaderChunkChild.Flags.UTF8_FLAG.value)
@@ -243,7 +243,7 @@ class ResStringPoolRefChunkChild(
                     }
 
                     else -> {
-                        stringList.add("")
+                        globalStringList.add("")
                     }
                 }
                 // there is 3 byte is null after the string byte

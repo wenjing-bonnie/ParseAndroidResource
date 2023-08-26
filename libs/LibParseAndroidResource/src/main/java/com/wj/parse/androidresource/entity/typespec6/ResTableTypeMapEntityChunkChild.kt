@@ -2,6 +2,7 @@ package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolRef
+import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.typespec6.ResTableTypeEntryChunkChild.Flags
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
@@ -21,6 +22,11 @@ class ResTableTypeMapEntityChunkChild(
      */
     override val startOffset: Int,
     private val resourceKey: String,
+    /**
+     * Google Pool String. It comes from [ResStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
+     */
+    private val globalStringList: MutableList<String>,
+    private val res: Res
 ) : ChunkParseOperator {
     /**
      * Number of bytes in this structure.
@@ -34,6 +40,7 @@ class ResTableTypeMapEntityChunkChild(
     lateinit var key: ResStringPoolRef
     private lateinit var parent: ResTableRef
     var count: Int = 0
+    lateinit var tableTypeMapChunkChild: ResTableTypeMapChunkChild
 
     init {
         checkChunkAttributes()
@@ -47,7 +54,7 @@ class ResTableTypeMapEntityChunkChild(
         }
 
     override val chunkEndOffset: Int
-        get() = SIZE_IN_BYTE + FLAGS_IN_BYTE + KEY_IN_BYTE + ResStringPoolRef.SIZE_IN_BYTE + COUNT_IN_BYTE
+        get() = SIZE_IN_BYTE + FLAGS_IN_BYTE + KEY_IN_BYTE + ResStringPoolRef.SIZE_IN_BYTE + COUNT_IN_BYTE + tableTypeMapChunkChild.chunkEndOffset * count
 
     override val childPosition: Int
         get() = ChunkParseOperator.CHILD_CHILD_POSITION
@@ -98,7 +105,25 @@ class ResTableTypeMapEntityChunkChild(
         )
         // 12 - 4
         count = Utils.byte2Int(attributeArrayByte)
+
+        attributeOffset += COUNT_IN_BYTE
+        mapChunkChildParseOperator(attributeOffset)
         return this
+    }
+
+    private fun mapChunkChildParseOperator(attributeOffset: Int) {
+        var mapOffset = attributeOffset
+        // TODO
+        for (index in 0 until count) {
+            tableTypeMapChunkChild =
+                ResTableTypeMapChunkChild(resArrayStartZeroOffset, mapOffset, globalStringList)
+            res.value = tableTypeMapChunkChild.value.dataString
+            mapOffset += tableTypeMapChunkChild.chunkEndOffset * index
+            if (res.value.indexOf("<") >= 0) {
+                // value=<0xFFFFFFFF, type 0x00>
+                continue
+            }
+        }
     }
 
     override fun toString(): String =
@@ -111,7 +136,8 @@ class ResTableTypeMapEntityChunkChild(
                 } else {
                     "not Initialized"
                 }
-            },  count is $count"
+            },  count is $count",
+            tableTypeMapChunkChild.toString()
         )
 
     companion object {

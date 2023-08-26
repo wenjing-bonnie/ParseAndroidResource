@@ -48,7 +48,10 @@ open class ResTableTypeEntryChunkChild(
      * the child offset in the parent byte array
      */
     override val startOffset: Int,
-    private val resourceKey: String
+    /**
+     * all resource key list
+     */
+    private val resKeyStringList: MutableList<String>,
 ) : ChunkParseOperator {
 
     /**
@@ -62,8 +65,9 @@ open class ResTableTypeEntryChunkChild(
      */
     lateinit var key: ResStringPoolRef
 
+    var resKeyString: String = ""
+
     init {
-        // TODO move to parent and control by chunkProperty()???
         checkChunkAttributes()
         chunkParseOperator()
     }
@@ -107,12 +111,14 @@ open class ResTableTypeEntryChunkChild(
             KEY_IN_BYTE
         )
         key = ResStringPoolRef(Utils.byte2Int(attributeArrayByte))
+
+        resKeyString = resKeyStringList[key.index]
         return this
     }
 
     override fun toString(): String = formatToString(
         chunkName = "Res Table Entry",
-        "size is $size, flags is ${Flags.valueOf(flags)}, key is $key, resourceKey is $resourceKey"
+        "size is $size, flags is ${Flags.valueOf(flags)}, key is $key, resourceKey is $resKeyString"
     )
 
     companion object {

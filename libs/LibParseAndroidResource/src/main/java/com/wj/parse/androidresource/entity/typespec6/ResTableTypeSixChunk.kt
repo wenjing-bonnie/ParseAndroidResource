@@ -2,6 +2,7 @@ package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
+import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -65,6 +66,10 @@ class ResTableTypeSixChunk(
     override val inputResourceByteArray: ByteArray,
     override val startOffset: Int,
     override val childPosition: Int,
+    /**
+     * Google Pool String. It comes from [ResStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
+     */
+    private val globalStringList: MutableList<String>,
     /**
      * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
      */
@@ -130,6 +135,8 @@ class ResTableTypeSixChunk(
      * current resource type
      */
     lateinit var resourceTypeString: String
+
+    var resKeyString:String = ""
 
 
     override val header: ResChunkHeader
@@ -225,35 +232,53 @@ class ResTableTypeSixChunk(
          * |-- headerSize --|- 1 -|--- 3  ---|---- 4  ----|---- 4  ----- |---36 --|----              ---|                    ---|
          */
         attributeOffset = entriesStart
-        Logger.debug("entriesStart is $entriesStart, headerSize is ${header.headerSize}")
+        // Logger.debug("entriesStart is $entriesStart, headerSize is ${header.headerSize}, entryCount is $entryCount")
         for (index in 0 until entryCount) {
             val resourceId = getResourceId(index)
+            // Logger.debug("====== $index attributeOffset is $attributeOffset")
+            // TODO seem like to be a header
             val entry = ResTableTypeEntryChunkChild(
                 resArrayStartZeroOffset,
                 attributeOffset,
-                resKeyStringList[index]
+                resKeyStringList
             )
-
-            Logger.debug("resourceId is $resourceId, entry is $entry, attributeOffset is $attributeOffset")
+            // Logger.debug("resourceId is $resourceId, entry is $entry")
+            val res = Res(resourceId, entry.resKeyString)
+            // TODO next is the body
             when (entry.flags) {
                 // If set FLAG_COMPLEX, this is a complex entry, holding a set of name/value
                 // mappings. It is followed by an array of ResTable_map structures.
                 ResTableTypeEntryChunkChild.Flags.FLAG_COMPLEX.value -> {
-                    Logger.debug(" attributeOffset is $attributeOffset")
+                    //   Logger.debug(" attributeOffset is $attributeOffset")
                     val mapEntity = ResTableTypeMapEntityChunkChild(
                         resArrayStartZeroOffset,
                         attributeOffset,
-                        resKeyStringList[index]
+                        entry.resKeyString,
+                        globalStringList = globalStringList,
+                        res = res
                     )
-                    //Logger.debug("map is $mapEntity")
+                    // Logger.debug("$index map is $mapEntity")
+                    attributeOffset += mapEntity.chunkEndOffset
+                    // Logger.debug("${entry.chunkEndOffset} map is ${mapEntity.chunkEndOffset}")
                 }
 
                 else -> {
-
+                    // simple resource type
+                    val value = ResTableTypeValueChunkChild(
+                        resArrayStartZeroOffset,
+                        attributeOffset,
+                        globalStringList
+                    )
+                    res.value = value.dataString
+                    attributeOffset += entry.chunkEndOffset + value.chunkEndOffset
+                    if (res.value.indexOf("<") > 0) {
+                        continue
+                    }
                 }
             }
-
+            Logger.debug("$index, res is $res")
         }
+        Logger.debug("$attributeOffset header.size is ${header.size}")
         return this
     }
 

@@ -2,7 +2,9 @@ package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
+import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolRefChunkChild
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
+import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolFourChunk
 import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolFiveChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
@@ -24,11 +26,17 @@ class ResTableTypeSpecAndTypeSixChunk(
      */
     override val startOffset: Int,
     /**
+     * Google Pool String. It comes from [ResStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
+     */
+    val globalStringList: MutableList<String>,
+    /**
      * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
+     * It comes from [ResTypeStringPoolFourChunk.resStringPoolRefOffset.globalStringList]
      */
     val typeStringList: MutableList<String>,
     /**
      * all resource key list
+     * It comes from [ResKeyStringsPoolFiveChunk.resStringPoolRefOffset.globalStringList]
      */
     val keyStringList: MutableList<String>,
     /**
@@ -88,6 +96,7 @@ class ResTableTypeSpecAndTypeSixChunk(
                                 inputResourceByteArray,
                                 endOffset,
                                 chunkPosition,
+                                globalStringList = globalStringList,
                                 resTypeStringList = typeStringList,
                                 resKeyStringList = keyStringList,
                                 packageId = packageId,
