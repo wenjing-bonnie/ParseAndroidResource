@@ -118,11 +118,11 @@ class ResTableTypeMapEntityChunkChild(
             tableTypeMapChunkChild =
                 ResTableTypeMapChunkChild(resArrayStartZeroOffset, mapOffset, globalStringList)
             res.value = tableTypeMapChunkChild.value.dataString
-            mapOffset += tableTypeMapChunkChild.chunkEndOffset * index
             if (res.value.indexOf("<") >= 0) {
                 // value=<0xFFFFFFFF, type 0x00>
                 continue
             }
+            mapOffset += tableTypeMapChunkChild.chunkEndOffset * index
         }
     }
 

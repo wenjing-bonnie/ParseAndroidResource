@@ -6,7 +6,6 @@ import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
-import java.lang.IllegalArgumentException
 
 /**
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#1491
@@ -111,8 +110,10 @@ open class ResTableTypeEntryChunkChild(
             KEY_IN_BYTE
         )
         key = ResStringPoolRef(Utils.byte2Int(attributeArrayByte))
-
-        resKeyString = resKeyStringList[key.index]
+        if (key.index < resKeyStringList.size) {
+            // If flags is 138, the index is out of this key strings list
+            resKeyString = resKeyStringList[key.index]
+        }
         return this
     }
 
@@ -128,6 +129,9 @@ open class ResTableTypeEntryChunkChild(
     }
 
     enum class Flags(val value: Short) {
+
+        NOT_SET_FLAG(0x0000),
+
         /**
          * If set, this is a complex entry, holding a set of name/value
          * mappings.  It is followed by an array of ResTable_map structures.
@@ -145,18 +149,23 @@ open class ResTableTypeEntryChunkChild(
          * resources of the same name/type. This is only useful during
          * linking with other resource tables.
          */
-        FLAG_WEAK(0x0004);
+        FLAG_WEAK(0x0004),
+
+        /**
+         * unknown flags
+         */
+        FLAG_UNKNOWN(-10000);
 
         companion object {
             fun valueOf(value: Short): String? = when (value) {
-                FLAG_COMPLEX.value -> {
-                    FLAG_COMPLEX.name
-                }
-
+                NOT_SET_FLAG.value -> NOT_SET_FLAG.name
+                FLAG_COMPLEX.value -> FLAG_COMPLEX.name
                 FLAG_PUBLIC.value -> FLAG_PUBLIC.name
                 FLAG_WEAK.value -> FLAG_WEAK.name
                 else -> {
-                    throw IllegalArgumentException("$value is a wrong value for this enum class")
+                    // TODO try to find another flags, for example, 56, 160, -1
+                    Logger.debug("$value is a unknown value for this enum class")
+                    FLAG_UNKNOWN.name
                 }
             }
         }

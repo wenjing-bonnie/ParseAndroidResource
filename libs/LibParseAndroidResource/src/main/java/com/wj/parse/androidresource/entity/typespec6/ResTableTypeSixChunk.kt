@@ -136,7 +136,7 @@ class ResTableTypeSixChunk(
      */
     lateinit var resourceTypeString: String
 
-    var resKeyString:String = ""
+    var resKeyString: String = ""
 
 
     override val header: ResChunkHeader
@@ -235,14 +235,14 @@ class ResTableTypeSixChunk(
         // Logger.debug("entriesStart is $entriesStart, headerSize is ${header.headerSize}, entryCount is $entryCount")
         for (index in 0 until entryCount) {
             val resourceId = getResourceId(index)
-            // Logger.debug("====== $index attributeOffset is $attributeOffset")
+            // Logger.debug("====== $index resKeyStringList is ${resKeyStringList.size}")
             // TODO seem like to be a header
             val entry = ResTableTypeEntryChunkChild(
                 resArrayStartZeroOffset,
                 attributeOffset,
                 resKeyStringList
             )
-            // Logger.debug("resourceId is $resourceId, entry is $entry")
+            Logger.debug("$index entry is $entry")
             val res = Res(resourceId, entry.resKeyString)
             // TODO next is the body
             when (entry.flags) {
@@ -263,17 +263,20 @@ class ResTableTypeSixChunk(
                 }
 
                 else -> {
+                    // Logger.debug("$index == resourceId is $resourceId, entry is $entry")
                     // simple resource type
+                    // TODO 已经对比到 1876 header.size is 1876
+                    //  >>> isSpec = true, resTypeOffset = 130352
                     val value = ResTableTypeValueChunkChild(
                         resArrayStartZeroOffset,
-                        attributeOffset,
+                        attributeOffset + entry.chunkEndOffset,
                         globalStringList
                     )
                     res.value = value.dataString
-                    attributeOffset += entry.chunkEndOffset + value.chunkEndOffset
-                    if (res.value.indexOf("<") > 0) {
+                    if (res.value.indexOf("<") >= 0) {
                         continue
                     }
+                    attributeOffset += entry.chunkEndOffset + value.chunkEndOffset
                 }
             }
             Logger.debug("$index, res is $res")
