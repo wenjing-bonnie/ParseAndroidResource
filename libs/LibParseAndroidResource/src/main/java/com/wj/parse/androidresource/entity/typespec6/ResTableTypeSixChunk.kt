@@ -287,7 +287,6 @@ class ResTableTypeSixChunk(
             resourceElementsManager.storeResourceElements(res = res, resourceTypeString)
         }
         // Logger.debug("$attributeOffset header.size is ${header.size}")
-        resourceElementsManager.sortResourceElements()
         return this
     }
 
