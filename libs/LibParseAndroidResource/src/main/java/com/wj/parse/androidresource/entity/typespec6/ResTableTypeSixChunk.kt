@@ -5,6 +5,7 @@ import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
+import com.wj.parse.androidresource.parse.ResourceElementsManager
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import kotlin.experimental.and
@@ -85,7 +86,8 @@ class ResTableTypeSixChunk(
     /**
      * [ResTableTypeSpecSixChunk.id]
      */
-    private val resTypeSpecId: Int
+    private val resTypeSpecId: Int,
+    private val resourceElementsManager: ResourceElementsManager = ResourceElementsManager()
 ) : ChunkParseOperator {
     /**
      *   // The type identifier this chunk is holding.  Type IDs start
@@ -135,9 +137,6 @@ class ResTableTypeSixChunk(
      * current resource type
      */
     lateinit var resourceTypeString: String
-
-    var resKeyString: String = ""
-
 
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
@@ -233,7 +232,7 @@ class ResTableTypeSixChunk(
          */
         attributeOffset = entriesStart
         // Logger.debug("entriesStart is $entriesStart, headerSize is ${header.headerSize}, entryCount is $entryCount")
-        for (index in 0 until entryCount) {
+         for (index in 0 until entryCount) {
             val resourceId = getResourceId(index)
             // Logger.debug("====== $index resKeyStringList is ${resKeyStringList.size}")
             // TODO seem like to be a header
@@ -257,7 +256,7 @@ class ResTableTypeSixChunk(
                         globalStringList = globalStringList,
                         res = res
                     )
-//                    if(entriesStart == 164){
+//                    if(resourceTypeString.equals("drawable")){
 //                        Logger.debug("$index map is $mapEntity")
 //                    }
                     attributeOffset += mapEntity.chunkEndOffset
@@ -273,17 +272,24 @@ class ResTableTypeSixChunk(
                         globalStringList
                     )
                     res.value = value.dataString
+                    attributeOffset += entry.chunkEndOffset + value.chunkEndOffset
                     if (res.value.indexOf("<") >= 0) {
                         continue
                     }
-                    attributeOffset += entry.chunkEndOffset + value.chunkEndOffset
+//                    if(resourceTypeString == "drawable"){
+//                        Logger.debug("$index $resourceTypeString($entryCount) value is $value, res is $res")
+//                    }
                 }
             }
-            //   Logger.debug("$index, res is $res")
+//            if (resourceTypeString.equals("drawable")) {
+//                Logger.debug("$index, res is $res")
+//            }
+            resourceElementsManager.sortResourceElements(res = res, resourceTypeString)
         }
         // Logger.debug("$attributeOffset header.size is ${header.size}")
         return this
     }
+
 
     /**
      * the resourceId is
@@ -302,5 +308,4 @@ class ResTableTypeSixChunk(
             "id is $id, flags is $flags, reserved is $reserved,  entryCount is $entryCount, entriesStart is $entriesStart",
             "$config"
         )
-
 }

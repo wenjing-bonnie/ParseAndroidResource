@@ -10,6 +10,7 @@ import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.interfaces.ChunkType
+import com.wj.parse.androidresource.parse.ResourceElementsManager
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 
@@ -44,6 +45,8 @@ class ResTableTypeSpecAndTypeSixChunk(
      */
     private val packageId: Int,
 ) : ChunkParseOperator {
+    // TODO consider where is it ?
+    var resourceElementsManager = ResourceElementsManager()
     private val typeChunks = mutableListOf<ChunkParseOperator>()
     override val header: ResChunkHeader?
         get() = kotlin.run {
@@ -100,7 +103,8 @@ class ResTableTypeSpecAndTypeSixChunk(
                                 resTypeStringList = typeStringList,
                                 resKeyStringList = keyStringList,
                                 packageId = packageId,
-                                resTypeSpecId = resTypeSpecId
+                                resTypeSpecId = resTypeSpecId,
+                                resourceElementsManager = resourceElementsManager
                             )
                         typeChunk.startParseChunk().also {
                             typeChunks.add(it)
@@ -122,7 +126,7 @@ class ResTableTypeSpecAndTypeSixChunk(
                     null
                 }
         }
-
+        Logger.debug(resourceElementsManager.toString())
         return this
     }
 

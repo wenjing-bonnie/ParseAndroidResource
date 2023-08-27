@@ -110,8 +110,12 @@ open class ResTableTypeEntryChunkChild(
             KEY_IN_BYTE
         )
         key = ResStringPoolRef(Utils.byte2Int(attributeArrayByte))
-        if (key.index < resKeyStringList.size) {
-            // If flags is 138, the index is out of this key strings list
+        if (key.index < resKeyStringList.size && key.index >= 0) {
+            /**
+             * TODO
+             * If flags is 138, the index is out of this key strings list
+             * If flags is [ResTableTypeValueChunkChild.DataType.TYPE_NULL] the index is -1
+             */
             resKeyString = resKeyStringList[key.index]
         }
         return this

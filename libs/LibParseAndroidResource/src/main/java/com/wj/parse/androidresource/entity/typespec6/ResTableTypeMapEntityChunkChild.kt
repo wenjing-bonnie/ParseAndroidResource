@@ -119,13 +119,13 @@ class ResTableTypeMapEntityChunkChild(
         var mapOffset = attributeOffset
         // TODO sometimes the count is 0 ??? for example,
         //  size is 16, flags is FLAG_COMPLEX, key is ResStringPoolRef(index=1056), resourceKey is AppBaseTheme
-        for (index in 0 until count) {
+        looper@ for (index in 0 until count) {
             tableTypeMapChunkChild =
                 ResTableTypeMapChunkChild(resArrayStartZeroOffset, mapOffset, globalStringList)
             res.value = tableTypeMapChunkChild.value.dataString
             if (res.value.indexOf("<") >= 0) {
                 // value=<0xFFFFFFFF, type 0x00>
-                continue
+                continue@looper
             }
             mapOffset += tableTypeMapChunkChild.chunkEndOffset * index
         }
