@@ -92,7 +92,6 @@ class ResTableTypeValueChunkChild(
         }
 
     init {
-        // TODO move to parent and control by chunkProperty()???
         checkChunkAttributes()
         chunkParseOperator()
     }

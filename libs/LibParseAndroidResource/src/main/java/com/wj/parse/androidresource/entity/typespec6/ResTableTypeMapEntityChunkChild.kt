@@ -54,7 +54,11 @@ class ResTableTypeMapEntityChunkChild(
         }
 
     override val chunkEndOffset: Int
-        get() = SIZE_IN_BYTE + FLAGS_IN_BYTE + KEY_IN_BYTE + ResStringPoolRef.SIZE_IN_BYTE + COUNT_IN_BYTE + tableTypeMapChunkChild.chunkEndOffset * count
+        get() = SIZE_IN_BYTE + FLAGS_IN_BYTE + KEY_IN_BYTE + ResStringPoolRef.SIZE_IN_BYTE + COUNT_IN_BYTE + if (::tableTypeMapChunkChild.isInitialized) {
+            tableTypeMapChunkChild.chunkEndOffset * count
+        } else {
+            0
+        }
 
     override val childPosition: Int
         get() = ChunkParseOperator.CHILD_CHILD_POSITION
@@ -113,7 +117,8 @@ class ResTableTypeMapEntityChunkChild(
 
     private fun mapChunkChildParseOperator(attributeOffset: Int) {
         var mapOffset = attributeOffset
-        // TODO
+        // TODO sometimes the count is 0 ??? for example,
+        //  size is 16, flags is FLAG_COMPLEX, key is ResStringPoolRef(index=1056), resourceKey is AppBaseTheme
         for (index in 0 until count) {
             tableTypeMapChunkChild =
                 ResTableTypeMapChunkChild(resArrayStartZeroOffset, mapOffset, globalStringList)
@@ -137,7 +142,12 @@ class ResTableTypeMapEntityChunkChild(
                     "not Initialized"
                 }
             },  count is $count",
-            tableTypeMapChunkChild.toString()
+            if (::tableTypeMapChunkChild.isInitialized) {
+                tableTypeMapChunkChild.toString()
+            } else {
+                // sometimes the count is 0, so the tableTypeMapChunkChild isn't initialized
+                ""
+            }
         )
 
     companion object {

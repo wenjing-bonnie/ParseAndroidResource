@@ -242,7 +242,7 @@ class ResTableTypeSixChunk(
                 attributeOffset,
                 resKeyStringList
             )
-            Logger.debug("$index entry is $entry")
+            // Logger.debug("$index entry is $entry")
             val res = Res(resourceId, entry.resKeyString)
             // TODO next is the body
             when (entry.flags) {
@@ -257,7 +257,9 @@ class ResTableTypeSixChunk(
                         globalStringList = globalStringList,
                         res = res
                     )
-                    // Logger.debug("$index map is $mapEntity")
+//                    if(entriesStart == 164){
+//                        Logger.debug("$index map is $mapEntity")
+//                    }
                     attributeOffset += mapEntity.chunkEndOffset
                     // Logger.debug("${entry.chunkEndOffset} map is ${mapEntity.chunkEndOffset}")
                 }
@@ -265,8 +267,6 @@ class ResTableTypeSixChunk(
                 else -> {
                     // Logger.debug("$index == resourceId is $resourceId, entry is $entry")
                     // simple resource type
-                    // TODO 已经对比到 1876 header.size is 1876
-                    //  >>> isSpec = true, resTypeOffset = 130352
                     val value = ResTableTypeValueChunkChild(
                         resArrayStartZeroOffset,
                         attributeOffset + entry.chunkEndOffset,
@@ -279,9 +279,9 @@ class ResTableTypeSixChunk(
                     attributeOffset += entry.chunkEndOffset + value.chunkEndOffset
                 }
             }
-            Logger.debug("$index, res is $res")
+            //   Logger.debug("$index, res is $res")
         }
-        Logger.debug("$attributeOffset header.size is ${header.size}")
+        // Logger.debug("$attributeOffset header.size is ${header.size}")
         return this
     }
 
