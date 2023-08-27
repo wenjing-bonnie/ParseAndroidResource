@@ -284,9 +284,10 @@ class ResTableTypeSixChunk(
 //            if (resourceTypeString.equals("drawable")) {
 //                Logger.debug("$index, res is $res")
 //            }
-            resourceElementsManager.sortResourceElements(res = res, resourceTypeString)
+            resourceElementsManager.storeResourceElements(res = res, resourceTypeString)
         }
         // Logger.debug("$attributeOffset header.size is ${header.size}")
+        resourceElementsManager.sortResourceElements()
         return this
     }
 

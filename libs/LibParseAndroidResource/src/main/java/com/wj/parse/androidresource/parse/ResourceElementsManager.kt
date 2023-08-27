@@ -1,54 +1,45 @@
 package com.wj.parse.androidresource.parse
 
 import com.wj.parse.androidresource.entity.typespec6.Res
-import com.wj.parse.androidresource.utils.Logger
 
 class ResourceElementsManager {
 
-    var elementsMap = mutableMapOf<String, MutableList<Res>>()
+    private var _elementsMap = mutableMapOf<String, MutableList<Res>>()
 
-    fun sortResourceElements(res: Res, resourceType: String) {
-        if (elementsMap.containsKey(resourceType)) {
-            elementsMap[resourceType]?.add(res)
+    /**
+     * all the resource elements
+     */
+    val sortedElementsMap: Map<String, MutableList<Res>>
+        get() {
+            //elementsMap.entries.sortedBy { it.value }.associateBy({ it.key }, { it.value })
+            // Logger.debug(elementsMap.get("attr").toString())
+            _elementsMap.mapValues {
+                it.value.sort()
+            }
+            // Logger.debug(elementsMap.get("attr").toString())
+            return _elementsMap
+        }
+
+    fun storeResourceElements(res: Res, resourceType: String) {
+        if (_elementsMap.containsKey(resourceType)) {
+            _elementsMap[resourceType]?.add(res)
         } else {
             val elements = mutableListOf<Res>()
             elements.add(res)
-            elementsMap[resourceType] = elements
-        }
-//        if (resourceType.equals("drawable")){
-//            Logger.debug("size is "+elementsMap.get("drawable")?.size)
-//        }
-    }
-
-    fun sort() {
-        elementsMap.map {
-            it.value.sort()
+            _elementsMap[resourceType] = elements
         }
     }
 
+    // TODO
     override fun toString() =
         "--------------------------------\n" +
                 "All resource elements are listed:\n" +
                 "--------------------------------\n" +
-                elementsMap.mapValues {
-                    formatResourceToString(it.value, it.key)
+                _elementsMap.map {
+                    formatResourceToString(it.key, it.value)
                 } +
-                "--------------------------------\n"
-
-    private fun formatResourceToString(res: MutableList<Res>, type: String) =
-        "${res.size} numbers of ${type}:\n$res\n"
-    //"${res.size} numbers of ${type}:\n"
-
-    enum class ResourceType(val type: String) {
-        ATTR("attr"),
-        DRAWABLE("drawable"),
-        LAYOUT("layout"),
-        ANIM("anim"),
-        RAW("raw"),
-        COLOR("color"),
-        DIMEN("dimen"),
-        STRING("string"),
-        STYLE("style"),
-        ID("id")
-    }
+                "\n--------------------------------\n"
+    private fun formatResourceToString(type: String, res: MutableList<Res>) =
+        // "${res.size} numbers of ${type}:\n$res\n"
+        "${res.size} numbers of ${type};\n"
 }
