@@ -86,6 +86,7 @@ class ResTableTypeValueChunkChild(
                 } else if (dataType >= DataType.TYPE_FIRST_INT.value && dataType <= DataType.TYPE_LAST_INT.value) {
                     data.toString()
                 } else {
+                    // invalid data type
                     String.format("<0x%X, type 0x%02X>", data, dataType)
                 }
             }
@@ -143,6 +144,9 @@ class ResTableTypeValueChunkChild(
             chunkName = "Res Table Value",
             "size is $size, res0 is $res0, dataType is ${DataType.valueOf(dataType)}, data is $data"
         )
+
+    fun invalidDataType(dataString: String) =
+        dataString.indexOf("<") >= 0
 
     companion object {
         private const val SIZE_IN_BYTE = 2

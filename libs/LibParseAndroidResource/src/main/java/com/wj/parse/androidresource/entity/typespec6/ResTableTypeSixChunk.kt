@@ -232,7 +232,7 @@ class ResTableTypeSixChunk(
          */
         attributeOffset = entriesStart
         // Logger.debug("entriesStart is $entriesStart, headerSize is ${header.headerSize}, entryCount is $entryCount")
-         for (index in 0 until entryCount) {
+        for (index in 0 until entryCount) {
             val resourceId = getResourceId(index)
             // Logger.debug("====== $index resKeyStringList is ${resKeyStringList.size}")
             // TODO seem like to be a header
@@ -247,9 +247,12 @@ class ResTableTypeSixChunk(
             when (entry.flags) {
                 // If set FLAG_COMPLEX, this is a complex entry, holding a set of name/value
                 // mappings. It is followed by an array of ResTable_map structures.
+                // [attr, style] is a complex entry
                 ResTableTypeEntryChunkChild.Flags.FLAG_COMPLEX.value -> {
+//                    if (index == 0)
+//                        Logger.debug("$resourceTypeString is a complex entry")
                     //   Logger.debug(" attributeOffset is $attributeOffset")
-                    val mapEntity = ResTableTypeMapEntityChunkChild(
+                    val complexMapEntity = ResTableTypeMapEntityChunkChild(
                         resArrayStartZeroOffset,
                         attributeOffset,
                         entry.resKeyString,
@@ -259,21 +262,25 @@ class ResTableTypeSixChunk(
 //                    if(resourceTypeString.equals("drawable")){
 //                        Logger.debug("$index map is $mapEntity")
 //                    }
-                    attributeOffset += mapEntity.chunkEndOffset
+                    attributeOffset += complexMapEntity.chunkEndOffset
                     // Logger.debug("${entry.chunkEndOffset} map is ${mapEntity.chunkEndOffset}")
                 }
 
                 else -> {
                     // Logger.debug("$index == resourceId is $resourceId, entry is $entry")
-                    // simple resource type
-                    val value = ResTableTypeValueChunkChild(
+                    // [drawable, layout, anim, raw, color, dimen, string, id] is simple resource type
+//                    if (index == 0)
+//                        Logger.debug("$resourceTypeString is a simple entry")
+                    val notComplexEntity = ResTableTypeValueChunkChild(
                         resArrayStartZeroOffset,
                         attributeOffset + entry.chunkEndOffset,
                         globalStringList
                     )
-                    res.value = value.dataString
-                    attributeOffset += entry.chunkEndOffset + value.chunkEndOffset
-                    if (res.value.indexOf("<") >= 0) {
+                    res.value = notComplexEntity.dataString
+                    attributeOffset += entry.chunkEndOffset + notComplexEntity.chunkEndOffset
+                    // res.value.indexOf("<") >= 0
+                    if (notComplexEntity.invalidDataType(res.value)) {
+                        /** if this value is invalid, don't add this [Res] to [ResourceElementsManager._elementsMap] */
                         continue
                     }
 //                    if(resourceTypeString == "drawable"){
