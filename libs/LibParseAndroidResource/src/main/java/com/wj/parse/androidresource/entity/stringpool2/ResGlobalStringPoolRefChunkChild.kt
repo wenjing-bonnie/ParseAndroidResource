@@ -10,7 +10,7 @@ import java.lang.IllegalStateException
 import kotlin.experimental.and
 
 /**
- * This is second child of [ResStringPoolSecondChunk]
+ * This is second child of [ResGlobalStringPoolSecondChunk]
  *
  * Reference to a string in a string pool
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#425
@@ -24,7 +24,7 @@ import kotlin.experimental.and
  *  };
  *
  */
-class ResStringPoolRefChunkChild(
+class ResGlobalStringPoolRefChunkChild(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -195,8 +195,22 @@ class ResStringPoolRefChunkChild(
     override fun toString(): String =
         formatToString(
             chunkName = "Resource Pool Ref offset",
-            "string offset is $stringOffsetList",
-            "string list is $globalStringList"
+            "string offset is ${
+                stringOffsetList.joinToString(
+                    prefix = "[",
+                    limit = 10,
+                    truncated = "...",
+                    postfix = "]"
+                )
+            }",
+            "string list is ${
+                globalStringList.joinToString(
+                    prefix = "[",
+                    limit = 10,
+                    truncated = "...",
+                    postfix = "]"
+                )
+            }"
         )
 
     private fun byteOffset(sourceBytes: ByteArray?) = run {
@@ -210,8 +224,8 @@ class ResStringPoolRefChunkChild(
 
     /**
      * @Deprecated
-     * we can use [ResStringPoolRefChunkChild.stringOffsetList] to get the string list
-     * so this method has been replaced by [ResStringPoolRefChunkChild.stringListByStringOffset]
+     * we can use [ResGlobalStringPoolRefChunkChild.stringOffsetList] to get the string list
+     * so this method has been replaced by [ResGlobalStringPoolRefChunkChild.stringListByStringOffset]
      */
     private fun stringListByChildOffset() {
         for (index in 0 until stringCount) {

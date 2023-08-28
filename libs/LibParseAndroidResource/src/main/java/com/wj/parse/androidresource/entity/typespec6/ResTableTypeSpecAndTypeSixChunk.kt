@@ -2,8 +2,7 @@ package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
-import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolRefChunkChild
-import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolFourChunk
 import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolFiveChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
@@ -23,11 +22,11 @@ class ResTableTypeSpecAndTypeSixChunk(
      */
     override val inputResourceByteArray: ByteArray,
     /**
-     * The [startOffset] of this chunk is [ResourceTableHeaderFirstChunk.chunkEndOffset] + [ResStringPoolSecondChunk.chunkEndOffset] + [ResTablePackageThirdChunk.keyStrings] + [ResKeyStringsPoolFiveChunk.chunkEndOffset]
+     * The [startOffset] of this chunk is [ResourceTableHeaderFirstChunk.chunkEndOffset] + [ResGlobalStringPoolSecondChunk.chunkEndOffset] + [ResTablePackageThirdChunk.keyStrings] + [ResKeyStringsPoolFiveChunk.chunkEndOffset]
      */
     override val startOffset: Int,
     /**
-     * Google Pool String. It comes from [ResStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
+     * Google Pool String. It comes from [ResGlobalStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
      */
     val globalStringList: MutableList<String>,
     /**
@@ -126,7 +125,6 @@ class ResTableTypeSpecAndTypeSixChunk(
                     null
                 }
         }
-        Logger.debug(resourceElementsManager.toString())
         return this
     }
 
@@ -141,7 +139,8 @@ class ResTableTypeSpecAndTypeSixChunk(
             chunkName = "Res Table Type Spec and Type",
             *typeChunks.map {
                 it.toString()
-            }.toTypedArray()
+            }.toTypedArray(),
+            resourceElementsManager.toString()
         )
 
     companion object {

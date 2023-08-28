@@ -7,7 +7,7 @@ import com.wj.parse.androidresource.utils.Utils
 
 
 /**
- * This is first child of [ResStringPoolSecondChunk]
+ * This is first child of [ResGlobalStringPoolSecondChunk]
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#456
  *
  *  struct ResStringPool_header
@@ -79,7 +79,7 @@ class ResStringPoolHeaderChunkChild(
     var stylesStart: Int = 0
 
     /**
-     * this is child of [ResStringPoolSecondChunk], so it returns the size of this child chunk
+     * this is child of [ResGlobalStringPoolSecondChunk], so it returns the size of this child chunk
      * header.chunkEndOffset + STRING_COUNT_BYTE + STYLE_COUNT_BYTE + FLAGS_BYTE + STRING_START_BYTE + STYLE_START_BYTE
      */
     override val chunkEndOffset: Int
@@ -94,7 +94,7 @@ class ResStringPoolHeaderChunkChild(
         get() = 1
 
     /**
-     * this is part of [ResStringPoolSecondChunk], so it returns 0
+     * this is part of [ResGlobalStringPoolSecondChunk], so it returns 0
      */
     override val startOffset: Int
         get() = 0

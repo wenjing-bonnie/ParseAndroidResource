@@ -9,7 +9,7 @@ import com.wj.parse.androidresource.utils.Logger
 /**
  * This is the second chunk of resource.arsc file.
  */
-open class ResStringPoolSecondChunk(
+open class ResGlobalStringPoolSecondChunk(
     /**
      * whole resource byte array
      */
@@ -21,7 +21,7 @@ open class ResStringPoolSecondChunk(
 ) : ChunkParseOperator {
 
     lateinit var resStringPoolHeader: ResStringPoolHeaderChunkChild
-    lateinit var resStringPoolRefOffset: ResStringPoolRefChunkChild
+    lateinit var resStringPoolRefOffset: ResGlobalStringPoolRefChunkChild
 
     /**
      * The end offset byte of this chunk
@@ -54,7 +54,7 @@ open class ResStringPoolSecondChunk(
             ResStringPoolHeaderChunkChild(resArrayStartZeroOffset)
         var childStartOffsetInParent = resStringPoolHeader.chunkEndOffset
         // string offset and style offset
-        resStringPoolRefOffset = ResStringPoolRefChunkChild(
+        resStringPoolRefOffset = ResGlobalStringPoolRefChunkChild(
             resArrayStartZeroOffset,
             startOffset = childStartOffsetInParent,
             headerSize = resStringPoolHeader.header.headerSize,

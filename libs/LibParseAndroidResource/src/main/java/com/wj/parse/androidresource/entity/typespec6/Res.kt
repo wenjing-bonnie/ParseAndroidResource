@@ -2,10 +2,11 @@ package com.wj.parse.androidresource.entity.typespec6
 
 /**
  * create by wenjing.liu at 2023/8/26
+ * TODO confirm this struct
  */
 data class Res(
     val id: Int = -1,
-    val name: String = ""
+    val key: String = ""
 ) : Comparable<Res> {
     var value: String = ""
 
@@ -15,8 +16,8 @@ data class Res(
                 1
             }
 
-            other.name != null -> {
-                name.compareTo(other.name)
+            other.key != null -> {
+                key.compareTo(other.key)
             }
 
             id > other.id -> {
@@ -32,5 +33,5 @@ data class Res(
             }
         }
 
-    override fun toString() = "name: $name, id: $id, value: $value"
+    override fun toString() = "id: $id, key: $key, value: $value"
 }

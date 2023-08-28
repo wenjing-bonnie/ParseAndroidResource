@@ -2,11 +2,10 @@ package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
-import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolSecondChunk
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.parse.ResourceElementsManager
-import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import kotlin.experimental.and
 
@@ -68,7 +67,7 @@ class ResTableTypeSixChunk(
     override val startOffset: Int,
     override val childPosition: Int,
     /**
-     * Google Pool String. It comes from [ResStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
+     * Google Pool String. It comes from [ResGlobalStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
      */
     private val globalStringList: MutableList<String>,
     /**
