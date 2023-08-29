@@ -161,7 +161,7 @@ class ResGlobalStringPoolRefChunkChild(
     private fun stringListByStringOffset() {
         stringOffsetList.forEach { ref ->
             // 1.read the length of string from first two byte , the last byte is length of this string
-            // stringStart contains headerSize, but resArrayStartZeroOffset is without header's data
+            // stringStart contains headerSize, but resArrayStartZeroOffset is without header's data when we pass it from [ResStringPoolSecondChunk]
             childOffset = stringStart - headerSize + ref.index
             // Logger.error("  ===== style childOffset = $childOffset")
             val stringLengthArray =
