@@ -8,6 +8,13 @@ enum class ChunkProperty {
     CHUNK_HEADER,
 
     /**
+     * The header of this chunk area
+     * ResChunk_header
+     * ResTable_package
+     */
+    CHUNK_AREA_HEADER,
+
+    /**
      *  the whole chunk area
      */
     CHUNK_AREA,
@@ -17,12 +24,6 @@ enum class ChunkProperty {
      */
     CHUNK_AREA_REUSED,
 
-    /**
-     * The header of this chunk area
-     * ResChunk_header
-     * ResTable_package
-     */
-    CHUNK_AREA_HEADER,
 
     /**
      * the child of this chunk area

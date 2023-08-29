@@ -121,9 +121,10 @@ class ResTableTypeSpecAndTypeChunk(
             childByteArray =
                 Utils.copyByte(inputResourceByteArray, endOffset) ?: run {
                     Logger.debug(
-                        "\n ^^^^^^^^ \n" +
-                                " !Oh, thanks goodness, we has finished to parse all resource type symbol table and resource key symbol table in the ${this.javaClass.simpleName}" +
-                                "\n ^^^^^^^^ \n"
+                        "\n ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ \n" +
+                                " | !Oh, thanks goodness, we has finished to parse all resource type symbol table |\n" +
+                                " | and resource key symbol table in the ${this.javaClass.simpleName}             |" +
+                                "\n ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ \n"
                     )
                     null
                 }

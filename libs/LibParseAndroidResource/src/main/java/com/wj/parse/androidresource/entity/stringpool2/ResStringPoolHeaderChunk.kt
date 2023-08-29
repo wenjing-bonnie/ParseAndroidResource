@@ -101,7 +101,7 @@ class ResStringPoolHeaderChunk(
         get() = 0
 
     override val chunkProperty
-        get() = ChunkProperty.CHUNK_AREA_HEADER
+        get() = ChunkProperty.CHUNK_AREA_CHILD
 
     init {
         checkChunkAttributes()

@@ -120,18 +120,12 @@ interface ChunkParseOperator {
         var start = "Part$position: $chunkName:"
         var end = "\n${Logger.TITLE_TAG_START} Part $position is ended ${Logger.TITLE_TAG_END}"
         when (chunkProperty) {
-            ChunkProperty.CHUNK_HEADER,
-            ChunkProperty.CHUNK_AREA_CHILD -> {
-                start = ">> No.$childPosition child $chunkName in a multi-part chunk"
+            ChunkProperty.CHUNK_AREA_CHILD,
+            ChunkProperty.CHUNK_AREA_CHILD_CHILD-> {
+                start = ">> No.$childPosition child $chunkName in a chunk area"
                 end =
-                    "\n${Logger.TAG_SPACE}${Logger.END_TAG_START} Child of child chunk $childPosition is ended ${Logger.END_TAG_END}"
+                    "\n${Logger.TAG_SPACE}${Logger.END_TAG_START} No. $childPosition child chunk is ended ${Logger.END_TAG_END}"
             }
-
-            ChunkProperty.CHUNK_AREA_CHILD_CHILD -> {
-                start = "$chunkName is the child of child is"
-                end = ""
-            }
-
             else -> {
 
             }
