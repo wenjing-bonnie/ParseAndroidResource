@@ -1,7 +1,7 @@
 package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
-import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -32,7 +32,7 @@ class ResTableTypeValueChunkChild(
      */
     override val startOffset: Int,
     /**
-     * Google Pool String. It comes from [ResGlobalStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
+     * Google Pool String. It comes from [ResGlobalStringPoolChunk.resStringPoolRefOffset.globalStringList]
      */
     private val globalStringList: MutableList<String>,
 ) : ChunkParseOperator {
@@ -101,7 +101,7 @@ class ResTableTypeValueChunkChild(
         get() = ChunkParseOperator.CHILD_CHILD_POSITION
 
     override val position: Int
-        get() = ResTableTypeSpecAndTypeSixChunk.POSITION
+        get() = ResTableTypeSpecAndTypeChunk.POSITION
 
     override val header: ResChunkHeader?
         get() = kotlin.run {

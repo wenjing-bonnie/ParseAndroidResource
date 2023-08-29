@@ -250,7 +250,7 @@ class ResTableConfigChunkChild(
         }
 
     override val position: Int
-        get() = ResTableTypeSpecAndTypeSixChunk.POSITION
+        get() = ResTableTypeSpecAndTypeChunk.POSITION
     override val childPosition: Int
         get() = CHILD_CHILD_POSITION
 

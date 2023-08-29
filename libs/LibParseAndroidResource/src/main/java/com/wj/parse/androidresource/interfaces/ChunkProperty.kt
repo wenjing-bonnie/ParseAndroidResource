@@ -13,7 +13,7 @@ enum class ChunkProperty {
     CHUNK_AREA,
 
     /**
-     * this chunk can be reused, string pool chunk
+     * this chunk can be reused, for example, string pool chunk
      */
     CHUNK_AREA_REUSED,
 

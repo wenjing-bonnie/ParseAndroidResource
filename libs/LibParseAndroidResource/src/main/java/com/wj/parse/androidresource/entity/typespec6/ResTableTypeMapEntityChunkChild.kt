@@ -2,7 +2,7 @@ package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolRef
-import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
 import com.wj.parse.androidresource.entity.typespec6.ResTableTypeEntryChunkChild.Flags
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
@@ -23,7 +23,7 @@ class ResTableTypeMapEntityChunkChild(
     override val startOffset: Int,
     private val resourceKey: String,
     /**
-     * Google Pool String. It comes from [ResGlobalStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
+     * Google Pool String. It comes from [ResGlobalStringPoolChunk.resStringPoolRefOffset.globalStringList]
      */
     private val globalStringList: MutableList<String>,
     private val res: Res
@@ -64,7 +64,7 @@ class ResTableTypeMapEntityChunkChild(
         get() = ChunkParseOperator.CHILD_CHILD_POSITION
 
     override val position: Int
-        get() = ResTableTypeSpecAndTypeSixChunk.POSITION
+        get() = ResTableTypeSpecAndTypeChunk.POSITION
 
     override val chunkProperty
         get() = ChunkProperty.CHUNK_AREA_CHILD_CHILD

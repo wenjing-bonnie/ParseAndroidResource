@@ -1,8 +1,8 @@
 package com.wj.parse.androidresource.entity.stringpool2
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
-import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk.Companion.CHILD_ARRAY_POSITION
-import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunkChild.Companion.OFFSET_BYTE
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk.Companion.CHILD_ARRAY_POSITION
+import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunk.Companion.OFFSET_BYTE
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -11,7 +11,7 @@ import java.lang.IllegalStateException
 import kotlin.experimental.and
 
 /**
- * This is second child of [ResGlobalStringPoolSecondChunk]
+ * This is second child of [ResGlobalStringPoolChunk]
  *
  * Reference to a string in a string pool
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#425
@@ -25,7 +25,7 @@ import kotlin.experimental.and
  *  };
  *
  */
-class ResGlobalStringPoolRefChunkChild(
+class ResGlobalStringPoolRefChildChunk(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -179,7 +179,7 @@ class ResGlobalStringPoolRefChunkChild(
                     globalStringList.add(
                         String(
                             it,
-                            if (flags == ResStringPoolHeaderChunkChild.Flags.UTF8_FLAG.value)
+                            if (flags == ResStringPoolHeaderChunk.Flags.UTF8_FLAG.value)
                                 Charsets.UTF_8
                             else
                             // TODO strcmp16()
@@ -225,8 +225,8 @@ class ResGlobalStringPoolRefChunkChild(
 
     /**
      * @Deprecated
-     * we can use [ResGlobalStringPoolRefChunkChild.stringOffsetList] to get the string list
-     * so this method has been replaced by [ResGlobalStringPoolRefChunkChild.stringListByStringOffset]
+     * we can use [ResGlobalStringPoolRefChildChunk.stringOffsetList] to get the string list
+     * so this method has been replaced by [ResGlobalStringPoolRefChildChunk.stringListByStringOffset]
      */
     private fun stringListByChildOffset() {
         for (index in 0 until stringCount) {
@@ -248,7 +248,7 @@ class ResGlobalStringPoolRefChunkChild(
                         globalStringList.add(
                             String(
                                 stringByte,
-                                if (flags == ResStringPoolHeaderChunkChild.Flags.UTF8_FLAG.value)
+                                if (flags == ResStringPoolHeaderChunk.Flags.UTF8_FLAG.value)
                                     Charsets.UTF_8
                                 else
                                 // TODO strcmp16()

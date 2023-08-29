@@ -1,14 +1,14 @@
 package com.wj.parse.androidresource.entity.stringpool2
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
-import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk.Companion.CHILD_HEADER_POSITION
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk.Companion.CHILD_HEADER_POSITION
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Utils
 
 
 /**
- * This is first child of [ResGlobalStringPoolSecondChunk]
+ * This is first child of [ResGlobalStringPoolChunk]
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#456
  *
  *  struct ResStringPool_header
@@ -35,7 +35,7 @@ import com.wj.parse.androidresource.utils.Utils
  *      uint32_t stylesStart;
  *  };
  */
-class ResStringPoolHeaderChunkChild(
+class ResStringPoolHeaderChunk(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -80,7 +80,7 @@ class ResStringPoolHeaderChunkChild(
     var stylesStart: Int = 0
 
     /**
-     * this is child of [ResGlobalStringPoolSecondChunk], so it returns the size of this child chunk
+     * this is child of [ResGlobalStringPoolChunk], so it returns the size of this child chunk
      * header.chunkEndOffset + STRING_COUNT_BYTE + STYLE_COUNT_BYTE + FLAGS_BYTE + STRING_START_BYTE + STYLE_START_BYTE
      */
     override val chunkEndOffset: Int
@@ -95,7 +95,7 @@ class ResStringPoolHeaderChunkChild(
         get() = CHILD_HEADER_POSITION
 
     /**
-     * this is part of [ResGlobalStringPoolSecondChunk], so it returns 0
+     * this is part of [ResGlobalStringPoolChunk], so it returns 0
      */
     override val startOffset: Int
         get() = 0
@@ -108,7 +108,7 @@ class ResStringPoolHeaderChunkChild(
         chunkParseOperator()
     }
 
-    override fun chunkParseOperator(): ResStringPoolHeaderChunkChild {
+    override fun chunkParseOperator(): ResStringPoolHeaderChunk {
         // string count
         var attributeStartOffset = startOffset + header.chunkEndOffset
         var attributeByteArray = Utils.copyByte(

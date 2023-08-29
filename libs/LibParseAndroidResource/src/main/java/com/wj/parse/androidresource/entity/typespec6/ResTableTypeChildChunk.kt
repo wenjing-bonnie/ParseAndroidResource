@@ -2,7 +2,7 @@ package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
-import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.parse.ResourceElementsManager
@@ -62,12 +62,12 @@ import kotlin.experimental.and
  *    ResTable_config config;
  *   };
  */
-class ResTableTypeSixChunk(
+class ResTableTypeChildChunk(
     override val inputResourceByteArray: ByteArray,
     override val startOffset: Int,
     override val childPosition: Int,
     /**
-     * Google Pool String. It comes from [ResGlobalStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
+     * Google Pool String. It comes from [ResGlobalStringPoolChunk.resStringPoolRefOffset.globalStringList]
      */
     private val globalStringList: MutableList<String>,
     /**
@@ -83,7 +83,7 @@ class ResTableTypeSixChunk(
      */
     private val packageId: Int,
     /**
-     * [ResTableTypeSpecSixChunk.id]
+     * [ResTableTypeSpecChildChunk.id]
      */
     private val resTypeSpecId: Int,
     private val resourceElementsManager: ResourceElementsManager = ResourceElementsManager()
@@ -149,7 +149,7 @@ class ResTableTypeSixChunk(
         get() = header.size
 
     override val position: Int
-        get() = ResTableTypeSpecAndTypeSixChunk.POSITION
+        get() = ResTableTypeSpecAndTypeChunk.POSITION
 
     override fun chunkParseOperator(): ChunkParseOperator {
         var attributeOffset = header.chunkEndOffset
@@ -157,7 +157,7 @@ class ResTableTypeSixChunk(
         /** id is behind the [ResChunkHeader]*/
         var attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
-            ResTableTypeSpecAndTypeSixChunk.ID_BYTE
+            ResTableTypeSpecAndTypeChunk.ID_BYTE
         )
         id = attributeByteArray?.let { idArray ->
             (idArray[0] and 0xFF.toByte()).toInt()
@@ -165,10 +165,10 @@ class ResTableTypeSixChunk(
 
         /** Next is the flags */
         // this res0 is standing by, it is 0
-        attributeOffset += ResTableTypeSpecAndTypeSixChunk.ID_BYTE
+        attributeOffset += ResTableTypeSpecAndTypeChunk.ID_BYTE
         attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
-            ResTableTypeSpecAndTypeSixChunk.RES0_BYTE
+            ResTableTypeSpecAndTypeChunk.RES0_BYTE
         )
         flags = attributeByteArray?.let { res0Array ->
             (res0Array[0] and 0xFF.toByte())
@@ -176,31 +176,31 @@ class ResTableTypeSixChunk(
 
         /** Next is the reserved */
         // this res1 is standing by, it is 0
-        attributeOffset += ResTableTypeSpecAndTypeSixChunk.RES0_BYTE
+        attributeOffset += ResTableTypeSpecAndTypeChunk.RES0_BYTE
         attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
-            ResTableTypeSpecAndTypeSixChunk.RES1_BYTE
+            ResTableTypeSpecAndTypeChunk.RES1_BYTE
         )
         reserved = Utils.byte2Short(attributeByteArray)
 
         /** Next is the entryCount */
-        attributeOffset += ResTableTypeSpecAndTypeSixChunk.RES1_BYTE
+        attributeOffset += ResTableTypeSpecAndTypeChunk.RES1_BYTE
         attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset, attributeOffset,
-            ResTableTypeSpecAndTypeSixChunk.ENTRY_COUNT_BYTE
+            ResTableTypeSpecAndTypeChunk.ENTRY_COUNT_BYTE
         )
         entryCount = Utils.byte2Int(attributeByteArray)
 
         /** Next is the entriesStart */
-        attributeOffset += ResTableTypeSpecAndTypeSixChunk.ENTRY_COUNT_BYTE
+        attributeOffset += ResTableTypeSpecAndTypeChunk.ENTRY_COUNT_BYTE
         attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
             attributeOffset,
-            ResTableTypeSpecAndTypeSixChunk.ENTRIES_START_BYTE
+            ResTableTypeSpecAndTypeChunk.ENTRIES_START_BYTE
         )
         entriesStart = Utils.byte2Int(attributeByteArray)
         // ResTable_config
-        attributeOffset += ResTableTypeSpecAndTypeSixChunk.ENTRIES_START_BYTE
+        attributeOffset += ResTableTypeSpecAndTypeChunk.ENTRIES_START_BYTE
 
         /** Next is the ResTable_config */
         // TODO why config.chunkEndOffset is 36, not 48?

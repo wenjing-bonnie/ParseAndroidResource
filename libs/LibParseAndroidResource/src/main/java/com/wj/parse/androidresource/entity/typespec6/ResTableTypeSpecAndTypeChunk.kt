@@ -2,9 +2,9 @@ package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
-import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk
-import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolFourChunk
-import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolFiveChunk
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
+import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolChunk
+import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
@@ -16,27 +16,27 @@ import com.wj.parse.androidresource.utils.Utils
 /**
  * create by wenjing.liu at 2023/7/29
  */
-class ResTableTypeSpecAndTypeSixChunk(
+class ResTableTypeSpecAndTypeChunk(
     /**
      * whole resource byte array
      */
     override val inputResourceByteArray: ByteArray,
     /**
-     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.chunkEndOffset] + [ResGlobalStringPoolSecondChunk.chunkEndOffset] + [ResTablePackageThirdChunk.keyStrings] + [ResKeyStringsPoolFiveChunk.chunkEndOffset]
+     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.chunkEndOffset] + [ResGlobalStringPoolChunk.chunkEndOffset] + [ResTablePackageThirdChunk.keyStrings] + [ResKeyStringsPoolChunk.chunkEndOffset]
      */
     override val startOffset: Int,
     /**
-     * Google Pool String. It comes from [ResGlobalStringPoolSecondChunk.resStringPoolRefOffset.globalStringList]
+     * Google Pool String. It comes from [ResGlobalStringPoolChunk.resStringPoolRefOffset.globalStringList]
      */
     val globalStringList: MutableList<String>,
     /**
      * all resource type list: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
-     * It comes from [ResTypeStringPoolFourChunk.resStringPoolRefOffset.globalStringList]
+     * It comes from [ResTypeStringPoolChunk.resStringPoolRefOffset.globalStringList]
      */
     val typeStringList: MutableList<String>,
     /**
      * all resource key list
-     * It comes from [ResKeyStringsPoolFiveChunk.resStringPoolRefOffset.globalStringList]
+     * It comes from [ResKeyStringsPoolChunk.resStringPoolRefOffset.globalStringList]
      */
     val keyStringList: MutableList<String>,
     /**
@@ -84,7 +84,7 @@ class ResTableTypeSpecAndTypeSixChunk(
                 // Logger.debug("sourceSize is $sourceSize, endOffset is $endOffset, header.type is ${childHeader.type}")
                 when (childHeader.type) {
                     ChunkType.RES_TABLE_TYPE_SPEC_TYPE.value -> {
-                        val typeChunk = ResTableTypeSpecSixChunk(
+                        val typeChunk = ResTableTypeSpecChildChunk(
                             inputResourceByteArray,
                             endOffset,
                             chunkPosition
@@ -98,7 +98,7 @@ class ResTableTypeSpecAndTypeSixChunk(
 
                     else -> {
                         val typeChunk =
-                            ResTableTypeSixChunk(
+                            ResTableTypeChildChunk(
                                 inputResourceByteArray,
                                 endOffset,
                                 chunkPosition,

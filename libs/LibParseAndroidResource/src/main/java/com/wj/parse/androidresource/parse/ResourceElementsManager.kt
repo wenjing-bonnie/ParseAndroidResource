@@ -1,8 +1,8 @@
 package com.wj.parse.androidresource.parse
 
-import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk
-import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolFourChunk
-import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolFiveChunk
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
+import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolChunk
+import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolChunk
 import com.wj.parse.androidresource.entity.typespec6.Res
 
 class ResourceElementsManager {
@@ -36,9 +36,9 @@ class ResourceElementsManager {
     override fun toString() =
         "\n------------------------------------------------\n" +
                 "| Part resource elements are listed:           |\n" +
-                "| type is from ${ResTypeStringPoolFourChunk::class.simpleName}      |\n" +
-                "| key is from ${ResKeyStringsPoolFiveChunk::class.simpleName}       |\n" +
-                "| value is from ${ResGlobalStringPoolSecondChunk::class.simpleName} |\n"+
+                "| type is from ${ResTypeStringPoolChunk::class.simpleName}      |\n" +
+                "| key is from ${ResKeyStringsPoolChunk::class.simpleName}       |\n" +
+                "| value is from ${ResGlobalStringPoolChunk::class.simpleName} |\n"+
                 "------------------------------------------------\n" +
                 _elementsMap.map {
                     formatResourceToString(it.key, it.value)

@@ -1,10 +1,10 @@
 package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
-import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeSixChunk.Companion.ENTRY_COUNT_BYTE
-import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeSixChunk.Companion.ID_BYTE
-import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeSixChunk.Companion.RES0_BYTE
-import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeSixChunk.Companion.RES1_BYTE
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk.Companion.ENTRY_COUNT_BYTE
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk.Companion.ID_BYTE
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk.Companion.RES0_BYTE
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk.Companion.RES1_BYTE
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Utils
@@ -43,7 +43,7 @@ import kotlin.experimental.and
  *     };
  *    };
  */
-class ResTableTypeSpecSixChunk(
+class ResTableTypeSpecChildChunk(
     override val inputResourceByteArray: ByteArray,
     override val startOffset: Int,
     override val childPosition: Int
@@ -86,7 +86,7 @@ class ResTableTypeSpecSixChunk(
         get() = header.size
 
     override val position: Int
-        get() = ResTableTypeSpecAndTypeSixChunk.POSITION
+        get() = ResTableTypeSpecAndTypeChunk.POSITION
 
     override fun chunkParseOperator(): ChunkParseOperator {
         var attributeOffset = header.chunkEndOffset

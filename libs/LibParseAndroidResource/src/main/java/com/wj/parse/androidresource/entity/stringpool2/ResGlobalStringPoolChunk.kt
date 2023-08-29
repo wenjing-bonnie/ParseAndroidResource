@@ -9,7 +9,7 @@ import com.wj.parse.androidresource.utils.Logger
 /**
  * This is the second chunk of resource.arsc file.
  */
-open class ResGlobalStringPoolSecondChunk(
+open class ResGlobalStringPoolChunk(
     /**
      * whole resource byte array
      */
@@ -20,8 +20,8 @@ open class ResGlobalStringPoolSecondChunk(
     override val startOffset: Int
 ) : ChunkParseOperator {
 
-    lateinit var resStringPoolHeader: ResStringPoolHeaderChunkChild
-    lateinit var resStringPoolRefOffset: ResGlobalStringPoolRefChunkChild
+    lateinit var resStringPoolHeader: ResStringPoolHeaderChunk
+    lateinit var resStringPoolRefOffset: ResGlobalStringPoolRefChildChunk
 
     /**
      * The end offset byte of this chunk
@@ -51,10 +51,10 @@ open class ResGlobalStringPoolSecondChunk(
     override fun chunkParseOperator(): ChunkParseOperator {
         // header
         resStringPoolHeader =
-            ResStringPoolHeaderChunkChild(resArrayStartZeroOffset)
+            ResStringPoolHeaderChunk(resArrayStartZeroOffset)
         var childStartOffsetInParent = resStringPoolHeader.chunkEndOffset
         // string offset and style offset
-        resStringPoolRefOffset = ResGlobalStringPoolRefChunkChild(
+        resStringPoolRefOffset = ResGlobalStringPoolRefChildChunk(
             resArrayStartZeroOffset,
             startOffset = childStartOffsetInParent,
             headerSize = resStringPoolHeader.header.headerSize,

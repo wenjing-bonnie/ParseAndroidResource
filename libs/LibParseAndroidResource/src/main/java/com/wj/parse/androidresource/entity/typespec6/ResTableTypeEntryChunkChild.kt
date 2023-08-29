@@ -75,7 +75,7 @@ open class ResTableTypeEntryChunkChild(
         get() = ChunkParseOperator.CHILD_CHILD_POSITION
 
     override val position: Int
-        get() = ResTableTypeSpecAndTypeSixChunk.POSITION
+        get() = ResTableTypeSpecAndTypeChunk.POSITION
 
     override val chunkEndOffset: Int
         get() = SIZE_IN_BYTE + FLAGS_IN_BYTE + KEY_IN_BYTE
