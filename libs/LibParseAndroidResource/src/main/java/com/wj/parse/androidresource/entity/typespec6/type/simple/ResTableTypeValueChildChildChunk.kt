@@ -1,7 +1,8 @@
-package com.wj.parse.androidresource.entity.typespec6
+package com.wj.parse.androidresource.entity.typespec6.type.simple
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger

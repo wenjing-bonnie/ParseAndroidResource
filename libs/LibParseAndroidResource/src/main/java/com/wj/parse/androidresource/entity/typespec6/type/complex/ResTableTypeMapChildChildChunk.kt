@@ -1,8 +1,10 @@
-package com.wj.parse.androidresource.entity.typespec6
+package com.wj.parse.androidresource.entity.typespec6.type.complex
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
-import com.wj.parse.androidresource.entity.typespec6.ResTableTypeMapEntityChildChildChunk.ResTableRef
+import com.wj.parse.androidresource.entity.typespec6.type.complex.ResTableTypeMapEntityChildChildChunk.ResTableRef
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk
+import com.wj.parse.androidresource.entity.typespec6.type.simple.ResTableTypeValueChildChildChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger

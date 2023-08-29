@@ -1,4 +1,4 @@
-package com.wj.parse.androidresource.entity.typespec6
+package com.wj.parse.androidresource.entity.typespec6.type
 
 /**
  * create by wenjing.liu at 2023/8/26

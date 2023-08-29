@@ -1,8 +1,11 @@
-package com.wj.parse.androidresource.entity.typespec6
+package com.wj.parse.androidresource.entity.typespec6.type
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.package3.ResTablePackageChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
+import com.wj.parse.androidresource.entity.typespec6.type.complex.ResTableTypeMapEntityChildChildChunk
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk
+import com.wj.parse.androidresource.entity.typespec6.type.simple.ResTableTypeValueChildChildChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.parse.ResourceElementsManager
@@ -61,6 +64,9 @@ import kotlin.experimental.and
  *    // Configuration this collection of entries is designed for. This must always be last.
  *    ResTable_config config;
  *   };
+ *
+ *  [ResTableTypeEntryChildChildChunk] is a entry in the type pool, it has a flag which is used to define this entity is complex or simple
+ * if it is a complex resource, next parse [ResTableTypeMapEntityChildChildChunk], otherwise, [ResTableTypeValueChildChildChunk]
  */
 class ResTableTypeChildChunk(
     override val inputResourceByteArray: ByteArray,
@@ -227,7 +233,6 @@ class ResTableTypeChildChunk(
         }
         // Logger.debug(entries.toString())
         // next is ResTableEntry,
-        val resTableEntries = mutableListOf<ResTableTypeEntryChildChildChunk>()
         /**
          * | -------------------------- header --------------------  headerSize ->|--- entryCount x 4 ->|<- entriesStart ------ |
          * |-- headerSize --|- 1 -|--- 3  ---|---- 4  ----|---- 4  ----- |---36 --|----              ---|                    ---|

@@ -6,6 +6,8 @@ import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
 import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolChunk
 import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolChunk
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderChunk
+import com.wj.parse.androidresource.entity.typespec6.type.ResTableTypeChildChunk
+import com.wj.parse.androidresource.entity.typespec6.typespec.ResTableTypeSpecChildChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.interfaces.ChunkType

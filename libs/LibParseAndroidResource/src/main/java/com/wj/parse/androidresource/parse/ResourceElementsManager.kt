@@ -3,7 +3,7 @@ package com.wj.parse.androidresource.parse
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
 import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolChunk
 import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolChunk
-import com.wj.parse.androidresource.entity.typespec6.Res
+import com.wj.parse.androidresource.entity.typespec6.type.Res
 
 class ResourceElementsManager {
 

@@ -1,7 +1,10 @@
-package com.wj.parse.androidresource.entity.typespec6
+package com.wj.parse.androidresource.entity.typespec6.type
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolRef
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk
+import com.wj.parse.androidresource.entity.typespec6.type.complex.ResTableTypeMapEntityChildChildChunk
+import com.wj.parse.androidresource.entity.typespec6.type.simple.ResTableTypeValueChildChildChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -37,6 +40,8 @@ import com.wj.parse.androidresource.utils.Utils
  *   // Reference into ResTable_package::keyStrings identifying this entry.
  *   struct ResStringPool_ref key;
  * };
+ * This is a entry in the type pool, it has a flag which is used to define this entity is complex or simple
+ * if it is a complex resource, next parse [ResTableTypeMapEntityChildChildChunk], otherwise, [ResTableTypeValueChildChildChunk]
  */
 open class ResTableTypeEntryChildChildChunk(
     /**
