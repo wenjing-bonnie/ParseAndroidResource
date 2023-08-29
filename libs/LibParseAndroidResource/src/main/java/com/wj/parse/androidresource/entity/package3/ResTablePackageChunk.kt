@@ -60,7 +60,11 @@ class ResTablePackageChunk(
     var id: Int = -1
     var name: String = ""
 
-    // TODO 可以理解为在偏移该值就是resource type symbol table
+    /**
+     *  Offset to a ResStringPool_header defining the resource
+     *  type symbol table.  If zero, this package is inheriting from
+     *  another base package (overriding specific values in it).
+     */
     var typeStrings: Int = -1
     var lastPublicType: Int = -1
     var keyStrings: Int = -1
@@ -95,9 +99,7 @@ class ResTablePackageChunk(
         attributeStartOffset += ID_BYTE
         attributeByteArray =
             Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, NAME_BYTE)
-        name = Utils.byte2StringFilterStringNull(attributeByteArray)?.let {
-            it
-        } ?: ""
+        name = Utils.byte2StringFilterStringNull(attributeByteArray) ?: ""
 
         attributeStartOffset += NAME_BYTE
         attributeByteArray = Utils.copyByte(
@@ -135,11 +137,11 @@ class ResTablePackageChunk(
         )
 
     companion object {
-        const val ID_BYTE = 4
-        const val NAME_BYTE = 256
-        const val TYPE_STRINGS_BYTE = 4
-        const val LAST_PUBLIC_TYPE_BYTE = 4
-        const val KEY_STRING_BYTE = 4
-        const val LAST_PUBLIC_KEY_BYTE = 4
+        private const val ID_BYTE = 4
+        private const val NAME_BYTE = 256
+        private const val TYPE_STRINGS_BYTE = 4
+        private const val LAST_PUBLIC_TYPE_BYTE = 4
+        private const val KEY_STRING_BYTE = 4
+        private const val LAST_PUBLIC_KEY_BYTE = 4
     }
 }

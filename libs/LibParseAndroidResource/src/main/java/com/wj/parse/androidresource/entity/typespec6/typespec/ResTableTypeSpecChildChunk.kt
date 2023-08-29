@@ -84,7 +84,7 @@ class ResTableTypeSpecChildChunk(
     }
 
     override val endOffset: Int
-        get() = header.size
+        get() = startOffset + header.size
 
     override val position: Int
         get() = ResTableTypeSpecAndTypeChunk.POSITION

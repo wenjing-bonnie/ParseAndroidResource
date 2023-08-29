@@ -84,8 +84,4 @@ class ResTableTypeMapChildChildChunk(
         chunkName = "Res Table Entry Map",
         "name is $name, value is $value"
     )
-
-    companion object {
-
-    }
 }

@@ -84,7 +84,7 @@ class ResGlobalStringPoolRefChildChunk(
     var childOffset = 0
 
     override val endOffset: Int
-        get() = childOffset
+        get() = startOffset + childOffset
     override val header: ResChunkHeader?
         get() = kotlin.run {
             Logger.debug("Not need header because this chunk is a child chunk.")

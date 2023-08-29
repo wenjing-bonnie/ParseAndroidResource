@@ -78,6 +78,6 @@ class ResourceTableHeaderChunk(
         )
 
     companion object {
-        const val TABLE_HEADER_BYTE = 4
+        private const val TABLE_HEADER_BYTE = 4
     }
 }

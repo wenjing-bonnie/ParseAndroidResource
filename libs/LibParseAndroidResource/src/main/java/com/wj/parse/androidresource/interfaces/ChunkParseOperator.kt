@@ -1,6 +1,7 @@
 package com.wj.parse.androidresource.interfaces
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
+import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderChunk
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import java.lang.IllegalStateException
@@ -13,13 +14,16 @@ interface ChunkParseOperator {
      * every chunk has a header
      */
     val header: ResChunkHeader?
+
     /**
      * start offset of this chunk is index to the table header
      */
     val startOffset: Int
 
     /**
-     * the end offset of this chunk is index to the table header
+     * if the chunk is [ChunkProperty.CHUNK_AREA], [ChunkProperty.CHUNK_AREA_REUSED] or [ChunkProperty.CHUNK_AREA_HEADER], the endOffset of this chunk is index to the table header
+     * if the chunk is [ChunkProperty.CHUNK_AREA_CHILD] , the endOffset of this chunk is index to the chunk area header
+     * If the chunk is [ChunkProperty.CHUNK_AREA_CHILD_CHILD] or [ChunkProperty.CHUNK_HEADER], the endOffset is the size of this child of child chunk
      */
     val endOffset: Int
 
@@ -79,22 +83,14 @@ interface ChunkParseOperator {
     fun checkChunkAttributes() =
         when (chunkProperty) {
             ChunkProperty.CHUNK_AREA_HEADER -> {
-//                if (startOffset != 0) {
-//                    throw IllegalArgumentException("${this.javaClass.simpleName} is a header chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed index to start from 0")
-//                }
-                // Logger.debug("** Check ${this.javaClass.simpleName} attributes is great! ** it has set the collect values, start the parse flow .... ")
-                true
-            }
-
-            ChunkProperty.CHUNK_AREA_HEADER -> {
                 // the first chunk and the startOffset should be 0
-//                if (this is ResourceTableHeaderChunk && startOffset != 0) {
-//                    throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
-//                }
-//                // not first chunk and the startOffset shouldn't be 0
-//                if ((this !is ResourceTableHeaderChunk) && startOffset == 0) {
-//                    throw IllegalArgumentException("${this.javaClass.simpleName} is a chunk, the startOffset should be not 0")
-//                }
+                if (this is ResourceTableHeaderChunk && startOffset != 0) {
+                    throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
+                }
+                // not first chunk and the startOffset shouldn't be 0
+                if ((this !is ResourceTableHeaderChunk) && startOffset == 0) {
+                    throw IllegalArgumentException("${this.javaClass.simpleName} isn't a chunk, the startOffset should be not 0")
+                }
                 // Logger.debug("** Check attributes is great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")
                 true
             }
@@ -115,11 +111,12 @@ interface ChunkParseOperator {
         var end = "\n${Logger.TITLE_TAG_START} Part $position is ended ${Logger.TITLE_TAG_END}"
         when (chunkProperty) {
             ChunkProperty.CHUNK_AREA_CHILD,
-            ChunkProperty.CHUNK_AREA_CHILD_CHILD-> {
+            ChunkProperty.CHUNK_AREA_CHILD_CHILD -> {
                 start = ">> No.$childPosition child $chunkName in a chunk area"
                 end =
                     "\n${Logger.TAG_SPACE}${Logger.END_TAG_START} No. $childPosition child chunk is ended ${Logger.END_TAG_END}"
             }
+
             else -> {
 
             }

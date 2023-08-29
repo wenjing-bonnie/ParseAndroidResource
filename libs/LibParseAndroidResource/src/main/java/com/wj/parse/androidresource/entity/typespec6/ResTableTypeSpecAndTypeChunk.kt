@@ -61,7 +61,7 @@ class ResTableTypeSpecAndTypeChunk(
     }
 
     override val endOffset: Int
-        get() = resArrayStartZeroOffset.size
+        get() = inputResourceByteArray.size
 
     override val position: Int
         get() = POSITION
@@ -90,7 +90,7 @@ class ResTableTypeSpecAndTypeChunk(
                         )
                         typeChunks.add(typeChunk)
                         // go to next chunk
-                        endOffset += typeChunk.endOffset
+                        endOffset = typeChunk.endOffset
 
                         resTypeSpecId = typeChunk.id
                     }
@@ -111,7 +111,7 @@ class ResTableTypeSpecAndTypeChunk(
 
                         typeChunks.add(typeChunk)
                         // go to next chunk
-                        endOffset += typeChunk.endOffset
+                        endOffset = typeChunk.endOffset
                     }
                 }
             }
