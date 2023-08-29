@@ -1,6 +1,7 @@
 package com.wj.parse.androidresource.entity.stringpool2
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk.Companion.CHILD_HEADER_POSITION
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Utils
@@ -91,7 +92,7 @@ class ResStringPoolHeaderChunkChild(
         get() = 2
 
     override val childPosition: Int
-        get() = 1
+        get() = CHILD_HEADER_POSITION
 
     /**
      * this is part of [ResGlobalStringPoolSecondChunk], so it returns 0
@@ -153,7 +154,7 @@ class ResStringPoolHeaderChunkChild(
 
     override fun toString(): String =
         formatToString(
-            chunkName = "Resource String Pool header",
+            chunkName = "Resource String Pool header(ResStringPool_header)",
             "$header",
             "stringCount is $stringCount, styleCount is $styleCount, flags is ${
                 when (flags) {

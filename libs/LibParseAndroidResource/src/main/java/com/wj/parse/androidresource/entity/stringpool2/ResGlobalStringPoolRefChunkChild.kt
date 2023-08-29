@@ -1,6 +1,7 @@
 package com.wj.parse.androidresource.entity.stringpool2
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
+import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk.Companion.CHILD_ARRAY_POSITION
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunkChild.Companion.OFFSET_BYTE
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
@@ -94,10 +95,10 @@ class ResGlobalStringPoolRefChunkChild(
         get() = 2
 
     override val childPosition: Int
-        get() = 2
+        get() = CHILD_ARRAY_POSITION
 
     override val chunkProperty
-        get() = ChunkProperty.CHUNK_CHILD
+        get() = ChunkProperty.CHUNK_AREA_CHILD_CHILD
 
     init {
         checkChunkAttributes()

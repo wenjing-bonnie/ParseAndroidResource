@@ -137,6 +137,11 @@ class ResTableTypeSixChunk(
      */
     lateinit var resourceTypeString: String
 
+    init {
+        checkChunkAttributes()
+        chunkParseOperator()
+    }
+
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
 
@@ -305,7 +310,7 @@ class ResTableTypeSixChunk(
         packageId shl 24 or (resTypeSpecId and 0xFF shl 16) or (entryId and 0xFFFF)
 
     override val chunkProperty
-        get() = ChunkProperty.CHUNK
+        get() = ChunkProperty.CHUNK_AREA_CHILD
 
     override fun toString(): String =
         formatToString(

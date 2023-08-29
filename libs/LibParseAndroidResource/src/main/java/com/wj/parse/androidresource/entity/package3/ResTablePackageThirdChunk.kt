@@ -81,6 +81,11 @@ class ResTablePackageThirdChunk(
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
 
+    init {
+        checkChunkAttributes()
+        chunkParseOperator()
+    }
+
     override fun chunkParseOperator(): ChunkParseOperator {
         var attributeStartOffset = header.chunkEndOffset
         var attributeByteArray =
@@ -120,7 +125,7 @@ class ResTablePackageThirdChunk(
     }
 
     override val chunkProperty
-        get() =  ChunkProperty.CHUNK
+        get() =  ChunkProperty.CHUNK_AREA_HEADER
 
     override fun toString(): String =
         formatToString(

@@ -46,7 +46,7 @@ open class ResGlobalStringPoolSecondChunk(
         get() = 0
 
     override val chunkProperty
-        get() = ChunkProperty.CHUNK
+        get() = ChunkProperty.CHUNK_AREA_REUSED
 
     override fun chunkParseOperator(): ChunkParseOperator {
         // header
@@ -72,9 +72,14 @@ open class ResGlobalStringPoolSecondChunk(
      */
     override fun toString(): String =
         formatToString(
-            chunkName = "Resource String Pool",
+            chunkName = "Resource Global String Pool",
             resStringPoolHeader.toString(),
             resStringPoolRefOffset.toString()
         )
+
+    companion object {
+        const val CHILD_HEADER_POSITION = 1
+        const val CHILD_ARRAY_POSITION = 2
+    }
 
 }

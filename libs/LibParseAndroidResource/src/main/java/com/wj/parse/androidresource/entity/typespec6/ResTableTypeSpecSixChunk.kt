@@ -77,6 +77,11 @@ class ResTableTypeSpecSixChunk(
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
 
+    init {
+        checkChunkAttributes()
+        chunkParseOperator()
+    }
+
     override val chunkEndOffset: Int
         get() = header.size
 
@@ -111,7 +116,7 @@ class ResTableTypeSpecSixChunk(
     }
 
     override val chunkProperty
-        get() = ChunkProperty.CHUNK
+        get() = ChunkProperty.CHUNK_AREA_CHILD
 
 
     override fun toString(): String =

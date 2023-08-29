@@ -55,7 +55,7 @@ class ResTableTypeMapChunkChild(
         get() = ChunkParseOperator.CHILD_CHILD_POSITION
 
     override val chunkProperty
-        get() = ChunkProperty.CHUNK_CHILD_CHILD
+        get() = ChunkProperty.CHUNK_AREA_CHILD_CHILD
 
     override val chunkEndOffset: Int
         get() = ResTableRef.SIZE_IN_BYTE + value.chunkEndOffset

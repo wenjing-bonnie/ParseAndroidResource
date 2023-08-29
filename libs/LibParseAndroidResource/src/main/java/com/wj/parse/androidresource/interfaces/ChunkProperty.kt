@@ -1,20 +1,36 @@
 package com.wj.parse.androidresource.interfaces
 
 enum class ChunkProperty {
-    CHUNK,
+
     /**
-     * The header for this chunk area
+     * the common header of every chunk as describe by the [ResChunk_header]
+     */
+    CHUNK_HEADER,
+
+    /**
+     *  the whole chunk area
+     */
+    CHUNK_AREA,
+
+    /**
+     * this chunk can be reused, string pool chunk
+     */
+    CHUNK_AREA_REUSED,
+
+    /**
+     * The header of this chunk area
+     * ResChunk_header
+     * ResTable_package
      */
     CHUNK_AREA_HEADER,
-    CHUNK_CHILD,
 
     /**
-     *
+     * the child of this chunk area
      */
-    CHUNK_CHILD_CHILD,
+    CHUNK_AREA_CHILD,
 
     /**
-     * the common header of every chunk as describe by the ResChunk_header
+     * the child of child of this chunk area
      */
-    CHUNK_HEADER
+    CHUNK_AREA_CHILD_CHILD,
 }

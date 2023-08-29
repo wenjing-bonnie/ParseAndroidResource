@@ -53,6 +53,11 @@ class ResTableTypeSpecAndTypeSixChunk(
             null
         }
 
+    init {
+        checkChunkAttributes()
+        chunkParseOperator()
+    }
+
     /**
      * TODO this is wrong, should consider
      */
@@ -84,11 +89,10 @@ class ResTableTypeSpecAndTypeSixChunk(
                             endOffset,
                             chunkPosition
                         )
-                        typeChunk.startParseChunk().also {
-                            typeChunks.add(it)
-                            // go to next chunk
-                            endOffset += typeChunk.chunkEndOffset
-                        }
+                        typeChunks.add(typeChunk)
+                        // go to next chunk
+                        endOffset += typeChunk.chunkEndOffset
+
                         resTypeSpecId = typeChunk.id
                     }
 
@@ -105,11 +109,10 @@ class ResTableTypeSpecAndTypeSixChunk(
                                 resTypeSpecId = resTypeSpecId,
                                 resourceElementsManager = resourceElementsManager
                             )
-                        typeChunk.startParseChunk().also {
-                            typeChunks.add(it)
-                            // go to next chunk
-                            endOffset += typeChunk.chunkEndOffset
-                        }
+
+                        typeChunks.add(typeChunk)
+                        // go to next chunk
+                        endOffset += typeChunk.chunkEndOffset
                     }
                 }
             }
@@ -131,8 +134,11 @@ class ResTableTypeSpecAndTypeSixChunk(
     private fun isTypeChunkParsingCompleted(endOffset: Int, sourceSize: Int): Boolean =
         endOffset >= sourceSize
 
+    /**
+     * this chunk area is special, it is part of table package.
+     */
     override val chunkProperty
-        get() = ChunkProperty.CHUNK
+        get() = ChunkProperty.CHUNK_AREA
 
     override fun toString(): String =
         formatToString(

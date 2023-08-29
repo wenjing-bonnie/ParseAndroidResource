@@ -50,7 +50,7 @@ interface ChunkParseOperator {
      */
     val resArrayStartZeroOffset: ByteArray
         get() = kotlin.run {
-            // Logger.debug("${this.javaClass.simpleName} startOffset is $startOffset")
+            // Logger.debug("${inputResourceByteArray.size} startOffset is $startOffset")
             Utils.copyByte(inputResourceByteArray, startOffset) ?: kotlin.run {
                 Logger.error("${this.javaClass.simpleName} has a bad state, the array is null, from $inputResourceByteArray starting from $startOffset")
                 throw IllegalStateException("${this.javaClass.simpleName} has a bad state, the array is null")
@@ -59,15 +59,15 @@ interface ChunkParseOperator {
 
     fun startParseChunk(): ChunkParseOperator =
         when (chunkProperty) {
-            ChunkProperty.CHUNK-> {
+            ChunkProperty.CHUNK_AREA_REUSED,
+            -> {
                 checkChunkAttributes()
                 chunkParseOperator()
                 this
             }
 
             else -> {
-                Logger.debug("${this.javaClass.simpleName} is a part of chunk, start parse chunk automatically ")
-                this
+                throw IllegalCallerException("${this.javaClass.simpleName} will start parse chunk automatically, don't need to call this method")
             }
         }
 
@@ -92,7 +92,7 @@ interface ChunkParseOperator {
                 true
             }
 
-            ChunkProperty.CHUNK -> {
+            ChunkProperty.CHUNK_AREA_HEADER -> {
                 // the first chunk and the startOffset should be 0
 //                if (this is ResourceTableHeaderChunk && startOffset != 0) {
 //                    throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
@@ -119,18 +119,17 @@ interface ChunkParseOperator {
     ): String {
         var start = "Part$position: $chunkName:"
         var end = "\n${Logger.TITLE_TAG_START} Part $position is ended ${Logger.TITLE_TAG_END}"
-        when {
-            childPosition > 0 -> {
-                if (chunkProperty == ChunkProperty.CHUNK_CHILD_CHILD) {
-                    start = "$chunkName is the child of child is"
-                    end = ""
-                    // "\n${Logger.TAG_SPACE}${Logger.TITLE_TAG_START} Child chunk $childPosition is ended ${Logger.TITLE_TAG_END}"
-                } else {
-                    start = ">> No.$childPosition child $chunkName in a multi-part chunk"
-                    end =
-                        "\n${Logger.TAG_SPACE}${Logger.END_TAG_START} Child of child chunk $childPosition is ended ${Logger.END_TAG_END}"
-                }
+        when (chunkProperty) {
+            ChunkProperty.CHUNK_HEADER,
+            ChunkProperty.CHUNK_AREA_CHILD -> {
+                start = ">> No.$childPosition child $chunkName in a multi-part chunk"
+                end =
+                    "\n${Logger.TAG_SPACE}${Logger.END_TAG_START} Child of child chunk $childPosition is ended ${Logger.END_TAG_END}"
+            }
 
+            ChunkProperty.CHUNK_AREA_CHILD_CHILD -> {
+                start = "$chunkName is the child of child is"
+                end = ""
             }
 
             else -> {

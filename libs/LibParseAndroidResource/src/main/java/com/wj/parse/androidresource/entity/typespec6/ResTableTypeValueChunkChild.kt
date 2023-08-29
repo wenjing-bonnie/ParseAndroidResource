@@ -137,7 +137,7 @@ class ResTableTypeValueChunkChild(
     }
 
     override val chunkProperty
-        get() = ChunkProperty.CHUNK_CHILD_CHILD
+        get() = ChunkProperty.CHUNK_AREA_CHILD_CHILD
 
     override fun toString() =
         formatToString(
