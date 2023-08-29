@@ -25,7 +25,7 @@ class ParseResourceChain() {
 
             /** read [ResourceTableHeaderChunk]*/
             var parentOffset = 0
-            Logger.debug("\n${Logger.TITLE_TAG_START} Begin to read first chunk \"Table Header\", parentOffset is $parentOffset ${Logger.TITLE_TAG_END}")
+            logBeginningTitle(1, "ResTable_header", parentOffset)
             val tableHeaderChunk = ResourceTableHeaderChunk(resourceByteArray)
             tableHeaderChunk.startParseChunk().also {
                 Logger.debug(it.toString())
@@ -33,7 +33,7 @@ class ParseResourceChain() {
 
             /** read [ResGlobalStringPoolSecondChunk] */
             parentOffset += tableHeaderChunk.chunkEndOffset
-            Logger.debug("\n${Logger.TITLE_TAG_START} Begin to read second chunk: GlobalString Pool, parentOffset is $parentOffset ${Logger.TITLE_TAG_END},")
+            logBeginningTitle(2, "Global String Pool", parentOffset)
             val stringPoolChunk =
                 ResGlobalStringPoolSecondChunk(resourceByteArray, parentOffset)
             stringPoolChunk.startParseChunk().also {
@@ -42,7 +42,7 @@ class ParseResourceChain() {
 
             /** read [ResTablePackageThirdChunk] */
             parentOffset += stringPoolChunk.chunkEndOffset
-            Logger.debug("\n${Logger.TITLE_TAG_START} begin to read third chunk: table package, parentOffset is $parentOffset ${Logger.TITLE_TAG_END}")
+            logBeginningTitle(3, "ResTable_package", parentOffset)
             val tablePackageChunk =
                 ResTablePackageThirdChunk(resourceByteArray, parentOffset)
             tablePackageChunk.startParseChunk().also {
@@ -85,6 +85,10 @@ class ParseResourceChain() {
         } ?: run {
             Logger.error("The resource data is null, there is something wrong.")
         }
+    }
+
+    private fun logBeginningTitle(index: Int, name: String, parentOffset: Int) {
+        Logger.debug("\n${Logger.TITLE_TAG_START} begin to read $index chunk: $name, parentOffset is $parentOffset ${Logger.TITLE_TAG_END}")
     }
 
     fun getResourceFromInputStream(resourceInputStream: InputStream): ByteArray? {

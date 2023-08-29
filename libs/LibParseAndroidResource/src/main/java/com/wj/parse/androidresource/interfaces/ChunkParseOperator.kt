@@ -2,7 +2,6 @@ package com.wj.parse.androidresource.interfaces
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderChunk
-import com.wj.parse.androidresource.entity.typespec6.ResTableTypeEntryChunkChild
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import java.lang.IllegalArgumentException
