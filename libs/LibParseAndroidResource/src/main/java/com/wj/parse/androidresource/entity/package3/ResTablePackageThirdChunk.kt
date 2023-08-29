@@ -10,6 +10,10 @@ import com.wj.parse.androidresource.utils.Utils
 /**
  * create by wenjing.liu at 2023/7/22
  *
+ * A collection of resource data types within a package.  Followed by
+ * one or more ResTable_type and ResTable_typeSpec structures containing the
+ * entry values for each resource type.
+ *
  * struct ResTable_package
  * {
  *     struct ResChunk_header header;
