@@ -4,7 +4,7 @@ import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolFourChunk
 import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolFiveChunk
-import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
+import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderChunk
 import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeSixChunk
 import com.wj.parse.androidresource.utils.Logger
 import java.io.ByteArrayOutputStream
@@ -23,10 +23,10 @@ class ParseResourceChain() {
 
         result?.let { resourceByteArray ->
 
-            /** read [ResourceTableHeaderFirstChunk]*/
+            /** read [ResourceTableHeaderChunk]*/
             var parentOffset = 0
             Logger.debug("\n${Logger.TITLE_TAG_START} Begin to read first chunk \"Table Header\", parentOffset is $parentOffset ${Logger.TITLE_TAG_END}")
-            val tableHeaderChunk = ResourceTableHeaderFirstChunk(resourceByteArray)
+            val tableHeaderChunk = ResourceTableHeaderChunk(resourceByteArray)
             tableHeaderChunk.startParseChunk().also {
                 Logger.debug(it.toString())
             }

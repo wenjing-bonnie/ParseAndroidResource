@@ -5,7 +5,7 @@ import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk
 import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolFourChunk
 import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolFiveChunk
-import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
+import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.interfaces.ChunkType
@@ -22,7 +22,7 @@ class ResTableTypeSpecAndTypeSixChunk(
      */
     override val inputResourceByteArray: ByteArray,
     /**
-     * The [startOffset] of this chunk is [ResourceTableHeaderFirstChunk.chunkEndOffset] + [ResGlobalStringPoolSecondChunk.chunkEndOffset] + [ResTablePackageThirdChunk.keyStrings] + [ResKeyStringsPoolFiveChunk.chunkEndOffset]
+     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.chunkEndOffset] + [ResGlobalStringPoolSecondChunk.chunkEndOffset] + [ResTablePackageThirdChunk.keyStrings] + [ResKeyStringsPoolFiveChunk.chunkEndOffset]
      */
     override val startOffset: Int,
     /**

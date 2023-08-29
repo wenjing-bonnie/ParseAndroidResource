@@ -2,7 +2,7 @@ package com.wj.parse.androidresource.entity.package3
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolSecondChunk
-import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
+import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Utils
@@ -52,7 +52,7 @@ class ResTablePackageThirdChunk(
      */
     override val inputResourceByteArray: ByteArray,
     /**
-     * The [startOffset] of this chunk is [ResourceTableHeaderFirstChunk.chunkEndOffset] + [ResGlobalStringPoolSecondChunk.chunkEndOffset]
+     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.chunkEndOffset] + [ResGlobalStringPoolSecondChunk.chunkEndOffset]
      */
     override val startOffset: Int
 ) : ChunkParseOperator {

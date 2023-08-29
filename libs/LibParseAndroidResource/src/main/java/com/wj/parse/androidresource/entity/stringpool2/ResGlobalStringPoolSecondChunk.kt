@@ -1,7 +1,7 @@
 package com.wj.parse.androidresource.entity.stringpool2
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
-import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
+import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -15,7 +15,7 @@ open class ResGlobalStringPoolSecondChunk(
      */
     override val inputResourceByteArray: ByteArray,
     /**
-     * The [startOffset] of this chunk is [ResourceTableHeaderFirstChunk.chunkEndOffset]
+     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.chunkEndOffset]
      */
     override val startOffset: Int
 ) : ChunkParseOperator {

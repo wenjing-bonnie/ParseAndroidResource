@@ -1,7 +1,7 @@
 package com.wj.parse.androidresource.interfaces
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
-import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderFirstChunk
+import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderChunk
 import com.wj.parse.androidresource.entity.typespec6.ResTableTypeEntryChunkChild
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
@@ -96,11 +96,11 @@ interface ChunkParseOperator {
 
             ChunkProperty.CHUNK -> {
                 // the first chunk and the startOffset should be 0
-                if (this is ResourceTableHeaderFirstChunk && startOffset != 0) {
+                if (this is ResourceTableHeaderChunk && startOffset != 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
                 }
                 // not first chunk and the startOffset shouldn't be 0
-                if ((this !is ResourceTableHeaderFirstChunk) && startOffset == 0) {
+                if ((this !is ResourceTableHeaderChunk) && startOffset == 0) {
                     throw IllegalArgumentException("${this.javaClass.simpleName} is a chunk, the startOffset should be not 0")
                 }
                 // Logger.debug("** Check attributes is great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")

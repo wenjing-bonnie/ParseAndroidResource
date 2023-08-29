@@ -18,7 +18,7 @@ import com.wj.parse.androidresource.utils.Utils
  *     int32_t packageCount;
  *  };
  */
-class ResourceTableHeaderFirstChunk(
+class ResourceTableHeaderChunk(
     /**
      * The whole byte array.
      * The [startOffset] of this chunk is 0 and [resArrayStartZeroOffset] is the whole array.
@@ -55,7 +55,7 @@ class ResourceTableHeaderFirstChunk(
     override val startOffset: Int
         get() = 0
 
-    override fun chunkParseOperator(): ResourceTableHeaderFirstChunk {
+    override fun chunkParseOperator(): ResourceTableHeaderChunk {
         val packageCountByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
             header.chunkEndOffset,
