@@ -1,10 +1,8 @@
 package com.wj.parse.androidresource.interfaces
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
-import com.wj.parse.androidresource.entity.table1.ResourceTableHeaderChunk
 import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
-import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 
 /**
@@ -82,26 +80,27 @@ interface ChunkParseOperator {
 
     /**
      * check the attributes of this chunk have been set the collect value
+     * TODO
      */
     fun checkChunkAttributes() =
         when (chunkProperty) {
-            ChunkProperty.CHUNK_HEADER -> {
-                if (startOffset != 0) {
-                    throw IllegalArgumentException("${this.javaClass.simpleName} is a header chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed index to start from 0")
-                }
+            ChunkProperty.CHUNK_AREA_HEADER -> {
+//                if (startOffset != 0) {
+//                    throw IllegalArgumentException("${this.javaClass.simpleName} is a header chunk, the startOffset should be 0, because 'resArrayStartZeroOffset' has been changed index to start from 0")
+//                }
                 // Logger.debug("** Check ${this.javaClass.simpleName} attributes is great! ** it has set the collect values, start the parse flow .... ")
                 true
             }
 
             ChunkProperty.CHUNK -> {
                 // the first chunk and the startOffset should be 0
-                if (this is ResourceTableHeaderChunk && startOffset != 0) {
-                    throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
-                }
-                // not first chunk and the startOffset shouldn't be 0
-                if ((this !is ResourceTableHeaderChunk) && startOffset == 0) {
-                    throw IllegalArgumentException("${this.javaClass.simpleName} is a chunk, the startOffset should be not 0")
-                }
+//                if (this is ResourceTableHeaderChunk && startOffset != 0) {
+//                    throw IllegalArgumentException("${this.javaClass.simpleName}  is a first chunk, the startOffset should be 0")
+//                }
+//                // not first chunk and the startOffset shouldn't be 0
+//                if ((this !is ResourceTableHeaderChunk) && startOffset == 0) {
+//                    throw IllegalArgumentException("${this.javaClass.simpleName} is a chunk, the startOffset should be not 0")
+//                }
                 // Logger.debug("** Check attributes is great! **  ${this.javaClass.simpleName} has set the collect values, start the parse flow ....")
                 true
             }
