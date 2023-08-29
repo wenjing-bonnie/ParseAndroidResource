@@ -12,7 +12,7 @@ import com.wj.parse.androidresource.utils.Utils
  * https://android.googlesource.com/platform/frameworks/base/+/master/libs/androidfw/include/androidfw/ResourceTypes.h#946
  * ResTable_config
  */
-class ResTableConfigChunkChild(
+class ResTableConfigChildChildChunk(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -240,7 +240,7 @@ class ResTableConfigChunkChild(
 
     // TODO 36 or 48???
     // TODO 为什么读48的数组，但是实际上只有36呢？？从图上只有36， where is localeScript localeVariant
-    override val chunkEndOffset: Int
+    override val endOffset: Int
         get() = 36
 
     override val header: ResChunkHeader?

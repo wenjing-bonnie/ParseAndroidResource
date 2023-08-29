@@ -2,7 +2,7 @@ package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
-import com.wj.parse.androidresource.entity.typespec6.ResTableTypeMapEntityChunkChild.ResTableRef
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeMapEntityChildChildChunk.ResTableRef
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -26,7 +26,7 @@ import com.wj.parse.androidresource.utils.Utils
  *   Res_value value;
  * };
  */
-class ResTableTypeMapChunkChild(
+class ResTableTypeMapChildChildChunk(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -41,7 +41,7 @@ class ResTableTypeMapChunkChild(
     private val globalStringList: MutableList<String>,
 ) : ChunkParseOperator {
     lateinit var name: ResTableRef
-    lateinit var value: ResTableTypeValueChunkChild
+    lateinit var value: ResTableTypeValueChildChildChunk
 
     init {
         checkChunkAttributes()
@@ -57,8 +57,8 @@ class ResTableTypeMapChunkChild(
     override val chunkProperty
         get() = ChunkProperty.CHUNK_AREA_CHILD_CHILD
 
-    override val chunkEndOffset: Int
-        get() = ResTableRef.SIZE_IN_BYTE + value.chunkEndOffset
+    override val endOffset: Int
+        get() = ResTableRef.SIZE_IN_BYTE + value.endOffset
 
     override val header: ResChunkHeader?
         get() = kotlin.run {
@@ -74,7 +74,7 @@ class ResTableTypeMapChunkChild(
 
         attributeOffset += ResTableRef.SIZE_IN_BYTE
         value =
-            ResTableTypeValueChunkChild(resArrayStartZeroOffset, attributeOffset, globalStringList)
+            ResTableTypeValueChildChildChunk(resArrayStartZeroOffset, attributeOffset, globalStringList)
         return this
     }
 

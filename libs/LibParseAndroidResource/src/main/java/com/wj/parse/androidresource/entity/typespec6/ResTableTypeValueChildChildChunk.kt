@@ -22,7 +22,7 @@ import kotlin.experimental.and
  *      //
  *      uint8_t res0;
  */
-class ResTableTypeValueChunkChild(
+class ResTableTypeValueChildChildChunk(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -108,7 +108,7 @@ class ResTableTypeValueChunkChild(
             Logger.debug("Not need header, because this is a child chunk without header.")
             null
         }
-    override val chunkEndOffset: Int
+    override val endOffset: Int
         get() = SIZE_IN_BYTE + RES0_IN_BYTE + DATA_TYPE_IN_BYTE + DATA_IN_BYTE
 
     override fun chunkParseOperator(): ChunkParseOperator {

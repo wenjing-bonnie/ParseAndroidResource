@@ -15,7 +15,7 @@ open class ResGlobalStringPoolChunk(
      */
     override val inputResourceByteArray: ByteArray,
     /**
-     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.chunkEndOffset]
+     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.endOffset]
      */
     override val startOffset: Int
 ) : ChunkParseOperator {
@@ -26,12 +26,8 @@ open class ResGlobalStringPoolChunk(
     /**
      * The end offset byte of this chunk
      */
-    override val chunkEndOffset: Int
-        get() = when {
-            // normally resStringPoolHeader is initialized
-            ::resStringPoolHeader.isInitialized -> resStringPoolHeader.header.size
-            else -> (startOffset + resStringPoolHeader.chunkEndOffset + resStringPoolRefOffset.chunkEndOffset)
-        }
+    override val endOffset: Int
+        get() = startOffset + resStringPoolHeader.header.size
 
     override val header: ResChunkHeader?
         get() = kotlin.run {
@@ -52,7 +48,7 @@ open class ResGlobalStringPoolChunk(
         // header
         resStringPoolHeader =
             ResStringPoolHeaderChunk(resArrayStartZeroOffset)
-        var childStartOffsetInParent = resStringPoolHeader.chunkEndOffset
+        var childStartOffsetInParent = resStringPoolHeader.endOffset
         // string offset and style offset
         resStringPoolRefOffset = ResGlobalStringPoolRefChildChunk(
             resArrayStartZeroOffset,

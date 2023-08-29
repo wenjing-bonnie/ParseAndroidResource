@@ -71,7 +71,7 @@ class ResChunkHeader(
      *  ｜ 2 Byte is type ｜2 Byte is header size｜ 4 Byte is size｜ = 8 Byte
      * This is a child of chunk, so this size should return the size of this child
      */
-    override val chunkEndOffset: Int
+    override val endOffset: Int
         get() = TYPE_BYTE + HEADER_SIZE_BYTE + SIZE_BYTE
 
     override val position: Int

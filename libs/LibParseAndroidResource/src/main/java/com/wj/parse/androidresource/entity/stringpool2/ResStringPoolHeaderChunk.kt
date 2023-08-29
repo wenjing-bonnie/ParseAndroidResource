@@ -83,7 +83,7 @@ class ResStringPoolHeaderChunk(
      * this is child of [ResGlobalStringPoolChunk], so it returns the size of this child chunk
      * header.chunkEndOffset + STRING_COUNT_BYTE + STYLE_COUNT_BYTE + FLAGS_BYTE + STRING_START_BYTE + STYLE_START_BYTE
      */
-    override val chunkEndOffset: Int
+    override val endOffset: Int
         get() = header.headerSize.toInt()
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
@@ -110,7 +110,7 @@ class ResStringPoolHeaderChunk(
 
     override fun chunkParseOperator(): ResStringPoolHeaderChunk {
         // string count
-        var attributeStartOffset = startOffset + header.chunkEndOffset
+        var attributeStartOffset = startOffset + header.endOffset
         var attributeByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
             attributeStartOffset,
@@ -154,7 +154,7 @@ class ResStringPoolHeaderChunk(
 
     override fun toString(): String =
         formatToString(
-            chunkName = "Resource String Pool header(ResStringPool_header)",
+            chunkName = "Resource String Pool header(P2:ResStringPool_header)",
             "$header",
             "stringCount is $stringCount, styleCount is $styleCount, flags is ${
                 when (flags) {

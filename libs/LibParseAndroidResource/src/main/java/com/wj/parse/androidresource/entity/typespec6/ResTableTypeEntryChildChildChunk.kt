@@ -38,7 +38,7 @@ import com.wj.parse.androidresource.utils.Utils
  *   struct ResStringPool_ref key;
  * };
  */
-open class ResTableTypeEntryChunkChild(
+open class ResTableTypeEntryChildChildChunk(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -77,7 +77,7 @@ open class ResTableTypeEntryChunkChild(
     override val position: Int
         get() = ResTableTypeSpecAndTypeChunk.POSITION
 
-    override val chunkEndOffset: Int
+    override val endOffset: Int
         get() = SIZE_IN_BYTE + FLAGS_IN_BYTE + KEY_IN_BYTE
 
     override val header: ResChunkHeader?
@@ -114,7 +114,7 @@ open class ResTableTypeEntryChunkChild(
             /**
              * TODO
              * If flags is 138, the index is out of this key strings list
-             * If flags is [ResTableTypeValueChunkChild.DataType.TYPE_NULL] the index is -1
+             * If flags is [ResTableTypeValueChildChildChunk.DataType.TYPE_NULL] the index is -1
              */
             resKeyString = resKeyStringList[key.index]
         }

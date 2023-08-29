@@ -1,6 +1,6 @@
 package com.wj.parse.androidresource.parse
 
-import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
+import com.wj.parse.androidresource.entity.package3.ResTablePackageChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
 import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolChunk
 import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolChunk
@@ -25,52 +25,52 @@ class ParseResourceChain() {
         result?.let { resourceByteArray ->
 
             /** read [ResourceTableHeaderChunk]*/
-            var parentOffset = 0
+            var startOffset = 0
             val tableHeaderChunk = ResourceTableHeaderChunk(resourceByteArray)
-            logBeginningTitle(1, "ResTable_header", parentOffset, tableHeaderChunk)
+            logBeginningTitle(1, "ResTable_header", startOffset, tableHeaderChunk)
 
             /** read [ResGlobalStringPoolChunk] */
-            parentOffset += tableHeaderChunk.chunkEndOffset
+            startOffset = tableHeaderChunk.endOffset
             val stringPoolChunk =
-                ResGlobalStringPoolChunk(resourceByteArray, parentOffset)
+                ResGlobalStringPoolChunk(resourceByteArray, startOffset)
             stringPoolChunk.startParseChunk().also { globalPool ->
-                logBeginningTitle(2, "Global String Pool", parentOffset, globalPool)
+                logBeginningTitle(2, "Global String Pool", startOffset, globalPool)
             }
 
-            /** read [ResTablePackageThirdChunk] */
-            parentOffset += stringPoolChunk.chunkEndOffset
+            /** read [ResTablePackageChunk] */
+            startOffset = stringPoolChunk.endOffset
             val tablePackageChunk =
-                ResTablePackageThirdChunk(resourceByteArray, parentOffset)
-            logBeginningTitle(3, "ResTable_package", parentOffset, tablePackageChunk)
+                ResTablePackageChunk(resourceByteArray, startOffset)
+            logBeginningTitle(3, "ResTable_package", startOffset, tablePackageChunk)
 
 
             /** read [ResTypeStringPoolChunk] */
-            val typeStringOffset = parentOffset + tablePackageChunk.typeStrings
+            val typeStringOffset = startOffset + tablePackageChunk.typeStrings
             val typeStringPoolChunk =
                 ResTypeStringPoolChunk(resourceByteArray, typeStringOffset)
             typeStringPoolChunk.startParseChunk().also { typePool ->
-                logBeginningTitle(4, "Type String Pool,", parentOffset, typePool)
+                logBeginningTitle(4, "Type String Pool", typeStringOffset, typePool)
             }
 
             /** read [ResKeyStringsPoolChunk] */
-            val keyStringsOffset = parentOffset + tablePackageChunk.keyStrings
+            val keyStringsOffset = startOffset + tablePackageChunk.keyStrings
             val keyStringsPoolChunk =
                 ResKeyStringsPoolChunk(resourceByteArray, keyStringsOffset)
             keyStringsPoolChunk.startParseChunk().also { keyPool ->
-                logBeginningTitle(5, "Key String Pool,", parentOffset, keyPool)
+                logBeginningTitle(5, "Key String Pool", keyStringsOffset, keyPool)
             }
 
             /** read [ResTableTypeSpecAndTypeChunk] */
-            parentOffset = keyStringsOffset + keyStringsPoolChunk.chunkEndOffset
+            startOffset = keyStringsPoolChunk.endOffset
             val typeChunk = ResTableTypeSpecAndTypeChunk(
                 resourceByteArray,
-                parentOffset,
+                startOffset,
                 globalStringList = stringPoolChunk.resStringPoolRefOffset.globalStringList,
                 typeStringList = typeStringPoolChunk.resStringPoolRefOffset.globalStringList,
                 keyStringList = keyStringsPoolChunk.resStringPoolRefOffset.globalStringList,
                 packageId = tablePackageChunk.id
             )
-            logBeginningTitle(6, "Type spec and Type", parentOffset, typeChunk)
+            logBeginningTitle(6, "Type spec and Type", startOffset, typeChunk)
 
 
         } ?: run {

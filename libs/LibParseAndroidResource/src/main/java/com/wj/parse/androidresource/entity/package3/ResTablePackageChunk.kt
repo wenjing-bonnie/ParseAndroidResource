@@ -46,13 +46,13 @@ import com.wj.parse.androidresource.utils.Utils
  * };
  */
 
-class ResTablePackageThirdChunk(
+class ResTablePackageChunk(
     /**
      * whole resource byte array
      */
     override val inputResourceByteArray: ByteArray,
     /**
-     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.chunkEndOffset] + [ResGlobalStringPoolChunk.chunkEndOffset]
+     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.endOffset] + [ResGlobalStringPoolChunk.endOffset]
      */
     override val startOffset: Int
 ) : ChunkParseOperator {
@@ -69,8 +69,8 @@ class ResTablePackageThirdChunk(
     /**
      * this chunk is the part of header
      */
-    override val chunkEndOffset: Int
-        get() = header.headerSize.toInt()
+    override val endOffset: Int
+        get() = startOffset + header.headerSize
 
     override val position: Int
         get() = 3
@@ -87,7 +87,7 @@ class ResTablePackageThirdChunk(
     }
 
     override fun chunkParseOperator(): ChunkParseOperator {
-        var attributeStartOffset = header.chunkEndOffset
+        var attributeStartOffset = header.endOffset
         var attributeByteArray =
             Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, ID_BYTE)
         id = Utils.byte2Int(attributeByteArray)
@@ -125,11 +125,11 @@ class ResTablePackageThirdChunk(
     }
 
     override val chunkProperty
-        get() =  ChunkProperty.CHUNK_AREA_HEADER
+        get() = ChunkProperty.CHUNK_AREA_HEADER
 
     override fun toString(): String =
         formatToString(
-            chunkName = "Resource Table Package",
+            chunkName = "Resource Table Package(P3:ResTable_package)",
             "$header",
             "id is $id, name is $name, typeStrings is $typeStrings, lastPublicType is $lastPublicType, keyStrings is $keyStrings, lastPublicKey is $lastPublicKey."
         )

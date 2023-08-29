@@ -1,7 +1,7 @@
 package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
-import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
+import com.wj.parse.androidresource.entity.package3.ResTablePackageChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
@@ -79,7 +79,7 @@ class ResTableTypeChildChunk(
      */
     private val resKeyStringList: MutableList<String>,
     /**
-     * [ResTablePackageThirdChunk.id]
+     * [ResTablePackageChunk.id]
      */
     private val packageId: Int,
     /**
@@ -130,7 +130,7 @@ class ResTableTypeChildChunk(
      *  // Configuration this collection of entries is designed for. This must always be last.
      *  ResTable_config config;
      */
-    lateinit var config: ResTableConfigChunkChild
+    lateinit var config: ResTableConfigChildChildChunk
 
     /**
      * current resource type
@@ -145,14 +145,14 @@ class ResTableTypeChildChunk(
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
 
-    override val chunkEndOffset: Int
+    override val endOffset: Int
         get() = header.size
 
     override val position: Int
         get() = ResTableTypeSpecAndTypeChunk.POSITION
 
     override fun chunkParseOperator(): ChunkParseOperator {
-        var attributeOffset = header.chunkEndOffset
+        var attributeOffset = header.endOffset
 
         /** id is behind the [ResChunkHeader]*/
         var attributeByteArray = Utils.copyByte(
@@ -206,7 +206,7 @@ class ResTableTypeChildChunk(
         // TODO why config.chunkEndOffset is 36, not 48?
         // TODO why the header.headerSize中的config的size只有36, not 48?
         config =
-            ResTableConfigChunkChild(resArrayStartZeroOffset, attributeOffset)
+            ResTableConfigChildChildChunk(resArrayStartZeroOffset, attributeOffset)
         // resourceTypeStringList: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
 
         /** Next is the ResTable_entry */
@@ -227,7 +227,7 @@ class ResTableTypeChildChunk(
         }
         // Logger.debug(entries.toString())
         // next is ResTableEntry,
-        val resTableEntries = mutableListOf<ResTableTypeEntryChunkChild>()
+        val resTableEntries = mutableListOf<ResTableTypeEntryChildChildChunk>()
         /**
          * | -------------------------- header --------------------  headerSize ->|--- entryCount x 4 ->|<- entriesStart ------ |
          * |-- headerSize --|- 1 -|--- 3  ---|---- 4  ----|---- 4  ----- |---36 --|----              ---|                    ---|
@@ -240,7 +240,7 @@ class ResTableTypeChildChunk(
             val resourceId = getResourceId(index)
             // Logger.debug("====== $index resKeyStringList is ${resKeyStringList.size}")
             // TODO seem like to be a header
-            val entry = ResTableTypeEntryChunkChild(
+            val entry = ResTableTypeEntryChildChildChunk(
                 resArrayStartZeroOffset,
                 attributeOffset,
                 resKeyStringList
@@ -252,11 +252,11 @@ class ResTableTypeChildChunk(
                 // If set FLAG_COMPLEX, this is a complex entry, holding a set of name/value
                 // mappings. It is followed by an array of ResTable_map structures.
                 // [attr, style] is a complex entry
-                ResTableTypeEntryChunkChild.Flags.FLAG_COMPLEX.value -> {
+                ResTableTypeEntryChildChildChunk.Flags.FLAG_COMPLEX.value -> {
 //                    if (index == 0)
 //                        Logger.debug("$resourceTypeString is a complex entry")
                     //   Logger.debug(" attributeOffset is $attributeOffset")
-                    val complexMapEntity = ResTableTypeMapEntityChunkChild(
+                    val complexMapEntity = ResTableTypeMapEntityChildChildChunk(
                         resArrayStartZeroOffset,
                         attributeOffset,
                         entry.resKeyString,
@@ -266,7 +266,7 @@ class ResTableTypeChildChunk(
 //                    if(resourceTypeString.equals("drawable")){
 //                        Logger.debug("$index map is $mapEntity")
 //                    }
-                    attributeOffset += complexMapEntity.chunkEndOffset
+                    attributeOffset += complexMapEntity.endOffset
                     // Logger.debug("${entry.chunkEndOffset} map is ${mapEntity.chunkEndOffset}")
                 }
 
@@ -275,13 +275,13 @@ class ResTableTypeChildChunk(
                     // [drawable, layout, anim, raw, color, dimen, string, id] is simple resource type
 //                    if (index == 0)
 //                        Logger.debug("$resourceTypeString is a simple entry")
-                    val notComplexEntity = ResTableTypeValueChunkChild(
+                    val notComplexEntity = ResTableTypeValueChildChildChunk(
                         resArrayStartZeroOffset,
-                        attributeOffset + entry.chunkEndOffset,
+                        attributeOffset + entry.endOffset,
                         globalStringList
                     )
                     res.value = notComplexEntity.dataString
-                    attributeOffset += entry.chunkEndOffset + notComplexEntity.chunkEndOffset
+                    attributeOffset += entry.endOffset + notComplexEntity.endOffset
                     // res.value.indexOf("<") >= 0
                     if (notComplexEntity.invalidDataType(res.value)) {
                         /** if this value is invalid, don't add this [Res] to [ResourceElementsManager._elementsMap] */

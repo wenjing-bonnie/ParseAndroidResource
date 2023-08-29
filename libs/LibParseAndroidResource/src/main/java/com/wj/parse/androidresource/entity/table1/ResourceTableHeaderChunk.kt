@@ -46,8 +46,8 @@ class ResourceTableHeaderChunk(
     override val chunkProperty
         get() = ChunkProperty.CHUNK_AREA_HEADER
 
-    override val chunkEndOffset: Int
-        get() = header.chunkEndOffset + TABLE_HEADER_BYTE
+    override val endOffset: Int
+        get() = header.endOffset + TABLE_HEADER_BYTE
 
     /**
      * The startOffset of this chunk is 0
@@ -63,7 +63,7 @@ class ResourceTableHeaderChunk(
     override fun chunkParseOperator(): ResourceTableHeaderChunk {
         val packageCountByteArray = Utils.copyByte(
             resArrayStartZeroOffset,
-            header.chunkEndOffset,
+            header.endOffset,
             TABLE_HEADER_BYTE
         )
         packageCount = Utils.byte2Int(packageCountByteArray)

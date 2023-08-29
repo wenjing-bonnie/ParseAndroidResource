@@ -14,20 +14,14 @@ interface ChunkParseOperator {
      */
     val header: ResChunkHeader?
     /**
-     * start offset of this chunk
-     */
-    /**
-     *  If this chunk is a whole chunk, [startOffset] should return the start offset behind last chunk
-     *  if this chunk is a child chunk, [startOffset] should return 0, because the [resArrayStartZeroOffset] of child chunk has been changed index to first byte array
+     * start offset of this chunk is index to the table header
      */
     val startOffset: Int
 
     /**
-     * Normally this chunkEndOffset is [ChunkParseOperator.header.size]
-     *  If this chunk is a whole chunk, [chunkEndOffset] should return the end of this chunk in bit unit
-     *  if this chunk is a child chunk, [chunkEndOffset] should return the size of this chunk in bit unit
+     * the end offset of this chunk is index to the table header
      */
-    val chunkEndOffset: Int
+    val endOffset: Int
 
     /**
      * the whole resource byte array of this resource.arsc file
@@ -40,13 +34,13 @@ interface ChunkParseOperator {
     val position: Int
 
     /**
-     * If this chunk is a child chunk, it is the position in this part
+     * If this chunk is a child chunk, it is the position in this chunk area
      */
     val childPosition: Int
 
     /**
      * [resArrayStartZeroOffset] should be the byte array which index start from 0 without the previous chunk byte data.
-     * Therefore we can read first attribute data of this chunk which start from [ResChunkHeader.chunkEndOffset]
+     * Therefore we can read first attribute data of this chunk which start from [ResChunkHeader.endOffset]
      */
     val resArrayStartZeroOffset: ByteArray
         get() = kotlin.run {

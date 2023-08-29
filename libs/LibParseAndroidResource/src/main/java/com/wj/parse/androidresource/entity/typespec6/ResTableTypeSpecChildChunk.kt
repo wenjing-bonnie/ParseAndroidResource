@@ -82,14 +82,14 @@ class ResTableTypeSpecChildChunk(
         chunkParseOperator()
     }
 
-    override val chunkEndOffset: Int
+    override val endOffset: Int
         get() = header.size
 
     override val position: Int
         get() = ResTableTypeSpecAndTypeChunk.POSITION
 
     override fun chunkParseOperator(): ChunkParseOperator {
-        var attributeOffset = header.chunkEndOffset
+        var attributeOffset = header.endOffset
         var attributeByteArray = Utils.copyByte(resArrayStartZeroOffset, attributeOffset, ID_BYTE)
         id = attributeByteArray?.let { idArray ->
             (idArray[0] and 0xFF.toByte()).toInt()
@@ -121,7 +121,7 @@ class ResTableTypeSpecChildChunk(
 
     override fun toString(): String =
         formatToString(
-            chunkName = "Resource Type spec",
+            chunkName = "Resource Type spec(ResTable_typeSpec)",
             "$header",
             "id is $id, res0 is $res0, res1 is $res1,  entryCount is $entryCount"
         )

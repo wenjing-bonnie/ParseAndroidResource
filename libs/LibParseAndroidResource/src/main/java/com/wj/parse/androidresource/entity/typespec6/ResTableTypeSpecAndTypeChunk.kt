@@ -1,7 +1,7 @@
 package com.wj.parse.androidresource.entity.typespec6
 
 import com.wj.parse.androidresource.entity.ResChunkHeader
-import com.wj.parse.androidresource.entity.package3.ResTablePackageThirdChunk
+import com.wj.parse.androidresource.entity.package3.ResTablePackageChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
 import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolChunk
 import com.wj.parse.androidresource.entity.stringpool5.ResKeyStringsPoolChunk
@@ -22,7 +22,7 @@ class ResTableTypeSpecAndTypeChunk(
      */
     override val inputResourceByteArray: ByteArray,
     /**
-     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.chunkEndOffset] + [ResGlobalStringPoolChunk.chunkEndOffset] + [ResTablePackageThirdChunk.keyStrings] + [ResKeyStringsPoolChunk.chunkEndOffset]
+     * The [startOffset] of this chunk is [ResourceTableHeaderChunk.endOffset] + [ResGlobalStringPoolChunk.endOffset] + [ResTablePackageChunk.keyStrings] + [ResKeyStringsPoolChunk.endOffset]
      */
     override val startOffset: Int,
     /**
@@ -40,7 +40,7 @@ class ResTableTypeSpecAndTypeChunk(
      */
     val keyStringList: MutableList<String>,
     /**
-     * [ResTablePackageThirdChunk.id]
+     * [ResTablePackageChunk.id]
      */
     private val packageId: Int,
 ) : ChunkParseOperator {
@@ -58,11 +58,8 @@ class ResTableTypeSpecAndTypeChunk(
         chunkParseOperator()
     }
 
-    /**
-     * TODO this is wrong, should consider
-     */
-    override val chunkEndOffset: Int
-        get() = TODO()
+    override val endOffset: Int
+        get() = resArrayStartZeroOffset.size
 
     override val position: Int
         get() = POSITION
@@ -91,7 +88,7 @@ class ResTableTypeSpecAndTypeChunk(
                         )
                         typeChunks.add(typeChunk)
                         // go to next chunk
-                        endOffset += typeChunk.chunkEndOffset
+                        endOffset += typeChunk.endOffset
 
                         resTypeSpecId = typeChunk.id
                     }
@@ -112,7 +109,7 @@ class ResTableTypeSpecAndTypeChunk(
 
                         typeChunks.add(typeChunk)
                         // go to next chunk
-                        endOffset += typeChunk.chunkEndOffset
+                        endOffset += typeChunk.endOffset
                     }
                 }
             }

@@ -3,7 +3,7 @@ package com.wj.parse.androidresource.entity.typespec6
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolRef
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
-import com.wj.parse.androidresource.entity.typespec6.ResTableTypeEntryChunkChild.Flags
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeEntryChildChildChunk.Flags
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -12,7 +12,7 @@ import com.wj.parse.androidresource.utils.Utils
 /**
  * create by wenjing.liu at 2023/8/25
  */
-class ResTableTypeMapEntityChunkChild(
+class ResTableTypeMapEntityChildChildChunk(
     /**
      * the string pool chunk byte array which index has started from 0 for this child chunk
      */
@@ -40,7 +40,7 @@ class ResTableTypeMapEntityChunkChild(
     lateinit var key: ResStringPoolRef
     private lateinit var parent: ResTableRef
     var count: Int = 0
-    lateinit var tableTypeMapChunkChild: ResTableTypeMapChunkChild
+    lateinit var tableTypeMapChunkChild: ResTableTypeMapChildChildChunk
 
     init {
         checkChunkAttributes()
@@ -53,9 +53,9 @@ class ResTableTypeMapEntityChunkChild(
             null
         }
 
-    override val chunkEndOffset: Int
+    override val endOffset: Int
         get() = SIZE_IN_BYTE + FLAGS_IN_BYTE + KEY_IN_BYTE + ResStringPoolRef.SIZE_IN_BYTE + COUNT_IN_BYTE + if (::tableTypeMapChunkChild.isInitialized) {
-            tableTypeMapChunkChild.chunkEndOffset * count
+            tableTypeMapChunkChild.endOffset * count
         } else {
             0
         }
@@ -121,9 +121,9 @@ class ResTableTypeMapEntityChunkChild(
         //  size is 16, flags is FLAG_COMPLEX, key is ResStringPoolRef(index=1056), resourceKey is AppBaseTheme
         for (index in 0 until count) {
             tableTypeMapChunkChild =
-                ResTableTypeMapChunkChild(resArrayStartZeroOffset, mapOffset, globalStringList)
+                ResTableTypeMapChildChildChunk(resArrayStartZeroOffset, mapOffset, globalStringList)
             res.value = tableTypeMapChunkChild.value.dataString
-            mapOffset += tableTypeMapChunkChild.chunkEndOffset * index
+            mapOffset += tableTypeMapChunkChild.endOffset * index
             // res.value.indexOf("<") >= 0
             // value=<0xFFFFFFFF, type 0x00>
             if (tableTypeMapChunkChild.value.invalidDataType(res.value)) {
