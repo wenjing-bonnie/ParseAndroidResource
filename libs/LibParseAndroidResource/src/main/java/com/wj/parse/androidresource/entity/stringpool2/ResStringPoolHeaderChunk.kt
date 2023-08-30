@@ -180,5 +180,6 @@ class ResStringPoolHeaderChunk(
         const val STRING_START_BYTE = 4
         const val STYLE_START_BYTE = 4
         const val OFFSET_BYTE = 4
+        const val STRING_RESERVED_BYTE = 3
     }
 }

@@ -3,6 +3,7 @@ package com.wj.parse.androidresource.entity.stringpool2
 import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk.Companion.CHILD_ARRAY_POSITION
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunk.Companion.OFFSET_BYTE
+import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunk.Companion.STRING_RESERVED_BYTE
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -77,12 +78,15 @@ class ResGlobalStringPoolRefChildChunk(
      * uint32_t firstChar, lastChar;
      * };
      */
-    var styleList = mutableListOf<String>()
+    var styleList = mutableListOf<ResStringPoolSpan>()
 
 
     // read string offset
     var childOffset = 0
 
+    /**
+     * this endOffset doesn't affect this chunk area's endOffset
+     */
     override val endOffset: Int
         get() = startOffset + childOffset
     override val header: ResChunkHeader?
@@ -135,7 +139,7 @@ class ResGlobalStringPoolRefChildChunk(
                 )
             sourceBytes?.let {
                 styleOffsetList.add(ResStringPoolRef(Utils.byte2Int(it)))
-                Logger.debug("The $index byte array is ${byteOffset(it)},  style offset is ${styleOffsetList[index]} ")
+                // Logger.debug("The $index byte array is ${byteOffset(it)},  style offset is ${styleOffsetList[index]} ")
             } ?: run {
                 Logger.error("Read style offset is null")
                 throw IllegalStateException("Read style offset is null")
@@ -155,7 +159,8 @@ class ResGlobalStringPoolRefChildChunk(
         // Logger.error(" \n ===== style childOffset = $childOffset")
         // stringListByChildOffset()
         stringListByStringOffset()
-        //TODO read style list
+        // read style list
+        styleListByStyleOffset()
         return this
     }
 
@@ -165,11 +170,11 @@ class ResGlobalStringPoolRefChildChunk(
             // stringStart contains headerSize, but resArrayStartZeroOffset is without header's data when we pass it from [ResStringPoolSecondChunk]
             childOffset = stringStart - headerSize + ref.index
             // Logger.error("  ===== style childOffset = $childOffset")
-            val stringLengthArray =
+            val stringLength =
                 Utils.copyByte(resArrayStartZeroOffset, childOffset, OFFSET_BYTE / 2)
-            val stringLength = stringLengthArray?.let {
-                (stringLengthArray[1] and 0x7F).toInt()
-            } ?: 0
+                    ?.let { stringLengthArray ->
+                        (stringLengthArray[1] and 0x7F).toInt()
+                    } ?: 0
             if (stringLength <= 0) {
                 return@forEach
             }
@@ -183,10 +188,41 @@ class ResGlobalStringPoolRefChildChunk(
                                 Charsets.UTF_8
                             else
                             // TODO strcmp16()
-                                Charsets.UTF_8
+                                Charsets.UTF_16
                         )
                     )
                 }
+            childOffset += stringLength + STRING_RESERVED_BYTE
+        }
+    }
+
+    private fun styleListByStyleOffset() {
+        styleOffsetList.forEach { ref ->
+            childOffset = stylesStart - headerSize + ref.index
+            var attributeArray =
+                Utils.copyByte(resArrayStartZeroOffset, childOffset, ResStringPoolRef.SIZE_IN_BYTE)
+            val name = ResStringPoolRef(Utils.byte2Int(attributeArray))
+
+            childOffset += ResStringPoolSpan.SIZE_IN_BYTE
+            attributeArray =
+                Utils.copyByte(
+                    resArrayStartZeroOffset,
+                    childOffset,
+                    ResStringPoolSpan.RANGE_IN_BYTE
+                )
+            val firstChar = Utils.byte2Int(attributeArray)
+
+            childOffset += ResStringPoolSpan.RANGE_IN_BYTE
+            attributeArray =
+                Utils.copyByte(
+                    resArrayStartZeroOffset,
+                    childOffset,
+                    ResStringPoolSpan.RANGE_IN_BYTE
+                )
+            val lastChar = Utils.byte2Int(attributeArray)
+            styleList.add(ResStringPoolSpan(name, firstChar, lastChar))
+            // add the
+            childOffset += ResStringPoolSpan.RANGE_IN_BYTE
         }
     }
 
@@ -206,6 +242,22 @@ class ResGlobalStringPoolRefChildChunk(
             }",
             "string list is ${
                 globalStringList.joinToString(
+                    prefix = "[",
+                    limit = 10,
+                    truncated = "...",
+                    postfix = "]"
+                )
+            }",
+            "style offset is ${
+                styleOffsetList.joinToString(
+                    prefix = "[",
+                    limit = 10,
+                    truncated = "...",
+                    postfix = "]"
+                )
+            }",
+            "style list is ${
+                styleList.joinToString(
                     prefix = "[",
                     limit = 10,
                     truncated = "...",
