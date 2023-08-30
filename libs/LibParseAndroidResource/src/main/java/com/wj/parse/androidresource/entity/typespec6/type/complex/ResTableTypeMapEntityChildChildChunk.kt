@@ -13,6 +13,18 @@ import com.wj.parse.androidresource.utils.Utils
 
 /**
  * create by wenjing.liu at 2023/8/25
+ **
+ * Extended form of a ResTable_entry for map entries, defining a parent map
+ * resource from which to inherit values.
+ * TODO can be extends from????
+ * struct ResTable_map_entry : public ResTable_entry
+ * {
+ *    // Resource identifier of the parent mapping, or 0 if there is none.
+ *    // This is always treated as a TYPE_DYNAMIC_REFERENCE.
+ *    ResTable_ref parent;
+ *    // Number of name/value pairs that follow for FLAG_COMPLEX.
+ *    uint32_t count;
+ * };
  */
 class ResTableTypeMapEntityChildChildChunk(
     /**
@@ -40,7 +52,10 @@ class ResTableTypeMapEntityChildChildChunk(
      * Reference into ResTable_package::keyStrings identifying this entry.
      */
     lateinit var key: ResStringPoolRef
+    // Resource identifier of the parent mapping, or 0 if there is none.
+    // This is always treated as a TYPE_DYNAMIC_REFERENCE.
     private lateinit var parent: ResTableRef
+    // Number of name/value pairs that follow for FLAG_COMPLEX.
     var count: Int = 0
     lateinit var tableTypeMapChunkChild: ResTableTypeMapChildChildChunk
 
