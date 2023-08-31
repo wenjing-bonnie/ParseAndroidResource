@@ -159,13 +159,16 @@ class ResStringPoolHeaderChunk(
             "stringCount is $stringCount, styleCount is $styleCount, flags is ${
                 when (flags) {
                     Flags.UTF8_FLAG.value -> "UTF-8"
-                    else -> "strcmp16"
+                    Flags.SORTED_FLAG.value -> "strcmp16"
+                    else -> "no flag for $flags"
                 }
             }, stringStart is $stringStart, stylesStart is $stylesStart."
         )
 
 
     enum class Flags(var value: Int) {
+        NO_FLAG(0),
+
         /** strcmp16() */
         SORTED_FLAG(1 shl 0),
 

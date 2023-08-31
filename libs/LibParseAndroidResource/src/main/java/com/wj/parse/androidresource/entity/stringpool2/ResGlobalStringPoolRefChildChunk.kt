@@ -4,6 +4,7 @@ import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk.Companion.CHILD_ARRAY_POSITION
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunk.Companion.OFFSET_BYTE
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunk.Companion.STRING_RESERVED_BYTE
+import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -173,12 +174,22 @@ class ResGlobalStringPoolRefChildChunk(
             val stringLength =
                 Utils.copyByte(resArrayStartZeroOffset, childOffset, OFFSET_BYTE / 2)
                     ?.let { stringLengthArray ->
-                        (stringLengthArray[1] and 0x7F).toInt()
+
+                        when (flags) {
+                            ResStringPoolHeaderChunk.Flags.NO_FLAG.value -> {
+                                //   Logger.error("  ===== childOffset = $childOffset string array 0 = ${stringLengthArray[0]}, ${stringLengthArray[1]}")
+                                (stringLengthArray[0] and 0x7F).toInt()
+                            }
+
+                            else -> {
+                                (stringLengthArray[1] and 0x7F).toInt()
+                            }
+                        }
                     } ?: 0
             if (stringLength <= 0) {
                 return@forEach
             }
-
+            // Logger.error("  ===== string stringLength = $stringLength")
             Utils.copyByte(resArrayStartZeroOffset, childOffset + OFFSET_BYTE / 2, stringLength)
                 ?.let {
                     globalStringList.add(
