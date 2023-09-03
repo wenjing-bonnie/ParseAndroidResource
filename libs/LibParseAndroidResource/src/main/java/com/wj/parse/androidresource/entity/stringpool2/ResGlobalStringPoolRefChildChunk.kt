@@ -4,7 +4,6 @@ import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk.Companion.CHILD_ARRAY_POSITION
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunk.Companion.OFFSET_BYTE
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolHeaderChunk.Companion.STRING_RESERVED_BYTE
-import com.wj.parse.androidresource.entity.stringpool4.ResTypeStringPoolChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.utils.Logger
@@ -174,36 +173,55 @@ class ResGlobalStringPoolRefChildChunk(
             val stringLength =
                 Utils.copyByte(resArrayStartZeroOffset, childOffset, OFFSET_BYTE / 2)
                     ?.let { stringLengthArray ->
+                        // Logger.debug("${flags}, ${stringLengthArray[0]}, ${stringLengthArray[0]}")
 
                         when (flags) {
-                            ResStringPoolHeaderChunk.Flags.NO_FLAG.value -> {
-                                //   Logger.error("  ===== childOffset = $childOffset string array 0 = ${stringLengthArray[0]}, ${stringLengthArray[1]}")
-                                (stringLengthArray[0] and 0x7F).toInt()
+                            ResStringPoolHeaderChunk.Flags.UTF16_FLAG.value -> {
+                                // utf-16 the string is end with 0x0000, so the first and second byte is u16len but no u8len
+                                Utils.byte2Short(stringLengthArray).toInt()
                             }
 
                             else -> {
+                                // utf-8 the string is end with 0x00, so the second byte is the length
+                                // the first and second byte is u8len and u16len
                                 (stringLengthArray[1] and 0x7F).toInt()
                             }
                         }
                     } ?: 0
+            // Logger.error("  ===== childOffset = $childOffset string = $stringLength")
+
             if (stringLength <= 0) {
                 return@forEach
             }
             // Logger.error("  ===== string stringLength = $stringLength")
-            Utils.copyByte(resArrayStartZeroOffset, childOffset + OFFSET_BYTE / 2, stringLength)
-                ?.let {
-                    globalStringList.add(
-                        String(
-                            it,
-                            if (flags == ResStringPoolHeaderChunk.Flags.UTF8_FLAG.value)
-                                Charsets.UTF_8
-                            else
-                            // TODO strcmp16()
-                                Charsets.UTF_16
-                        )
-                    )
+            val readLength = stringLength * when (flags) {
+                ResStringPoolHeaderChunk.Flags.UTF16_FLAG.value -> 2
+                else -> 1
+            }
+            Utils.copyByte(
+                resArrayStartZeroOffset,
+                childOffset + OFFSET_BYTE / 2,
+                readLength
+            )
+                ?.let { array ->
+                    val value = when (flags) {
+                        ResStringPoolHeaderChunk.Flags.UTF16_FLAG.value -> {
+                            String(
+                                array.filter { byte ->
+                                    byte.toInt() != 0
+                                }.toByteArray()
+                            )
+                        }
+
+                        else -> {
+                            String(array)
+                        }
+                    }
+                    globalStringList.add(value)
+
                 }
-            childOffset += stringLength + STRING_RESERVED_BYTE
+            // this doesn't work, maybe the last char's offset is wrong when the flags is UTF16_FLAG
+            childOffset += readLength + STRING_RESERVED_BYTE
         }
     }
 
