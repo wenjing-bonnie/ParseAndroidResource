@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wj.parse.androidresource.ui.theme.ParseAndroidResourceTheme
 
-class MainActivity : ComponentActivity() {
+class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -30,15 +30,7 @@ class MainActivity : ComponentActivity() {
                         .padding(start = 10.dp, end = 10.dp, top = 30.dp),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android",
-                        onOkClick = {
-                            startActivity(
-                                Intent(
-                                    MainActivity@ this,
-                                    SettingsActivity::class.java
-                                )
-                            )
-                        })
+                    Settings("Settings")
                 }
             }
         }
@@ -46,19 +38,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(
+fun Settings(
     name: String,
-    onOkClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column {
-        Button(onClick = onOkClick) {
-            Text(
-                text = stringResource(id = android.R.string.ok)
-            )
-        }
         Text(
-            text = "Hello $name!",
+            text = stringResource(id = R.string.settings_content, "1"),
             modifier = modifier
         )
     }
@@ -67,8 +53,8 @@ fun Greeting(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun SettingsPreview() {
     ParseAndroidResourceTheme {
-        Greeting("Android")
+        Settings("Android")
     }
 }
