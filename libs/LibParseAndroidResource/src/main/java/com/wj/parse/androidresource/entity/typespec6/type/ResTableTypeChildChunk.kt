@@ -5,10 +5,12 @@ import com.wj.parse.androidresource.entity.package3.ResTablePackageChunk
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
 import com.wj.parse.androidresource.entity.typespec6.type.complex.ResTableTypeMapEntityChildChildChunk
 import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk
+import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk.Companion.ENTRY_OFFSET_BYTE
 import com.wj.parse.androidresource.entity.typespec6.type.simple.ResTableTypeValueChildChildChunk
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
 import com.wj.parse.androidresource.parse.ResourceElementsManager
+import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import kotlin.experimental.and
 
@@ -223,13 +225,14 @@ class ResTableTypeChildChunk(
         // get the current resource type
         resourceTypeString = resTypeStringList[typeIndex]
         // get the entryCount
-        val entries = mutableListOf<Int>()
-        // entries is right after the header
+        val entryOffsets = mutableListOf<Int>()
+        // entryOffsets is right after the header
         for (index in 0 until entryCount) {
-            attributeOffset = header.headerSize + index * 4
-            attributeByteArray = Utils.copyByte(resArrayStartZeroOffset, attributeOffset)
+            attributeOffset = header.headerSize + index * ENTRY_OFFSET_BYTE
+            attributeByteArray =
+                Utils.copyByte(resArrayStartZeroOffset, attributeOffset, ENTRY_OFFSET_BYTE)
             val element = Utils.byte2Int(attributeByteArray)
-            entries.add(element)
+            entryOffsets.add(element)
         }
         // Logger.debug(entries.toString())
         // next is ResTableEntry,
@@ -239,9 +242,11 @@ class ResTableTypeChildChunk(
          * |    header      |  id | reserved | entryCount | entriesStart | config | entry offset array  |  ResTable_entry array |
          * |-- headerSize --|- 1 -|--- 3  ---|---- 4  ----|---- 4  ----- |---36 --|----              ---|                    ---|
          */
-        attributeOffset = entriesStart
+        // Logger.debug("0 attributeOffset ${attributeOffset}")
         // Logger.debug("entriesStart is $entriesStart, headerSize is ${header.headerSize}, entryCount is $entryCount")
         for (index in 0 until entryCount) {
+            // Logger.debug(" attributeOffset ${attributeOffset}, ${entriesStart+entries[index]} , ${+entries[index]} ")
+            attributeOffset = entriesStart + entryOffsets[index]
             val resourceId = getResourceId(index)
             // Logger.debug("====== $index resKeyStringList is ${resKeyStringList.size}")
             // TODO seem like to be a header
@@ -271,8 +276,8 @@ class ResTableTypeChildChunk(
 //                    if(resourceTypeString.equals("drawable")){
 //                        Logger.debug("$index map is $mapEntity")
 //                    }
-                    attributeOffset += complexMapEntity.endOffset
-                    // Logger.debug("${entry.chunkEndOffset} map is ${mapEntity.chunkEndOffset}")
+                    // it is replaced with "attributeOffset = entriesStart + entryOffsets[index]"
+                    // attributeOffset += complexMapEntity.endOffset
                 }
 
                 else -> {
@@ -286,10 +291,13 @@ class ResTableTypeChildChunk(
                         globalStringList
                     )
                     res.value = notComplexEntity.dataString
-                    attributeOffset += entry.endOffset + notComplexEntity.endOffset
-                    // res.value.indexOf("<") >= 0
+                    // it is replaced with "attributeOffset = entriesStart + entryOffsets[index]"
+                    // attributeOffset += entry.endOffset + notComplexEntity.endOffset
+
                     if (notComplexEntity.invalidDataType(res.value)) {
+                        // res.value.indexOf("<") >= 0
                         /** if this value is invalid, don't add this [Res] to [ResourceElementsManager._elementsMap] */
+                        // Logger.debug("invalid entry offset ${entries[index]}")
                         continue
                     }
 //                    if(resourceTypeString == "drawable"){

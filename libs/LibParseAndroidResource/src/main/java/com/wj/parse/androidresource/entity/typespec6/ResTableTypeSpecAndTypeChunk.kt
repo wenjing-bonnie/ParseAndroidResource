@@ -158,6 +158,7 @@ class ResTableTypeSpecAndTypeChunk(
         const val RES1_BYTE = 2
         const val ENTRY_COUNT_BYTE = 4
         const val ENTRIES_START_BYTE = 4
+        const val ENTRY_OFFSET_BYTE = 4
     }
 
 }
