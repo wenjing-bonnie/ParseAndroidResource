@@ -140,6 +140,9 @@ class ResTableTypeChildChunk(
      */
     lateinit var config: ResTableConfigChildChildChunk
 
+    // array of the entry offset
+    val entryOffsets = mutableListOf<Int>()
+
     /**
      * current resource type
      */
@@ -225,7 +228,6 @@ class ResTableTypeChildChunk(
         // get the current resource type
         resourceTypeString = resTypeStringList[typeIndex]
         // get the entryCount
-        val entryOffsets = mutableListOf<Int>()
         // entryOffsets is right after the header
         for (index in 0 until entryCount) {
             attributeOffset = header.headerSize + index * ENTRY_OFFSET_BYTE
