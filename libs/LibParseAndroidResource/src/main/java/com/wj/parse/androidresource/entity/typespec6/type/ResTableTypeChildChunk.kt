@@ -143,6 +143,9 @@ class ResTableTypeChildChunk(
     // array of the entry offset
     val entryOffsets = mutableListOf<Int>()
 
+    // ResTable_entry
+    lateinit var entry: ResTableTypeEntryChildChildChunk
+
     /**
      * current resource type
      */
@@ -251,15 +254,15 @@ class ResTableTypeChildChunk(
             attributeOffset = entriesStart + entryOffsets[index]
             val resourceId = getResourceId(index)
             // Logger.debug("====== $index resKeyStringList is ${resKeyStringList.size}")
-            // TODO seem like to be a header
-            val entry = ResTableTypeEntryChildChildChunk(
+            // it seems to be a header
+            entry = ResTableTypeEntryChildChildChunk(
                 resArrayStartZeroOffset,
                 attributeOffset,
                 resKeyStringList
             )
             // Logger.debug("$index entry is $entry")
             val res = Res(resourceId, entry.resKeyString)
-            // TODO next is the body
+            // the next is the body
             when (entry.flags) {
                 // If set FLAG_COMPLEX, this is a complex entry, holding a set of name/value
                 // mappings. It is followed by an array of ResTable_map structures.
@@ -276,7 +279,7 @@ class ResTableTypeChildChunk(
                         res = res
                     )
 //                    if(resourceTypeString.equals("drawable")){
-//                        Logger.debug("$index map is $mapEntity")
+                      // Logger.debug("$index map is $complexMapEntity")
 //                    }
                     // it is replaced with "attributeOffset = entriesStart + entryOffsets[index]"
                     // attributeOffset += complexMapEntity.endOffset
@@ -322,7 +325,7 @@ class ResTableTypeChildChunk(
      * | packageId | resTypeSpecId | entryId |
      */
     private fun getResourceId(entryId: Int) =
-        packageId shl 24 or (resTypeSpecId and 0xFF shl 16) or (entryId and 0xFFFF)
+        packageId shl 24 or (resTypeSpecId shl 16) or (entryId and 0xFFFF)
 
     override val chunkProperty
         get() = ChunkProperty.CHUNK_AREA_CHILD
@@ -332,6 +335,7 @@ class ResTableTypeChildChunk(
             chunkName = "Resource Type <$resourceTypeString>",
             "$header",
             "id is $id, flags is $flags, reserved is $reserved,  entryCount is $entryCount, entriesStart is $entriesStart",
-            "$config"
+            "$config",
+            "$entry"
         )
 }

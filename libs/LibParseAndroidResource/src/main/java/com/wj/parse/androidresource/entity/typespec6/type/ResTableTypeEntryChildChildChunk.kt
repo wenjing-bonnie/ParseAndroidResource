@@ -33,7 +33,7 @@ import com.wj.parse.androidresource.utils.Utils
  *       // If set, this is a weak resource and may be overriden by strong
  *       // resources of the same name/type. This is only useful during
  *       // linking with other resource tables.
- *       FLAG_WEAK = 0x0004,
+ *       FLAG_WEAK = 0x0004
  *   };
  *   uint16_t flags;
  *
@@ -127,7 +127,7 @@ open class ResTableTypeEntryChildChildChunk(
     }
 
     override fun toString(): String = formatToString(
-        chunkName = "Res Table Entry",
+        chunkName = "Res Table Entry(header of entry)",
         "size is $size, flags is ${Flags.valueOf(flags)}, key is $key, resourceKey is $resKeyString"
     )
 
