@@ -128,6 +128,7 @@ class ResTableTypeMapEntityChildChildChunk(
             KEY_IN_BYTE
         )
         // 8 - 4
+        //TODO what is it?????
         parent = ResTableRef(Utils.byte2Int(attributeArrayByte))
 
         attributeOffset += ResTableRef.SIZE_IN_BYTE
@@ -150,7 +151,8 @@ class ResTableTypeMapEntityChildChildChunk(
         for (index in 0 until count) {
             val tableTypeMapChunkChild =
                 ResTableTypeMapChildChildChunk(resArrayStartZeroOffset, mapOffset, globalStringList)
-            res.value = tableTypeMapChunkChild.value.dataString
+            // TODO 考虑怎么把child的内容都显示出来？？？
+            res.attributes.add(tableTypeMapChunkChild.value.dataString)
             mapChildChildChunks.add(tableTypeMapChunkChild)
             mapChildChildChunk = tableTypeMapChunkChild
             mapOffset += tableTypeMapChunkChild.endOffset * index
@@ -209,13 +211,6 @@ class ResTableTypeMapEntityChildChildChunk(
         }
 
         override fun toString() =
-            // TODO ???????
-            "resourceId(in the Key String Pool) is $ident, 0x${
-                Utils.bytesToHexString(
-                    Utils.int2Byte(
-                        ident
-                    )
-                )
-            }"
+            "ResTable_ref ident is 0x${Integer.toHexString(ident)}"
     }
 }

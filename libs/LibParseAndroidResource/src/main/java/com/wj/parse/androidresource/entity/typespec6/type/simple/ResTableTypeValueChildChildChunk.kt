@@ -45,6 +45,8 @@ class ResTableTypeValueChildChildChunk(
     val dataString: String
         get() = when (dataType) {
             DataType.TYPE_STRING.value -> {
+                // the value is stored the global string pool
+                // the data is the index for this value
                 if (data < globalStringList.size) {
                     globalStringList[data]
                 } else {
@@ -57,6 +59,8 @@ class ResTableTypeValueChildChildChunk(
             }
 
             DataType.TYPE_REFERENCE.value -> {
+                // the attribute value is reference, for example, @string/app_name
+                // data is the decimal resourceId
                 String.format("@${getPackage(data)}%08X", data)
             }
 
@@ -70,6 +74,7 @@ class ResTableTypeValueChildChildChunk(
             }
 
             DataType.TYPE_INT_BOOLEAN.value -> {
+                // boolean
                 if (data != 0) "true" else "false"
             }
 
@@ -186,8 +191,10 @@ class ResTableTypeValueChildChildChunk(
 
     private fun getPackage(id: Int) =
         if (id ushr 24 == 1) {
+            //if packageId is 1, it is a system app
             "android:"
         } else {
+            // if packageId is 137, it is not system app
             ""
         }
 
