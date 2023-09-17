@@ -10,6 +10,11 @@ data class Res(
 ) : Comparable<Res> {
     var value: String = ""
 
+    /**
+     * if the resource is complex resource, there will be an array of attribute resources
+     */
+    lateinit var attributes: MutableList<Res>
+
     override fun compareTo(other: Res): Int =
         when {
             other == null -> {

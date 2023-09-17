@@ -59,6 +59,9 @@ class ResTableTypeMapChildChildChunk(
     override val chunkProperty
         get() = ChunkProperty.CHUNK_AREA_CHILD_CHILD
 
+    /**
+     * It is 12 byte
+     */
     override val endOffset: Int
         get() = ResTableRef.SIZE_IN_BYTE + value.endOffset
 
@@ -76,12 +79,17 @@ class ResTableTypeMapChildChildChunk(
 
         attributeOffset += ResTableRef.SIZE_IN_BYTE
         value =
-            ResTableTypeValueChildChildChunk(resArrayStartZeroOffset, attributeOffset, globalStringList)
+            ResTableTypeValueChildChildChunk(
+                resArrayStartZeroOffset,
+                attributeOffset,
+                globalStringList
+            )
         return this
     }
 
     override fun toString() = formatToString(
-        chunkName = "Res Table Entry Map",
-        "name is $name, value is $value"
+        chunkName = "Res Table Entry Map(attribute)",
+        "an attribute $name",
+        "value is $value"
     )
 }

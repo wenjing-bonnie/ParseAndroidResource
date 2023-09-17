@@ -143,7 +143,7 @@ class ResTableTypeValueChildChildChunk(
     override fun toString() =
         formatToString(
             chunkName = "Res Table Value",
-            "size is $size, res0 is $res0, dataType is ${DataType.valueOf(dataType)}, data is $data"
+            "size is $size, res0 is $res0, dataType is ${DataType.valueOf(dataType)}, data is $data, dataString is $dataString"
         )
 
     fun invalidDataType(dataString: String) =
@@ -250,7 +250,6 @@ class ResTableTypeValueChildChildChunk(
 
         /**
          * Beginning of integer flavors...
-         * TODO maybe there will be a bug for Google
          */
         TYPE_FIRST_INT(0x10),
 
@@ -326,6 +325,7 @@ class ResTableTypeValueChildChildChunk(
                 TYPE_LAST_INT.value -> TYPE_LAST_INT.name
                 else -> {
                     throw IllegalArgumentException("$value is a wrong value for this enum class")
+                    //Logger.error(("$value is a wrong value for DataType"))
                 }
             }
         }

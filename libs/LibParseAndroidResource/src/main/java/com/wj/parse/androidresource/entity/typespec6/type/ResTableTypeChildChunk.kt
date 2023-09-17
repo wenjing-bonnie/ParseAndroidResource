@@ -218,7 +218,6 @@ class ResTableTypeChildChunk(
 
         /** Next is the ResTable_config */
         // TODO why config.chunkEndOffset is 36, not 48?
-        // TODO why the header.headerSize中的config的size只有36, not 48?
         config =
             ResTableConfigChildChildChunk(resArrayStartZeroOffset, attributeOffset)
         // resourceTypeStringList: [attr, drawable, layout, anim, raw, color, dimen, string, style, id]
@@ -279,7 +278,7 @@ class ResTableTypeChildChunk(
                         res = res
                     )
 //                    if(resourceTypeString.equals("drawable")){
-                      // Logger.debug("$index map is $complexMapEntity")
+                       Logger.debug("$index map is $complexMapEntity")
 //                    }
                     // it is replaced with "attributeOffset = entriesStart + entryOffsets[index]"
                     // attributeOffset += complexMapEntity.endOffset

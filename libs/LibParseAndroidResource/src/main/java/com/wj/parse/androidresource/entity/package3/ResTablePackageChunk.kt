@@ -69,6 +69,7 @@ class ResTablePackageChunk(
     var lastPublicType: Int = -1
     var keyStrings: Int = -1
     var lastPublicKey: Int = -1
+    var typeIdOffset: Int = -1
 
     /**
      * this chunk is the part of header
@@ -82,6 +83,9 @@ class ResTablePackageChunk(
     override val childPosition: Int
         get() = 0
 
+    /**
+     * this header.headerSize is size of ResTable_package, from type to  lastPublicKey
+     */
     override val header: ResChunkHeader
         get() = ResChunkHeader(resArrayStartZeroOffset)
 
@@ -123,6 +127,11 @@ class ResTablePackageChunk(
         attributeByteArray =
             Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, LAST_PUBLIC_KEY_BYTE)
         lastPublicKey = Utils.byte2Int(attributeByteArray)
+
+        attributeStartOffset += LAST_PUBLIC_KEY_BYTE
+        attributeByteArray =
+            Utils.copyByte(resArrayStartZeroOffset, attributeStartOffset, TYPE_ID_OFFSET)
+        typeIdOffset = Utils.byte2Int(attributeByteArray)
         return this
     }
 
@@ -133,7 +142,7 @@ class ResTablePackageChunk(
         formatToString(
             chunkName = "Resource Table Package(P3:ResTable_package)",
             "$header",
-            "id is $id, name is $name, typeStrings is $typeStrings, lastPublicType is $lastPublicType, keyStrings is $keyStrings, lastPublicKey is $lastPublicKey."
+            "id is $id, name is $name, typeStrings is $typeStrings, lastPublicType is $lastPublicType, keyStrings is $keyStrings, lastPublicKey is $lastPublicKey, typeIdOffset is $typeIdOffset."
         )
 
     companion object {
@@ -143,5 +152,6 @@ class ResTablePackageChunk(
         private const val LAST_PUBLIC_TYPE_BYTE = 4
         private const val KEY_STRING_BYTE = 4
         private const val LAST_PUBLIC_KEY_BYTE = 4
+        private const val TYPE_ID_OFFSET = 4
     }
 }

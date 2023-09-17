@@ -4,6 +4,7 @@ import com.wj.parse.androidresource.entity.ResChunkHeader
 import com.wj.parse.androidresource.entity.stringpool2.ResStringPoolRef
 import com.wj.parse.androidresource.entity.stringpool2.ResGlobalStringPoolChunk
 import com.wj.parse.androidresource.entity.typespec6.type.Res
+import com.wj.parse.androidresource.entity.typespec6.type.ResTableTypeChildChunk
 import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk
 import com.wj.parse.androidresource.entity.typespec6.type.ResTableTypeEntryChildChildChunk.Flags
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
@@ -52,12 +53,15 @@ class ResTableTypeMapEntityChildChildChunk(
      * Reference into ResTable_package::keyStrings identifying this entry.
      */
     lateinit var key: ResStringPoolRef
+
     // Resource identifier of the parent mapping, or 0 if there is none.
     // This is always treated as a TYPE_DYNAMIC_REFERENCE.
     private lateinit var parent: ResTableRef
+
     // Number of name/value pairs that follow for FLAG_COMPLEX.
     var count: Int = 0
-    lateinit var tableTypeMapChunkChild: ResTableTypeMapChildChildChunk
+    val mapChildChildChunks = mutableListOf<ResTableTypeMapChildChildChunk>()
+    lateinit var mapChildChildChunk: ResTableTypeMapChildChildChunk
 
     init {
         checkChunkAttributes()
@@ -70,12 +74,19 @@ class ResTableTypeMapEntityChildChildChunk(
             null
         }
 
+    /**
+     * this return value is be of no great importance. Because we don't use it in the [ResTableTypeChildChunk]
+     */
     override val endOffset: Int
-        get() = SIZE_IN_BYTE + FLAGS_IN_BYTE + KEY_IN_BYTE + ResStringPoolRef.SIZE_IN_BYTE + COUNT_IN_BYTE + if (::tableTypeMapChunkChild.isInitialized) {
-            tableTypeMapChunkChild.endOffset * count
-        } else {
-            0
-        }
+        get() = SIZE_IN_BYTE + FLAGS_IN_BYTE + KEY_IN_BYTE + ResStringPoolRef.SIZE_IN_BYTE + COUNT_IN_BYTE +
+                if (mapChildChildChunks.isNotEmpty()) {
+                    mapChildChildChunks
+                        .map { child -> child.endOffset }
+                        .reduce { acc, offset -> acc.plus(offset) }
+                } else {
+                    0
+                }
+
 
     override val childPosition: Int
         get() = ChunkParseOperator.CHILD_CHILD_POSITION
@@ -134,12 +145,14 @@ class ResTableTypeMapEntityChildChildChunk(
 
     private fun mapChunkChildParseOperator(attributeOffset: Int) {
         var mapOffset = attributeOffset
-        // TODO sometimes the count is 0 ??? for example,
-        //  size is 16, flags is FLAG_COMPLEX, key is ResStringPoolRef(index=1056), resourceKey is AppBaseTheme
+        // sometimes count is 0 because there is no resource identifier of the parent mapping
+        // This is always treated as a TYPE_DYNAMIC_REFERENCE.
         for (index in 0 until count) {
-            tableTypeMapChunkChild =
+            val tableTypeMapChunkChild =
                 ResTableTypeMapChildChildChunk(resArrayStartZeroOffset, mapOffset, globalStringList)
             res.value = tableTypeMapChunkChild.value.dataString
+            mapChildChildChunks.add(tableTypeMapChunkChild)
+            mapChildChildChunk = tableTypeMapChunkChild
             mapOffset += tableTypeMapChunkChild.endOffset * index
             // res.value.indexOf("<") >= 0
             // value=<0xFFFFFFFF, type 0x00>
@@ -153,19 +166,14 @@ class ResTableTypeMapEntityChildChildChunk(
         formatToString(
             chunkName = "Res Table Map Entity",
             "size is $size, flags is ${Flags.valueOf(flags)}, key is $key, resourceKey is $resourceKey",
-            "parent is ${
+            "parent ${
                 if (::parent.isInitialized) {
                     "$parent"
                 } else {
                     "not Initialized"
                 }
             },  count is $count",
-            if (::tableTypeMapChunkChild.isInitialized) {
-                tableTypeMapChunkChild.toString()
-            } else {
-                // sometimes the count is 0, so the tableTypeMapChunkChild isn't initialized
-                ""
-            }
+            mapChildChildChunks.joinToString(separator = "\n")
         )
 
     companion object {
@@ -188,13 +196,26 @@ class ResTableTypeMapEntityChildChildChunk(
      *    uint32_t ident;
      * };
      */
+    /**
+     * @param ident is the resourceId in the parent mapping, it is structured as: 0xpptteeee,
+     *  where pp is the package index, tt is the type index in that
+     *  package, and eeee is the entry index in that type.  The package
+     *  and type values start at 1 for the first item, to help catch cases
+     *  where they have not been supplied.
+     */
     data class ResTableRef(val ident: Int) {
         companion object {
             const val SIZE_IN_BYTE = 4
         }
 
         override fun toString() =
-            // TODO optimized
-            "ident:0x${Utils.bytesToHexString(Utils.int2Byte(ident))}"
+            // TODO ???????
+            "resourceId(in the Key String Pool) is $ident, 0x${
+                Utils.bytesToHexString(
+                    Utils.int2Byte(
+                        ident
+                    )
+                )
+            }"
     }
 }
