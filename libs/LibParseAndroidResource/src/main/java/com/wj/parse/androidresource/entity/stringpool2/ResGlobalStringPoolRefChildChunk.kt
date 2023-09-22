@@ -225,6 +225,24 @@ class ResGlobalStringPoolRefChildChunk(
         }
     }
 
+    /**
+     *  this style means bold...
+     * /**
+     * This structure defines a span of style information associated with
+     * a string in the pool.
+     * */
+     * struct ResStringPool_span
+     *  {
+     *  enum {
+     * END = 0xFFFFFFFF
+     *  };
+     * // This is the name of the span -- that is, the name of the XML
+     * // tag that defined it. The special value END (0xFFFFFFFF) indicates
+     *  // the end of an array of spans.
+     * ResStringPool_ref name;
+     *  // The range of characters in the string that this span applies to.
+     *  uint32_t firstChar, lastChar;
+     */
     private fun styleListByStyleOffset() {
         styleOffsetList.forEach { ref ->
             childOffset = stylesStart - headerSize + ref.index
@@ -232,26 +250,26 @@ class ResGlobalStringPoolRefChildChunk(
                 Utils.copyByte(resArrayStartZeroOffset, childOffset, ResStringPoolRef.SIZE_IN_BYTE)
             val name = ResStringPoolRef(Utils.byte2Int(attributeArray))
 
-            childOffset += ResStringPoolSpan.SIZE_IN_BYTE
+            childOffset += ResStringPoolRef.SIZE_IN_BYTE
             attributeArray =
                 Utils.copyByte(
                     resArrayStartZeroOffset,
                     childOffset,
-                    ResStringPoolSpan.RANGE_IN_BYTE
+                    ResStringPoolSpan.CHAR_IN_BYTE
                 )
             val firstChar = Utils.byte2Int(attributeArray)
 
-            childOffset += ResStringPoolSpan.RANGE_IN_BYTE
+            childOffset += ResStringPoolSpan.CHAR_IN_BYTE
             attributeArray =
                 Utils.copyByte(
                     resArrayStartZeroOffset,
                     childOffset,
-                    ResStringPoolSpan.RANGE_IN_BYTE
+                    ResStringPoolSpan.CHAR_IN_BYTE
                 )
             val lastChar = Utils.byte2Int(attributeArray)
             styleList.add(ResStringPoolSpan(name, firstChar, lastChar))
             // add the
-            childOffset += ResStringPoolSpan.RANGE_IN_BYTE
+            childOffset += ResStringPoolSpan.CHAR_IN_BYTE
         }
     }
 

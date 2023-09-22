@@ -26,7 +26,7 @@ data class ResStringPoolSpan(
     val lastChar: Int
 ) {
     companion object {
-        const val RANGE_IN_BYTE = 4
-        const val SIZE_IN_BYTE = ResStringPoolRef.SIZE_IN_BYTE + RANGE_IN_BYTE * 2
+        const val CHAR_IN_BYTE = 4
+        const val SIZE_IN_BYTE = ResStringPoolRef.SIZE_IN_BYTE + CHAR_IN_BYTE * 2
     }
 }

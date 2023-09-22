@@ -47,6 +47,10 @@ fun Settings(
             text = stringResource(id = R.string.settings_content, "1"),
             modifier = modifier
         )
+        Text(
+            text = stringResource(id = R.string.settings_sub_content),
+            modifier = modifier
+        )
     }
 
 }

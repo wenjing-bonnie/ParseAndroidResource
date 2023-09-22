@@ -65,7 +65,7 @@ class ResTableTypeValueChildChildChunk(
             }
 
             DataType.TYPE_FLOAT.value -> {
-                // TODO
+                // change data to float
                 java.lang.Float.intBitsToFloat(data).toString()
             }
 
