@@ -60,7 +60,6 @@ class ResGlobalStringPoolRefChildChunk(
     var globalStringList = mutableListOf<String>()
 
     /**
-     * TODO implement
      * /**
      * This structure defines a span of style information associated with
      * a string in the pool.

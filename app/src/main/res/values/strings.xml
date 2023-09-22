@@ -3,5 +3,7 @@
     <string name="app_name">ParseAndroidResource</string>
     <string name="title_activity_settings">Settings</string>
     <string name="settings_content" formatted="true">Download incoming attachments(%s)</string>
-    <string name="settings_sub_content"><b>Please waiting...</b></string>
+    <string name="settings_sub_content">Please <b>waiting...</b></string>
+    <string name="settings_sub_content_2"><i>second Please </i> waiting...</string>
+    <string name="settings_sub_content_3"><u>third style Please waiting...</u></string>
 </resources>
