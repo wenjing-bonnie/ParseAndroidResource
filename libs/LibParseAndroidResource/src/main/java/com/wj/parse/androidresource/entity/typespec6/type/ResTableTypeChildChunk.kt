@@ -285,7 +285,7 @@ class ResTableTypeChildChunk(
                         res = res
                     )
 //                    if(resourceTypeString.equals("drawable")){
-                       Logger.debug("$index map is $complexMapEntity")
+                      // Logger.debug("$index map is $complexMapEntity")
 //                    }
                     // it is replaced with "attributeOffset = entriesStart + entryOffsets[index]"
                     // attributeOffset += complexMapEntity.endOffset
