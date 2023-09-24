@@ -8,6 +8,7 @@ import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChun
 import com.wj.parse.androidresource.entity.typespec6.ResTableTypeSpecAndTypeChunk.Companion.RES1_BYTE
 import com.wj.parse.androidresource.interfaces.ChunkParseOperator
 import com.wj.parse.androidresource.interfaces.ChunkProperty
+import com.wj.parse.androidresource.utils.Logger
 import com.wj.parse.androidresource.utils.Utils
 import kotlin.experimental.and
 
@@ -122,7 +123,7 @@ class ResTableTypeSpecChildChunk(
 
     override fun toString(): String =
         formatToString(
-            chunkName = "Resource Type spec(ResTable_typeSpec)",
+            chunkName = "${Logger.FIRST_LEVEL} ResTable_typeSpec, the next is ResTable_type ${Logger.FIRST_LEVEL}",
             "$header",
             "id is $id, res0 is $res0, res1 is $res1,  entryCount is $entryCount"
         )

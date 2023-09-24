@@ -147,7 +147,7 @@ class ResTableTypeValueChildChildChunk(
 
     override fun toString() =
         formatToString(
-            chunkName = "Res Table Value",
+            chunkName = "${Logger.THIRD_LEVEL} Res Table Value(Res_value) ${Logger.THIRD_LEVEL}",
             "size is $size, res0 is $res0, dataType is ${DataType.valueOf(dataType)}, data is $data, dataString is $dataString"
         )
 

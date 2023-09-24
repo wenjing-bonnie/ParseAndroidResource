@@ -26,4 +26,8 @@ object Logger {
     const val END_TAG_END= "<<<<<<"
     const val TITLE_TAG_START = ">> "
     const val TITLE_TAG_END = " <<"
+    const val FIRST_LEVEL = "*"
+    const val SECOND_LEVEL = "**"
+    const val THIRD_LEVEL = "***"
+    const val FOURTH_LEVEL = "****"
 }

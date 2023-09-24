@@ -166,7 +166,7 @@ class ResTableTypeMapEntityChildChildChunk(
 
     override fun toString(): String =
         formatToString(
-            chunkName = "Res Table Map Entity",
+            chunkName = "${Logger.THIRD_LEVEL} Res Table Map Entity(ResTable_map_entry) ${Logger.THIRD_LEVEL}",
             "size is $size, flags is ${Flags.valueOf(flags)}, key is $key, resourceKey is $resourceKey",
             "parent ${
                 if (::parent.isInitialized) {

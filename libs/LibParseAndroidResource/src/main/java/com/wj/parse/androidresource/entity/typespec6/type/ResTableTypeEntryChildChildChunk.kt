@@ -127,7 +127,7 @@ open class ResTableTypeEntryChildChildChunk(
     }
 
     override fun toString(): String = formatToString(
-        chunkName = "Res Table Entry(header of entry)",
+        chunkName = "ResTable_entry(header of all entries)",
         "size is $size, flags is ${Flags.valueOf(flags)}, key is $key, resourceKey is $resKeyString"
     )
 

@@ -88,7 +88,7 @@ class ResTableTypeMapChildChildChunk(
     }
 
     override fun toString() = formatToString(
-        chunkName = "Res Table Entry Map(attribute)",
+        chunkName = "${Logger.FOURTH_LEVEL} Res Table Entry Map(attribute) ${Logger.FOURTH_LEVEL}",
         "an attribute $name",
         "value is $value"
     )

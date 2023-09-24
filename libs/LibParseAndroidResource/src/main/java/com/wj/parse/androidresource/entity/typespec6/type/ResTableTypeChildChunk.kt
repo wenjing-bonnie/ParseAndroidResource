@@ -285,7 +285,7 @@ class ResTableTypeChildChunk(
                         res = res
                     )
 //                    if(resourceTypeString.equals("drawable")){
-                      // Logger.debug("$index map is $complexMapEntity")
+//                       Logger.debug("$index map is $complexMapEntity")
 //                    }
                     // it is replaced with "attributeOffset = entriesStart + entryOffsets[index]"
                     // attributeOffset += complexMapEntity.endOffset
@@ -304,6 +304,7 @@ class ResTableTypeChildChunk(
                     res.value = notComplexEntity.dataString
                     // it is replaced with "attributeOffset = entriesStart + entryOffsets[index]"
                     // attributeOffset += entry.endOffset + notComplexEntity.endOffset
+//                    Logger.debug("$index not complex map is $notComplexEntity")
 
                     if (notComplexEntity.invalidDataType(res.value)) {
                         // res.value.indexOf("<") >= 0
@@ -330,7 +331,7 @@ class ResTableTypeChildChunk(
 
     override fun toString(): String =
         formatToString(
-            chunkName = "Resource Type <$resourceTypeString>",
+            chunkName = "${Logger.SECOND_LEVEL}  ResTable_type <$resourceTypeString> **",
             "$header",
             "id is $id, flags is $flags, reserved is $reserved,  entryCount is $entryCount, entriesStart is $entriesStart",
             "$config",
