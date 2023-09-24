@@ -23,8 +23,15 @@ package com.wj.parse.androidresource.entity.stringpool2
 data class ResStringPoolSpan(
     val name: ResStringPoolRef,
     val firstChar: Int,
-    val lastChar: Int
+    val lastChar: Int,
+    val style: String,
+    val stringResource: String,
 ) {
+    val styleStringResource: String
+        get() = TODO()
+
+   // override fun toString() = "name=$name, firstChar=$firstChar, lastChar=$lastChar,"
+
     companion object {
         const val CHAR_IN_BYTE = 4
         const val SIZE_IN_BYTE = ResStringPoolRef.SIZE_IN_BYTE + CHAR_IN_BYTE * 2

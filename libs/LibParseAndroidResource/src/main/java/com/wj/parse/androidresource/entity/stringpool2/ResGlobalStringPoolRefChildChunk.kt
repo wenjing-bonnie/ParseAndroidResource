@@ -168,7 +168,8 @@ class ResGlobalStringPoolRefChildChunk(
             // 1.read the length of string from first two byte , the last byte is length of this string
             // stringStart contains headerSize, but resArrayStartZeroOffset is without header's data when we pass it from [ResStringPoolSecondChunk]
             childOffset = stringStart - headerSize + ref.index
-            // Logger.error("  ===== style childOffset = $childOffset")
+            // if (flags == 0)
+            //    Logger.error(" $flags ===== string childOffset = $childOffset")
             val stringLength =
                 Utils.copyByte(resArrayStartZeroOffset, childOffset, OFFSET_BYTE / 2)
                     ?.let { stringLengthArray ->
@@ -197,9 +198,10 @@ class ResGlobalStringPoolRefChildChunk(
                 ResStringPoolHeaderChunk.Flags.UTF16_FLAG.value -> 2
                 else -> 1
             }
+            val nullLength = OFFSET_BYTE / 2
             Utils.copyByte(
                 resArrayStartZeroOffset,
-                childOffset + OFFSET_BYTE / 2,
+                childOffset + nullLength,
                 readLength
             )
                 ?.let { array ->
@@ -219,8 +221,8 @@ class ResGlobalStringPoolRefChildChunk(
                     globalStringList.add(value)
 
                 }
-            // this doesn't work, maybe the last char's offset is wrong when the flags is UTF16_FLAG
-            childOffset += readLength + STRING_RESERVED_BYTE
+            // if (flags == 0)
+            //   Logger.error(" $flags 2 ===== string childOffset = ${childOffset}")
         }
     }
 
@@ -243,7 +245,7 @@ class ResGlobalStringPoolRefChildChunk(
      *  uint32_t firstChar, lastChar;
      */
     private fun styleListByStyleOffset() {
-        styleOffsetList.forEach { ref ->
+        styleOffsetList.forEachIndexed { index, ref ->
             childOffset = stylesStart - headerSize + ref.index
             var attributeArray =
                 Utils.copyByte(resArrayStartZeroOffset, childOffset, ResStringPoolRef.SIZE_IN_BYTE)
@@ -266,7 +268,15 @@ class ResGlobalStringPoolRefChildChunk(
                     ResStringPoolSpan.CHAR_IN_BYTE
                 )
             val lastChar = Utils.byte2Int(attributeArray)
-            styleList.add(ResStringPoolSpan(name, firstChar, lastChar))
+            styleList.add(
+                ResStringPoolSpan(
+                    name,
+                    firstChar,
+                    lastChar,
+                    style = globalStringList[name.index],
+                    stringResource = globalStringList[index]
+                )
+            )
             // add the
             childOffset += ResStringPoolSpan.CHAR_IN_BYTE
         }
@@ -289,7 +299,7 @@ class ResGlobalStringPoolRefChildChunk(
             "string list is ${
                 globalStringList.joinToString(
                     prefix = "[",
-                    limit = 10,
+                    //limit = 10,
                     truncated = "...",
                     postfix = "]"
                 )
