@@ -3,6 +3,4 @@ Learn how to parse resource.arsc of Android APK. The data chunks's structure as 
 
 
 
-
-
-
+![resource_table](https://github.com/wenjing-bonnie/ParseAndroidResource/assets/70619381/263a6557-bb23-4549-988b-bad2999cbc39)
